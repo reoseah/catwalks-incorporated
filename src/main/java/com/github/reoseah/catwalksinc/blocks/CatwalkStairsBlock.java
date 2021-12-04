@@ -138,6 +138,7 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, Catwalk 
 		if (half == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canPlaceAt(world, pos)) {
 			return Blocks.AIR.getDefaultState();
 		}
+
 		Direction left = state.get(FACING).rotateYCounterclockwise();
 		state = state.with(RIGHT_RAIL, shouldHaveHandrail(state, world, pos, left));
 		Direction right = state.get(FACING).rotateYClockwise();
@@ -148,10 +149,16 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, Catwalk 
 	}
 
 	private boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction) {
+		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+			// if it looks stupid but works then it's not stupid
+			pos = pos.down();
+			state = state.with(HALF, DoubleBlockHalf.LOWER);
+		}
+
 		BlockState neighbor = world.getBlockState(pos.offset(direction));
 		if (neighbor.isOf(this)) {
-			return neighbor.get(FACING) == state.get(FACING) //
-					&& neighbor.get(HALF) == state.get(HALF);
+			return neighbor.get(FACING) != state.get(FACING) //
+					|| neighbor.get(HALF) != state.get(HALF);
 		}
 		BlockState upperNeighbor = world.getBlockState(pos.offset(direction).up());
 		if (neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite())
