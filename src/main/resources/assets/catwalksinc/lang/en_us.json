@@ -1,5 +1,6 @@
 {
   "itemGroup.catwalksinc.main": "Catwalks, Inc.",
   
-  "block.catwalksinc.catwalk": "Catwalk"
+  "block.catwalksinc.catwalk": "Catwalk",
+  "block.catwalksinc.catwalk_stairs": "Catwalk Stairs"
 }

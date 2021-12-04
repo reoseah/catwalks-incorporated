@@ -11,7 +11,7 @@ public class CatwalksIncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(), //
-				CIBlocks.CATWALK);
+				CIBlocks.CATWALK, CIBlocks.CATWALK_STAIRS);
 	}
 
 }
