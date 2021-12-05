@@ -6,6 +6,7 @@ import com.github.reoseah.catwalksinc.blocks.CatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock.CatwalkData;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock.CatwalkStairsData;
+import com.github.reoseah.catwalksinc.blocks.IronRodsBlock;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -22,6 +23,7 @@ public class CIBlocks {
 	public static final Block CATWALK = register("catwalk", new CatwalkBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CATWALK_STAIRS = register("catwalk_stairs",
 			new CatwalkStairsBlock(BlockSettings.IRON_SCAFFOLDING));
+	public static final Block IRON_BARS = register("iron_rods", new IronRodsBlock(BlockSettings.IRON_SCAFFOLDING));
 
 	private static Block register(String name, Block entry) {
 		return Registry.register(Registry.BLOCK, id(name), entry);

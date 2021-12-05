@@ -1,5 +1,7 @@
 package com.github.reoseah.catwalksinc.blocks;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -25,6 +27,6 @@ public interface Wrenchable {
 	 * @return whether player should swing a wrench + play wrench use sound +
 	 *         consume durability in survival
 	 */
-	boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, PlayerEntity player, Hand hand,
-			Vec3d hitPos);
+	boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, @Nullable PlayerEntity player,
+			Hand hand, Vec3d hitPos);
 }
