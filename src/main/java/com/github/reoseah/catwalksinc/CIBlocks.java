@@ -2,6 +2,7 @@ package com.github.reoseah.catwalksinc;
 
 import static com.github.reoseah.catwalksinc.CatwalksInc.id;
 
+import com.github.reoseah.catwalksinc.blocks.CageLampBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock.CatwalkData;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock;
@@ -24,6 +25,7 @@ public class CIBlocks {
 	public static final Block CATWALK_STAIRS = register("catwalk_stairs",
 			new CatwalkStairsBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block IRON_BARS = register("iron_rods", new IronRodsBlock(BlockSettings.IRON_SCAFFOLDING));
+	public static final Block CAGE_LAMP = register("cage_lamp", new CageLampBlock(BlockSettings.CAGE_LAMP));
 
 	private static Block register(String name, Block entry) {
 		return Registry.register(Registry.BLOCK, id(name), entry);
@@ -36,6 +38,9 @@ public class CIBlocks {
 				.nonOpaque() //
 				.sounds(BlockSoundGroup.LANTERN) //
 				.breakByTool(FabricToolTags.PICKAXES);
+
+		private static final FabricBlockSettings CAGE_LAMP = FabricBlockSettings.copyOf(BlockSettings.IRON_SCAFFOLDING)
+				.luminance(state -> 14);
 
 	}
 

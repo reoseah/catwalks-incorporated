@@ -18,8 +18,10 @@ public class CIItems {
 			() -> new ItemStack(CIItems.CATWALK));
 
 	public static final Item CATWALK = registerBlockItem(CIBlocks.CATWALK);
+	public static final Item CAGE_LAMP = registerBlockItem(CIBlocks.CAGE_LAMP);
 
-	public static final Item IRON_ROD = register("iron_rod", new AliasedBlockItem(CIBlocks.IRON_BARS, defaultSettings()));
+	public static final Item IRON_ROD = register("iron_rod",
+			new AliasedBlockItem(CIBlocks.IRON_BARS, defaultSettings()));
 	public static final Item WRENCH = register("wrench", new WrenchItem(defaultSettings().maxDamage(256)));
 
 	private static Item registerBlockItem(Block block) {

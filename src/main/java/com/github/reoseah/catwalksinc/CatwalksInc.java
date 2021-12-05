@@ -17,6 +17,11 @@ import net.minecraft.util.Identifier;
  * 
  * TODO Add Crankwheel (lever with 16 states)
  * 
+ * TODO Add sound to using wrench
+ * 
+ * TODO Add industrial ladders
+ * 
+ * FIXME Fix forced handrails desyncing after rejoining world
  * 
  * @author reoseah
  *

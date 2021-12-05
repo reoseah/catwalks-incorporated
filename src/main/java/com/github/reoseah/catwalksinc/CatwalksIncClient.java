@@ -25,7 +25,9 @@ public class CatwalksIncClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(), //
-				CIBlocks.CATWALK, CIBlocks.CATWALK_STAIRS, CIBlocks.IRON_BARS);
+				CIBlocks.CATWALK, CIBlocks.CATWALK_STAIRS, //
+				CIBlocks.CAGE_LAMP, //
+				CIBlocks.IRON_BARS);
 
 		FabricModelPredicateProviderRegistry.register(CIItems.WRENCH, new Identifier("open"),
 				(ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity, int i) -> {

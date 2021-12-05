@@ -224,22 +224,22 @@ public class IronRodsBlock extends Block implements Waterloggable {
 
 	@Override
 	public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
-		int bars = 0;
+		int rods = 0;
 		if (state.get(SOUTH_WEST)) {
-			bars++;
+			rods++;
 		}
 		if (state.get(SOUTH_EAST)) {
-			bars++;
+			rods++;
 		}
 		if (state.get(NORTH_WEST)) {
-			bars++;
+			rods++;
 		}
 		if (state.get(NORTH_EAST)) {
-			bars++;
+			rods++;
 		}
 		List<ItemStack> list = new ArrayList<>();
-		if (bars > 0) {
-			list.add(new ItemStack(CIItems.IRON_ROD, bars));
+		if (rods > 0) {
+			list.add(new ItemStack(CIItems.IRON_ROD, rods));
 		}
 		return list;
 	}
