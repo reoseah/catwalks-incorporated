@@ -1,28 +1,27 @@
 {
-  "multipart": [
-    {   
-      "when": { "facing": "up" },
-      "apply": { "model": "catwalksinc:block/cage_lamp" }
+  "variants": {
+    "facing=up": {
+      "model": "catwalksinc:block/cage_lamp"
+     },
+     "facing=down": {
+      "model": "catwalksinc:block/cage_lamp",
+      "x": 180
     },
-    {   
-      "when": { "facing": "down" },
-      "apply": { "model": "catwalksinc:block/cage_lamp", "x": 180 }
+    "facing=north": {
+      "model": "catwalksinc:block/cage_lamp",
+      "x": 90
     },
-    {   
-      "when": { "facing": "north" },
-      "apply": { "model": "catwalksinc:block/cage_lamp", "x": 90 }
+    "facing=south": {
+      "model": "catwalksinc:block/cage_lamp",
+      "x": 90, "y": 180
     },
-    {   
-      "when": { "facing": "south" },
-      "apply": { "model": "catwalksinc:block/cage_lamp", "x": 90, "y": 180 }
+    "facing=west": {
+      "model": "catwalksinc:block/cage_lamp",
+      "x": 90, "y": 270 
     },
-    {   
-      "when": { "facing": "west" },
-      "apply": { "model": "catwalksinc:block/cage_lamp", "x": 90, "y": 270 }
-    },
-    {   
-      "when": { "facing": "east" },
-      "apply": { "model": "catwalksinc:block/cage_lamp", "x": 90, "y": 90 }
+    "facing=east": {
+      "model": "catwalksinc:block/cage_lamp",
+      "x": 90, "y": 90
     }
-  ]
+  }
 }

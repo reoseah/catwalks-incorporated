@@ -9,8 +9,8 @@ import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.DoorBlock;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
@@ -139,14 +139,27 @@ public class CatwalkBlock extends Block implements Waterloggable, BlockEntityPro
 		BlockState neighbor = world.getBlockState(pos.offset(side));
 		Block block = neighbor.getBlock();
 
-		// no fence to other catwalks
-		if (block instanceof Catwalk catwalk) {
-			return !catwalk.canCatwalkConnect(neighbor, world, pos.offset(side), side.getOpposite());
+		// no fence at ladder exits
+		if (neighbor.isAir()) {
+			BlockState below = world.getBlockState(pos.offset(side).down());
+			Block blockBelow = below.getBlock();
+			if ((blockBelow instanceof LadderBlock //
+					|| blockBelow instanceof IndustrialLadderBlock)
+					&& below.get(Properties.HORIZONTAL_FACING) == side) {
+				return false;
+			}
 		}
-		// connect to most blocks with solid full sides
-		if (neighbor.isSideSolidFullSquare(world, pos.offset(side), side.getOpposite())
-				// except sand/gravel
-				&& neighbor.getMaterial() != Material.AGGREGATE
+
+		// no fence to other catwalks
+		if (block instanceof Catwalk catwalk
+				&& catwalk.canCatwalkConnect(neighbor, world, pos.offset(side), side.getOpposite())
+				// no fence to ladders
+				|| block instanceof IndustrialLadderBlock
+						&& neighbor.get(Properties.HORIZONTAL_FACING) == side.getOpposite()
+				// connect to most blocks with solid full sides
+				|| neighbor.isSideSolidFullSquare(world, pos.offset(side), side.getOpposite())
+						// except sand/gravel
+						&& neighbor.getMaterial() != Material.AGGREGATE
 				// connect to cauldrons, they look pretty solid to me
 				|| block instanceof AbstractCauldronBlock
 				// connect to doors

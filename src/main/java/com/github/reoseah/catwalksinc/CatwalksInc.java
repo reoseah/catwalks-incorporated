@@ -13,13 +13,11 @@ import net.minecraft.util.Identifier;
  * 
  * TODO Add REI info to all complex items
  * 
- * TODO Add industrial lamps (RedPower style)
- * 
  * TODO Add Crankwheel (lever with 16 states)
  * 
  * TODO Add sound to using wrench
  * 
- * TODO Add industrial ladders
+ * TODO Add caged ladders
  * 
  * FIXME Fix forced handrails desyncing after rejoining world
  * 
