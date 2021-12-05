@@ -19,6 +19,8 @@ import net.minecraft.util.Identifier;
  * 
  * TODO Add caged ladders
  * 
+ * TODO Make arrows/projectiles go through ladders
+ * 
  * FIXME Fix forced handrails desyncing after rejoining world
  * 
  * @author reoseah
