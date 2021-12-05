@@ -1,0 +1,14 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "catwalksinc:item/wrench"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "open": 1
+      },
+      "model": "catwalksinc:item/wrench_open"
+    }
+  ]
+}

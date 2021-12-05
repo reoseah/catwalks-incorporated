@@ -22,8 +22,12 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
+import net.minecraft.util.math.Direction.AxisDirection;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -31,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 
-public class CatwalkStairsBlock extends Block implements Waterloggable, Catwalk {
+public class CatwalkStairsBlock extends Block implements Waterloggable, Catwalk, Wrenchable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 	public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
@@ -130,20 +134,25 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, Catwalk 
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState,
 			WorldAccess world, BlockPos pos, BlockPos posFrom) {
 		DoubleBlockHalf half = state.get(HALF);
-		if (direction.getAxis() == Direction.Axis.Y && half == DoubleBlockHalf.LOWER == (direction == Direction.UP)) {
-			if (!newState.isOf(this) || newState.get(HALF) == half) {
+		if (half == DoubleBlockHalf.LOWER && direction == Direction.UP) {
+			if (!newState.isOf(this) || newState.get(HALF) != DoubleBlockHalf.UPPER) {
 				return Blocks.AIR.getDefaultState();
 			}
 		}
-		if (half == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canPlaceAt(world, pos)) {
-			return Blocks.AIR.getDefaultState();
+		if (half == DoubleBlockHalf.UPPER && direction == Direction.DOWN) {
+			if (!newState.isOf(this) || newState.get(HALF) != DoubleBlockHalf.LOWER) {
+				return Blocks.AIR.getDefaultState();
+			}
 		}
 
 		Direction left = state.get(FACING).rotateYCounterclockwise();
-		state = state.with(RIGHT_RAIL, shouldHaveHandrail(state, world, pos, left));
+		if (direction == left) {
+			state = state.with(RIGHT_RAIL, this.shouldHaveHandrail(state, world, pos, left));
+		}
 		Direction right = state.get(FACING).rotateYClockwise();
-		state = state.with(LEFT_RAIL, shouldHaveHandrail(state, world, pos, right));
-
+		if (direction == right) {
+			state = state.with(LEFT_RAIL, this.shouldHaveHandrail(state, world, pos, right));
+		}
 		return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
 
 	}
@@ -246,5 +255,37 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, Catwalk 
 	public boolean canCatwalkConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(HALF) == DoubleBlockHalf.LOWER ? side == state.get(FACING).getOpposite()
 				: side == state.get(FACING);
+	}
+
+	@Override
+	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, PlayerEntity player,
+			Hand hand, Vec3d hitPos) {
+		Direction facing = state.get(FACING);
+		Axis perpendicular = facing.rotateYClockwise().getAxis();
+
+		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+			pos = pos.down();
+			state = world.getBlockState(pos);
+		}
+
+		if (player != null && player.isSneaking()) {
+			world.setBlockState(pos, state.cycle(FACING));
+			world.setBlockState(pos.up(), state.cycle(FACING).with(HALF, DoubleBlockHalf.UPPER));
+			return true;
+		}
+
+		double a = hitPos.getComponentAlongAxis(perpendicular);
+		if (a - pos.getComponentAlongAxis(perpendicular) > 0.5
+				&& facing.rotateYClockwise().getDirection() == AxisDirection.POSITIVE
+				|| a - pos.getComponentAlongAxis(perpendicular) < 0.5
+						&& facing.rotateYClockwise().getDirection() == AxisDirection.NEGATIVE) {
+			world.setBlockState(pos, state.cycle(LEFT_RAIL));
+			world.setBlockState(pos.up(), state.cycle(LEFT_RAIL).with(HALF, DoubleBlockHalf.UPPER));
+			return true;
+		} else {
+			world.setBlockState(pos, state.cycle(RIGHT_RAIL));
+			world.setBlockState(pos.up(), state.cycle(RIGHT_RAIL).with(HALF, DoubleBlockHalf.UPPER));
+			return true;
+		}
 	}
 }

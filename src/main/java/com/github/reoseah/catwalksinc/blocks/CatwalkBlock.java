@@ -8,21 +8,25 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CatwalkBlock extends Block implements Waterloggable, Catwalk {
+public class CatwalkBlock extends Block implements Waterloggable, Catwalk, Wrenchable {
 	public static final BooleanProperty SOUTH_RAIL = Properties.SOUTH;
 	public static final BooleanProperty WEST_RAIL = Properties.WEST;
 	public static final BooleanProperty NORTH_RAIL = Properties.NORTH;
@@ -76,13 +80,17 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk {
 		BlockView world = ctx.getWorld();
 		BlockPos pos = ctx.getBlockPos();
 
+		// if block above is air
 		if (world.getBlockState(pos.up()).isAir()) {
+			// check a block above and to the side
+			// if there's a catwalk there, then this block should be stairs
+			// going up in that direction
 			for (Direction side : Direction.Type.HORIZONTAL) {
-				BlockPos stairsExitPos = pos.up().offset(side);
-				BlockState stairsExitState = world.getBlockState(stairsExitPos);
-				Block stairsExitBlock = stairsExitState.getBlock();
-				if (stairsExitBlock instanceof Catwalk
-						&& ((Catwalk) stairsExitBlock).canCatwalkConnect(stairsExitState, world, stairsExitPos, side)) {
+				BlockPos stairsExit = pos.up().offset(side);
+				BlockState stateAtStairsExit = world.getBlockState(stairsExit);
+				Block blockAtStairsExit = stateAtStairsExit.getBlock();
+				if (blockAtStairsExit instanceof Catwalk catwalk
+						&& catwalk.canCatwalkConnect(stateAtStairsExit, world, stairsExit, side)) {
 					return CIBlocks.CATWALK_STAIRS.getDefaultState() //
 							.with(CatwalkStairsBlock.FACING, side.getOpposite());
 				}
@@ -94,7 +102,8 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk {
 		boolean north = this.shouldHaveHandrail(world, pos, Direction.NORTH);
 		boolean east = this.shouldHaveHandrail(world, pos, Direction.EAST);
 
-		return this.getDefaultState().with(SOUTH_RAIL, south).with(WEST_RAIL, west).with(NORTH_RAIL, north).with(EAST_RAIL, east);
+		return this.getDefaultState().with(SOUTH_RAIL, south).with(WEST_RAIL, west).with(NORTH_RAIL, north)
+				.with(EAST_RAIL, east);
 	}
 
 	@Override
@@ -114,8 +123,7 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk {
 		Block block = neighbor.getBlock();
 
 		// no fence to other catwalks
-		if (block instanceof Catwalk) {
-			Catwalk catwalk = (Catwalk) block;
+		if (block instanceof Catwalk catwalk) {
 			return !catwalk.canCatwalkConnect(neighbor, world, pos.offset(side), side);
 		}
 		// connect to most blocks with solid full sides
@@ -196,6 +204,32 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk {
 
 	@Override
 	public boolean canCatwalkConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		return true;
+	}
+
+	@Override
+	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, PlayerEntity player,
+			Hand hand, Vec3d hitPos) {
+		Direction dir = null;
+		double x = hitPos.getX() - pos.getX();
+		double z = hitPos.getZ() - pos.getZ();
+
+		if (Math.abs(x - 0.5) > Math.abs(z - 0.5)) {
+			if (x > 0.5) {
+				dir = Direction.EAST;
+			} else {
+				dir = Direction.WEST;
+			}
+		} else {
+			if (z > 0.5) {
+				dir = Direction.SOUTH;
+			} else {
+				dir = Direction.NORTH;
+			}
+		}
+
+		world.setBlockState(pos, state.cycle(sideToProperty(dir)));
+
 		return true;
 	}
 }
