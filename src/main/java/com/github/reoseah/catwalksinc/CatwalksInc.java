@@ -17,7 +17,8 @@ public class CatwalksInc implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// ensure static fields initialized
+		// ensure static fields are initialized
 		CIItems.CATWALK.getClass();
+		CIBlocks.BlockEntityTypes.CATWALK.getClass();
 	}
 }

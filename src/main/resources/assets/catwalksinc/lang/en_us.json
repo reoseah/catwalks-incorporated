@@ -4,6 +4,10 @@
   "block.catwalksinc.catwalk": "Catwalk",
   "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
   
+  "misc.catwalksinc.forced_handrail": "Handrail: Always",
+  "misc.catwalksinc.forced_no_handrail": "Handrail: Never",
+  "misc.catwalksinc.default_handrail": "Handrail: Auto",
+    
   "item.catwalksinc.iron_rod": "Iron Bar",
-  "item.carwalksinc.wrench": "Adjustable Wrench"
+  "item.catwalksinc.wrench": "Adjustable Wrench"
 }

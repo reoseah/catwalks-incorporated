@@ -3,13 +3,18 @@ package com.github.reoseah.catwalksinc;
 import static com.github.reoseah.catwalksinc.CatwalksInc.id;
 
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock;
+import com.github.reoseah.catwalksinc.blocks.CatwalkBlock.CatwalkData;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock;
+import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock.CatwalkStairsData;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.registry.Registry;
 
@@ -30,5 +35,16 @@ public class CIBlocks {
 				.sounds(BlockSoundGroup.LANTERN) //
 				.breakByTool(FabricToolTags.PICKAXES);
 
+	}
+
+	public static class BlockEntityTypes {
+		public static final BlockEntityType<CatwalkData> CATWALK = register("catwalk",
+				FabricBlockEntityTypeBuilder.create(CatwalkData::new, CIBlocks.CATWALK).build());
+		public static final BlockEntityType<CatwalkStairsData> CATWALK_STAIRS = register("catwalk_stairs",
+				FabricBlockEntityTypeBuilder.create(CatwalkStairsData::new, CIBlocks.CATWALK_STAIRS).build());
+
+		private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> type) {
+			return Registry.register(Registry.BLOCK_ENTITY_TYPE, id(name), type);
+		}
 	}
 }

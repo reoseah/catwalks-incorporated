@@ -1,20 +1,30 @@
 package com.github.reoseah.catwalksinc.blocks;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import com.github.reoseah.catwalksinc.CIBlocks;
 
+import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DoorBlock;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +36,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CatwalkBlock extends Block implements Waterloggable, Catwalk, Wrenchable {
+public class CatwalkBlock extends Block implements Waterloggable, BlockEntityProvider, Catwalk, Wrenchable {
 	public static final BooleanProperty SOUTH_RAIL = Properties.SOUTH;
 	public static final BooleanProperty WEST_RAIL = Properties.WEST;
 	public static final BooleanProperty NORTH_RAIL = Properties.NORTH;
@@ -90,7 +100,7 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk, Wrenc
 				BlockState stateAtStairsExit = world.getBlockState(stairsExit);
 				Block blockAtStairsExit = stateAtStairsExit.getBlock();
 				if (blockAtStairsExit instanceof Catwalk catwalk
-						&& catwalk.canCatwalkConnect(stateAtStairsExit, world, stairsExit, side)) {
+						&& catwalk.canCatwalkConnect(stateAtStairsExit, world, stairsExit, side.getOpposite())) {
 					return CIBlocks.CATWALK_STAIRS.getDefaultState() //
 							.with(CatwalkStairsBlock.FACING, side.getOpposite());
 				}
@@ -119,19 +129,28 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk, Wrenc
 	}
 
 	public boolean shouldHaveHandrail(BlockView world, BlockPos pos, Direction side) {
+		CatwalkData be = (CatwalkData) world.getBlockEntity(pos);
+		if (be != null) {
+			if (be.enforced.containsKey(side)) {
+				return be.enforced.get(side);
+			}
+		}
+
 		BlockState neighbor = world.getBlockState(pos.offset(side));
 		Block block = neighbor.getBlock();
 
 		// no fence to other catwalks
 		if (block instanceof Catwalk catwalk) {
-			return !catwalk.canCatwalkConnect(neighbor, world, pos.offset(side), side);
+			return !catwalk.canCatwalkConnect(neighbor, world, pos.offset(side), side.getOpposite());
 		}
 		// connect to most blocks with solid full sides
 		if (neighbor.isSideSolidFullSquare(world, pos.offset(side), side.getOpposite())
 				// except sand/gravel
 				&& neighbor.getMaterial() != Material.AGGREGATE
-				// connect to cauldrons
-				|| block == Blocks.CAULDRON) {
+				// connect to cauldrons, they look pretty solid to me
+				|| block instanceof AbstractCauldronBlock
+				// connect to doors
+				|| block instanceof DoorBlock && neighbor.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
 			return false;
 		}
 		// have handrail to everything else by default
@@ -204,6 +223,10 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk, Wrenc
 
 	@Override
 	public boolean canCatwalkConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		CatwalkData be = (CatwalkData) world.getBlockEntity(pos);
+		if (be != null) {
+			return be.canConnect(side);
+		}
 		return true;
 	}
 
@@ -228,8 +251,86 @@ public class CatwalkBlock extends Block implements Waterloggable, Catwalk, Wrenc
 			}
 		}
 
-		world.setBlockState(pos, state.cycle(sideToProperty(dir)));
+		CatwalkData be = (CatwalkData) world.getBlockEntity(pos);
+		if (be == null) {
+			be = new CatwalkData(pos, state);
+			world.addBlockEntity(be);
+		}
+
+		world.setBlockState(pos, be.onWrenched(dir, state, player));
+
+		if (be.canBeRemoved()) {
+			world.removeBlockEntity(pos);
+		}
 
 		return true;
+	}
+
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		// we'll set block entity manually with world.addBlockEntity
+		// when we need it
+
+		// unfortunately currently it runs in some desync issues...
+		return null;
+	}
+
+	public static class CatwalkData extends BlockEntity {
+		// true - forced handrail at that side
+		// false - forced no handrail
+		// no entry - default behavior
+		protected final Map<Direction, Boolean> enforced = new EnumMap<>(Direction.class);
+
+		public CatwalkData(BlockPos pos, BlockState state) {
+			super(CIBlocks.BlockEntityTypes.CATWALK, pos, state);
+		}
+
+		public BlockState onWrenched(Direction side, BlockState state, PlayerEntity player) {
+			if (!this.enforced.containsKey(side)) {
+				this.enforced.put(side, true);
+				player.sendMessage(new TranslatableText("misc.catwalksinc.forced_handrail"), true);
+				return state.with(sideToProperty(side), true);
+			} else if (this.enforced.get(side)) {
+				this.enforced.put(side, false);
+				player.sendMessage(new TranslatableText("misc.catwalksinc.forced_no_handrail"), true);
+				return state.with(sideToProperty(side), false);
+			} else {
+				this.enforced.remove(side);
+				player.sendMessage(new TranslatableText("misc.catwalksinc.default_handrail"), true);
+				return state.with(sideToProperty(side),
+						((CatwalkBlock) state.getBlock()).shouldHaveHandrail(this.world, this.pos, side));
+			}
+		}
+
+		public boolean canConnect(Direction side) {
+			return this.enforced.getOrDefault(side, false) != true;
+		}
+
+		public boolean canBeRemoved() {
+			return this.enforced.isEmpty();
+		}
+
+		@Override
+		public void readNbt(NbtCompound nbt) {
+			super.readNbt(nbt);
+			NbtCompound nbtEnforced = nbt.getCompound("Enforced");
+			for (Direction side : Direction.Type.HORIZONTAL) {
+				if (nbtEnforced.contains(side.toString())) {
+					this.enforced.put(side, nbtEnforced.getBoolean(side.toString()));
+				} else {
+					this.enforced.remove(side);
+				}
+			}
+		}
+
+		@Override
+		protected void writeNbt(NbtCompound nbt) {
+			super.writeNbt(nbt);
+			NbtCompound nbtEnforced = new NbtCompound();
+			for (Map.Entry<Direction, Boolean> entry : this.enforced.entrySet()) {
+				nbtEnforced.putBoolean(entry.getKey().toString(), entry.getValue());
+			}
+			nbt.put("Enforced", nbtEnforced);
+		}
 	}
 }
