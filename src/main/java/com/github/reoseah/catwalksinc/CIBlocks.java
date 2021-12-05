@@ -27,7 +27,7 @@ public class CIBlocks {
 			new CatwalkStairsBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block IRON_BARS = register("iron_rods", new IronRodsBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CAGE_LAMP = register("cage_lamp", new CageLampBlock(BlockSettings.CAGE_LAMP));
-	public static final Block IRON_LADDER = register("iron_ladder",
+	public static final Block INDUSTRIAL_LADDER = register("industrial_ladder",
 			new IndustrialLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 
 	private static Block register(String name, Block entry) {

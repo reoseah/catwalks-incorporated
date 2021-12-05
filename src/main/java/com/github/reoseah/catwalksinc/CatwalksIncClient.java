@@ -27,7 +27,7 @@ public class CatwalksIncClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(), //
 				CIBlocks.CATWALK, CIBlocks.CATWALK_STAIRS, //
 				CIBlocks.CAGE_LAMP, //
-				CIBlocks.IRON_LADDER, //
+				CIBlocks.INDUSTRIAL_LADDER, //
 				CIBlocks.IRON_BARS);
 
 		FabricModelPredicateProviderRegistry.register(CIItems.WRENCH, new Identifier("open"),

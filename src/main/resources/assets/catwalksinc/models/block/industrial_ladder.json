@@ -1,9 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "front": "catwalksinc:block/iron_ladder_front",
-    "side": "catwalksinc:block/iron_ladder_side",
-    "particle": "catwalksinc:block/iron_ladder_front"
+    "front": "catwalksinc:block/industrial_ladder_front",
+    "side": "catwalksinc:block/industrial_ladder_side",
+    "particle": "catwalksinc:block/industrial_ladder_front"
   },
   "elements": [
     {
