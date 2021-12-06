@@ -155,11 +155,13 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 		}
 
 		Direction left = state.get(FACING).rotateYCounterclockwise();
-		if (direction == left) {
+//		if (direction == left.getOpposite())
+		{
 			state = state.with(RIGHT_RAIL, this.shouldHaveHandrail(state, world, pos, left, StairsSide.RIGHT));
 		}
 		Direction right = state.get(FACING).rotateYClockwise();
-		if (direction == right) {
+//		if (direction == right.getOpposite()) 
+		{
 			state = state.with(LEFT_RAIL, this.shouldHaveHandrail(state, world, pos, right, StairsSide.LEFT));
 		}
 		return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
@@ -169,7 +171,6 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 	private boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction,
 			StairsSide side) {
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
-			// if it looks stupid but works then it's not stupid
 			pos = pos.down();
 			state = state.with(HALF, DoubleBlockHalf.LOWER);
 		}
@@ -182,8 +183,15 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 		}
 
 		BlockState neighbor = world.getBlockState(pos.offset(direction));
-		if (neighbor.isOf(this)) {
 
+		BlockState upperNeighbor = world.getBlockState(pos.offset(direction).up());
+		if (neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite())
+				&& neighbor.getMaterial() != Material.AGGREGATE
+				&& upperNeighbor.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite())
+				&& upperNeighbor.getMaterial() != Material.AGGREGATE) {
+			return false;
+		}
+		if (neighbor.isOf(this)) {
 			if (neighbor.get(FACING) != state.get(FACING) //
 					|| neighbor.get(HALF) != state.get(HALF)) {
 				// stairs not matching - always have handrails
@@ -195,13 +203,6 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 				return neighborData.enforced.getOrDefault(side == StairsSide.LEFT ? StairsSide.RIGHT : StairsSide.LEFT,
 						false);
 			}
-			return false;
-		}
-		BlockState upperNeighbor = world.getBlockState(pos.offset(direction).up());
-		if (neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite())
-				&& neighbor.getMaterial() != Material.AGGREGATE
-				&& upperNeighbor.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite())
-				&& upperNeighbor.getMaterial() != Material.AGGREGATE) {
 			return false;
 		}
 		return true;

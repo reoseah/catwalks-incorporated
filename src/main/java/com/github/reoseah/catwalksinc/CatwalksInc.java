@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
  * 
  * TODO Make arrows/projectiles go through ladders
  * 
- * FIXME Fix forced handrails desyncing after rejoining world
+ * FIXME Fix forced handrails desyncing after rejoining a world
  * 
  * @author reoseah
  *

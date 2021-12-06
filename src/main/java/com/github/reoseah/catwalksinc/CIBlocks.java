@@ -3,6 +3,7 @@ package com.github.reoseah.catwalksinc;
 import static com.github.reoseah.catwalksinc.CatwalksInc.id;
 
 import com.github.reoseah.catwalksinc.blocks.CageLampBlock;
+import com.github.reoseah.catwalksinc.blocks.CagedLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock.CatwalkData;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock;
@@ -29,6 +30,8 @@ public class CIBlocks {
 	public static final Block CAGE_LAMP = register("cage_lamp", new CageLampBlock(BlockSettings.CAGE_LAMP));
 	public static final Block INDUSTRIAL_LADDER = register("industrial_ladder",
 			new IndustrialLadderBlock(BlockSettings.IRON_SCAFFOLDING));
+	public static final Block CAGED_LADDER = register("caged_ladder",
+			new CagedLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 
 	private static Block register(String name, Block entry) {
 		return Registry.register(Registry.BLOCK, id(name), entry);

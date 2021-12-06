@@ -1,12 +1,9 @@
 package com.github.reoseah.catwalksinc.blocks;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -14,58 +11,53 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Hand;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class IndustrialLadderBlock extends Block implements Waterloggable, Wrenchable {
+public class CagedLadderBlock extends Block implements Waterloggable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
+	public static final BooleanProperty EXTENSION = BooleanProperty.of("extension");
 
-	public static final VoxelShape[] OUTLINE_SHAPES = { //
-			Block.createCuboidShape(0, 0, 0, 16, 16, 4), //
-			Block.createCuboidShape(12, 0, 0, 16, 16, 16), //
-			Block.createCuboidShape(0, 0, 12, 16, 16, 16), //
-			Block.createCuboidShape(0, 0, 0, 4, 16, 16), //
-	};
+	public static final VoxelShape COLLISION_SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(),
+			Block.createCuboidShape(1, 0, 1, 15, 16, 15), BooleanBiFunction.ONLY_FIRST);
 
-	public static final VoxelShape[] COLLISION_SHAPES = { //
-			Block.createCuboidShape(0, 0, 0, 16, 16, 1), //
-			Block.createCuboidShape(15, 0, 0, 16, 16, 16), //
-			Block.createCuboidShape(0, 0, 15, 16, 16, 16), //
-			Block.createCuboidShape(0, 0, 0, 1, 16, 16), //
-	};
+	public static final VoxelShape[] EXTENSION_COLLISION_SHAPES;
+	static {
+		EXTENSION_COLLISION_SHAPES = new VoxelShape[4];
+		for (int i = 0; i < 4; i++) {
+			EXTENSION_COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(COLLISION_SHAPE,
+					IndustrialLadderBlock.COLLISION_SHAPES[i], BooleanBiFunction.ONLY_FIRST);
+		}
+	}
 
-	public IndustrialLadderBlock(Block.Settings settings) {
+	public CagedLadderBlock(Block.Settings settings) {
 		super(settings);
 		this.setDefaultState(this.getDefaultState() //
 				.with(FACING, Direction.NORTH) //
-				.with(WATERLOGGED, false));
+				.with(WATERLOGGED, false) //
+				.with(EXTENSION, false));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING, WATERLOGGED);
-	}
-
-	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return OUTLINE_SHAPES[state.get(FACING).getHorizontal()];
+		builder.add(FACING, WATERLOGGED, EXTENSION);
 	}
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return COLLISION_SHAPES[state.get(FACING).getHorizontal()];
+		return state.get(EXTENSION) ? EXTENSION_COLLISION_SHAPES[state.get(FACING).getHorizontal()] : COLLISION_SHAPE;
 	}
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+		BlockState state = this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+		return state.with(EXTENSION, this.shouldChangeToExtension(state, ctx.getWorld(), ctx.getBlockPos()));
 	}
 
 	@Override
@@ -79,13 +71,20 @@ public class IndustrialLadderBlock extends Block implements Waterloggable, Wrenc
 		if (state.get(WATERLOGGED)) {
 			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
+		state = state.with(EXTENSION, this.shouldChangeToExtension(state, world, pos));
+
 		return state;
 	}
 
-	@Override
-	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, @Nullable PlayerEntity player,
-			Hand hand, Vec3d hitPos) {
-		world.setBlockState(pos, state.cycle(FACING), 3);
-		return true;
+	private boolean shouldChangeToExtension(BlockState state, WorldAccess world, BlockPos pos) {
+		Direction supportDirection = state.get(FACING).getOpposite();
+		BlockPos supportPos = pos.offset(supportDirection);
+		BlockState support = world.getBlockState(supportPos);
+		if (support.getBlock()instanceof Catwalk catwalk
+				&& catwalk.canCatwalkConnect(support, world, supportPos, supportDirection.getOpposite())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

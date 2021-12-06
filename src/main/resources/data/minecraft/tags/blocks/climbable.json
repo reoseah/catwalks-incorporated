@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "catwalksinc:industrial_ladder"
+    "catwalksinc:industrial_ladder",
+    "catwalksinc:caged_ladder"
   ]
 }

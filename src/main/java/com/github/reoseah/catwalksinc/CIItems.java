@@ -20,6 +20,7 @@ public class CIItems {
 	public static final Item CATWALK = registerBlockItem(CIBlocks.CATWALK);
 	public static final Item CAGE_LAMP = registerBlockItem(CIBlocks.CAGE_LAMP);
 	public static final Item IRON_LADDER = registerBlockItem(CIBlocks.INDUSTRIAL_LADDER);
+	public static final Item CAGED_LADDER = registerBlockItem(CIBlocks.CAGED_LADDER);
 
 	public static final Item IRON_ROD = register("iron_rod",
 			new AliasedBlockItem(CIBlocks.IRON_BARS, defaultSettings()));

@@ -144,7 +144,8 @@ public class CatwalkBlock extends Block implements Waterloggable, BlockEntityPro
 			BlockState below = world.getBlockState(pos.offset(side).down());
 			Block blockBelow = below.getBlock();
 			if ((blockBelow instanceof LadderBlock //
-					|| blockBelow instanceof IndustrialLadderBlock)
+					|| blockBelow instanceof IndustrialLadderBlock //
+					|| blockBelow instanceof CagedLadderBlock) //
 					&& below.get(Properties.HORIZONTAL_FACING) == side) {
 				return false;
 			}
@@ -162,7 +163,9 @@ public class CatwalkBlock extends Block implements Waterloggable, BlockEntityPro
 						&& neighbor.getMaterial() != Material.AGGREGATE
 				// connect to cauldrons, they look pretty solid to me
 				|| block instanceof AbstractCauldronBlock
-				// connect to doors
+				// to caged ladders
+				|| block instanceof CagedLadderBlock
+				// to doors
 				|| block instanceof DoorBlock && neighbor.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
 			return false;
 		}
