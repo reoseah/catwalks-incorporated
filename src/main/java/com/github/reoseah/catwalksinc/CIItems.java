@@ -6,7 +6,6 @@ import com.github.reoseah.catwalksinc.items.WrenchItem;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Block;
-import net.minecraft.item.AliasedBlockItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -22,8 +21,7 @@ public class CIItems {
 	public static final Item IRON_LADDER = registerBlockItem(CIBlocks.INDUSTRIAL_LADDER);
 	public static final Item CAGED_LADDER = registerBlockItem(CIBlocks.CAGED_LADDER);
 
-	public static final Item IRON_ROD = register("iron_rod",
-			new AliasedBlockItem(CIBlocks.IRON_BARS, defaultSettings()));
+	public static final Item IRON_ROD = register("iron_rod", new Item(defaultSettings()));
 	public static final Item WRENCH = register("wrench", new WrenchItem(defaultSettings().maxDamage(256)));
 
 	private static Item registerBlockItem(Block block) {

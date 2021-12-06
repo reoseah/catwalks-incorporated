@@ -1,5 +1,9 @@
 {
   "parent": "block/block",
+  "textures": {
+    "particle": "catwalksinc:block/treadplate",
+    "texture": "catwalksinc:block/treadplate"
+  },
   "elements": [
     {   
       "from": [ 0, 1, 0 ],
@@ -9,9 +13,5 @@
         "down":  { "texture": "#texture" }
       }
     }
-  ],
-  "textures": {
-    "particle": "catwalksinc:block/treadplate",
-    "texture": "catwalksinc:block/treadplate"
-  }
+  ]
 }
