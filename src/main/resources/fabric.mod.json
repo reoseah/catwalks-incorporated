@@ -4,7 +4,12 @@
   "version": "${version}",
 
   "name": "Catwalks, Inc.",
-  "description": "Construction utilities & miscellanea",
+  "description": "Catwalks Inc. is a leading industrial provider of personnel foot-traffic solutions for the construction, manufacturing and mining industries.
+Our innovative solutions have been trusted by thousands of enterprises and millions of people for over 9000 years.
+Our solutions include:
+- Catwalks, also known as elevated walkways
+- Ladder systems, including caged and self-supported designs
+- Industrial Lightning",
   "authors": [
     "Reoseah"
   ],
@@ -13,8 +18,7 @@
     "sources": "https://github.com/Reoseah/catwalks-incorporated"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/catwalksinc/icon.png",
+  "license": "MIT",
 
   "environment": "*",
   "entrypoints": {
@@ -23,11 +27,11 @@
     ],
     "client": [
       "com.github.reoseah.catwalksinc.CatwalksIncClient"
+    ],
+    "rei_plugins": [
+      "com.github.reoseah.catwalksinc.rei.CatwalksIncREI"
     ]
   },
-  "mixins": [
-    "catwalksinc.mixins.json"
-  ],
 
   "depends": {
     "fabricloader": ">=0.11.3",
@@ -36,6 +40,5 @@
     "java": ">=17"
   },
   "suggests": {
-    "another-mod": "*"
   }
 }

@@ -2,15 +2,37 @@
   "itemGroup.catwalksinc.main": "Catwalks, Inc.",
   
   "block.catwalksinc.catwalk": "Catwalk",
+  "misc.catwalksinc.catwalk.info": "Pre-assembled catwalk section by Catwalks Inc.
+  
+Our customizable catwalk modules can transform into stairs to fit demands of your specific application.
+  
+Use with our Adjustable Wrench(r) technology tool for extended customization.
+  
+Catwalks, Inc. is a leading industrial provider of personnel foot-traffic solutions, also known as catwalks or elevated walkways. Our ACME-compliant catwalk systems provide cost-effective solutions for access to systems in material handling settings with improved observation, material handling and maintenance access capabilities. Our ACE OV9000-1 Grade 140 certified structural steel catwalks are compliant with ACME building requirements and intergalactical building codes while the slipperiness reduction technology(r) treadplate floor ensures flawless foot-traffic operation.",
   "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
   "block.catwalksinc.cage_lamp": "Cage Lamp",
+  "misc.catwalksinc.cage_lamp.info": "ACME-compliant industrial lightning module with the lifetime warranty.
+  
+Use our Adjustable Wrench tool to adjust lamp orientation.",
   "block.catwalksinc.industrial_ladder": "Industrial Ladder",
+  "misc.catwalksinc.industrial_ladder.info": "Pre-assembled industrial ladder section with self-supported design.
+  
+Use our Adjustable Wrench tool to adjust ladder orientation.",
   "block.catwalksinc.caged_ladder": "Caged Industrial Ladder",
+  "misc.catwalksinc.caged_ladder": "Industrial ladder section with enhanced work safety compliance.
+  
+Use our Adjustable Wrench tool to adjust ladder orientation.",
   
   "misc.catwalksinc.forced_handrail": "Handrail: Always",
   "misc.catwalksinc.forced_no_handrail": "Handrail: Never",
   "misc.catwalksinc.default_handrail": "Handrail: Auto",
     
   "item.catwalksinc.iron_rod": "Iron Bar",
-  "item.catwalksinc.wrench": "Adjustable Wrench"
+  "item.catwalksinc.wrench": "Adjustable Wrench",
+  "misc.catwalksinc.wrench.info": "A tool to adjust Catwalks' Inc. structural features.
+  
+Our patented Adjustable(r) technology allows you to instantly recognize systems that fit this wrench as long as you hold the wrench in your hand.
+
+Catwalks Inc. is not liable for any damage to structures or other entities that resulted from a misuse of our tooling."
+  
 }

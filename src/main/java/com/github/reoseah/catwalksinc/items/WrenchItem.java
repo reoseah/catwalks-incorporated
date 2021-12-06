@@ -10,12 +10,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -39,15 +41,14 @@ public class WrenchItem extends ToolItem {
 		World world = context.getWorld();
 		BlockPos pos = context.getBlockPos();
 		BlockState state = world.getBlockState(pos);
+		PlayerEntity player = context.getPlayer();
+		Hand hand = context.getHand();
 		if (state.getBlock()instanceof Wrenchable wrenchable //
-				&& wrenchable.useWrench(state, world, pos, context.getSide(), context.getPlayer(), context.getHand(),
-						context.getHitPos())) {
-			context.getStack().damage(1, context.getPlayer(), player -> {
-				player.sendToolBreakStatus(context.getHand());
-			});
-
+				&& wrenchable.useWrench(state, world, pos, context.getSide(), player, hand, context.getHitPos())) {
+			if (player != null) {
+				context.getStack().damage(1, player, p -> p.sendToolBreakStatus(hand));
+			}
 			return ActionResult.SUCCESS;
-
 		}
 		return super.useOnBlock(context);
 	}
