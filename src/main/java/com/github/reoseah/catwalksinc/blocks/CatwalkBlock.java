@@ -1,8 +1,5 @@
 package com.github.reoseah.catwalksinc.blocks;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.github.reoseah.catwalksinc.CIBlocks;
 
 import net.minecraft.block.AbstractCauldronBlock;
@@ -17,11 +14,10 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +29,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvider, Catwalk, Wrenchable {
+public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvider, Catwalk, Wrenchable, Paintable {
 	public static final BooleanProperty SOUTH_RAIL = Properties.SOUTH;
 	public static final BooleanProperty WEST_RAIL = Properties.WEST;
 	public static final BooleanProperty NORTH_RAIL = Properties.NORTH;
@@ -122,7 +118,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 	}
 
 	public boolean shouldHaveHandrail(BlockView world, BlockPos pos, Direction side) {
-		CatwalkData be = (CatwalkData) world.getBlockEntity(pos);
+		CatwalkBlockEntity be = (CatwalkBlockEntity) world.getBlockEntity(pos);
 		if (be != null) {
 			if (be.enforced.containsKey(side)) {
 				return be.enforced.get(side);
@@ -232,7 +228,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 
 	@Override
 	public boolean canCatwalkConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		CatwalkData be = (CatwalkData) world.getBlockEntity(pos);
+		CatwalkBlockEntity be = (CatwalkBlockEntity) world.getBlockEntity(pos);
 		if (be != null) {
 			return be.canConnect(side);
 		}
@@ -260,9 +256,9 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 			}
 		}
 
-		CatwalkData be = (CatwalkData) world.getBlockEntity(pos);
+		CatwalkBlockEntity be = (CatwalkBlockEntity) world.getBlockEntity(pos);
 		if (be == null) {
-			be = new CatwalkData(pos, state);
+			be = new CatwalkBlockEntity(pos, state);
 			world.addBlockEntity(be);
 		}
 
@@ -284,62 +280,27 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		return null;
 	}
 
-	public static class CatwalkData extends BlockEntity {
-		// true - forced handrail at that side
-		// false - forced no handrail
-		// no entry - default behavior
-		protected final Map<Direction, Boolean> enforced = new EnumMap<>(Direction.class);
-
-		public CatwalkData(BlockPos pos, BlockState state) {
-			super(CIBlocks.BlockEntityTypes.CATWALK, pos, state);
+	@Override
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+		// no super call
+		if (state.hasBlockEntity() && !(state.getBlock() instanceof CatwalkBlock)) {
+			world.removeBlockEntity(pos);
 		}
+	}
 
-		public BlockState onWrenched(Direction side, BlockState state, PlayerEntity player) {
-			if (!this.enforced.containsKey(side)) {
-				this.enforced.put(side, true);
-				player.sendMessage(new TranslatableText("misc.catwalksinc.forced_handrail"), true);
-				return state.with(sideToProperty(side), true);
-			} else if (this.enforced.get(side)) {
-				this.enforced.put(side, false);
-				player.sendMessage(new TranslatableText("misc.catwalksinc.forced_no_handrail"), true);
-				return state.with(sideToProperty(side), false);
-			} else {
-				this.enforced.remove(side);
-				player.sendMessage(new TranslatableText("misc.catwalksinc.default_handrail"), true);
-				return state.with(sideToProperty(side),
-						((CatwalkBlock) state.getBlock()).shouldHaveHandrail(this.world, this.pos, side));
-			}
-		}
+	@Override
+	public int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+		return 4;
+	}
 
-		public boolean canConnect(Direction side) {
-			return this.enforced.getOrDefault(side, false) != true;
-		}
-
-		public boolean canBeRemoved() {
-			return this.enforced.isEmpty();
-		}
-
-		@Override
-		public void readNbt(NbtCompound nbt) {
-			super.readNbt(nbt);
-			NbtCompound nbtEnforced = nbt.getCompound("Enforced");
-			for (Direction side : Direction.Type.HORIZONTAL) {
-				if (nbtEnforced.contains(side.toString())) {
-					this.enforced.put(side, nbtEnforced.getBoolean(side.toString()));
-				} else {
-					this.enforced.remove(side);
-				}
-			}
-		}
-
-		@Override
-		protected void writeNbt(NbtCompound nbt) {
-			super.writeNbt(nbt);
-			NbtCompound nbtEnforced = new NbtCompound();
-			for (Map.Entry<Direction, Boolean> entry : this.enforced.entrySet()) {
-				nbtEnforced.putBoolean(entry.getKey().toString(), entry.getValue());
-			}
-			nbt.put("Enforced", nbtEnforced);
-		}
+	@Override
+	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
+		world.setBlockState(pos, PaintedCatwalkBlock.ofColor(color).getDefaultState() //
+				.with(NORTH_RAIL, state.get(NORTH_RAIL)) //
+				.with(SOUTH_RAIL, state.get(SOUTH_RAIL)) //
+				.with(WEST_RAIL, state.get(WEST_RAIL)) //
+				.with(EAST_RAIL, state.get(EAST_RAIL)) //
+				.with(WATERLOGGED, state.get(WATERLOGGED)), //
+				3);
 	}
 }

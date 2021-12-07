@@ -3,6 +3,7 @@ package com.github.reoseah.catwalksinc;
 import static com.github.reoseah.catwalksinc.CatwalksInc.id;
 
 import com.github.reoseah.catwalksinc.items.PaintRollerItem;
+import com.github.reoseah.catwalksinc.items.PaintScraperItem;
 import com.github.reoseah.catwalksinc.items.WrenchItem;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -25,6 +26,8 @@ public class CIItems {
 
 	public static final Item IRON_ROD = register("iron_rod", new Item(defaultSettings()));
 	public static final Item WRENCH = register("wrench", new WrenchItem(defaultSettings().maxDamage(256)));
+	public static final Item PAINT_SCRAPER = register("paint_scraper",
+			new PaintScraperItem(defaultSettings().maxDamage(256)));
 	public static final Item PAINT_ROLLER = register("paint_roller", new Item(defaultSettings().maxCount(16)));
 	public static final Item YELLOW_PAINT_ROLLER = createPaintRoller(DyeColor.YELLOW);
 	public static final Item YELLOW_CATWALK = registerBlockItem(CIBlocks.YELLOW_CATWALK);

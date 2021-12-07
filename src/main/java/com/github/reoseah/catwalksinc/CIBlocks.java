@@ -5,9 +5,9 @@ import static com.github.reoseah.catwalksinc.CatwalksInc.id;
 import com.github.reoseah.catwalksinc.blocks.CageLampBlock;
 import com.github.reoseah.catwalksinc.blocks.CagedLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkBlock;
-import com.github.reoseah.catwalksinc.blocks.CatwalkBlock.CatwalkData;
+import com.github.reoseah.catwalksinc.blocks.CatwalkBlockEntity;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock;
-import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock.CatwalkStairsData;
+import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlockEntity;
 import com.github.reoseah.catwalksinc.blocks.IndustrialLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.PaintedCagedLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.PaintedCatwalkBlock;
@@ -66,13 +66,13 @@ public class CIBlocks {
 	}
 
 	public static class BlockEntityTypes {
-		public static final BlockEntityType<CatwalkData> CATWALK = register("catwalk",
-				FabricBlockEntityTypeBuilder.create(CatwalkData::new, //
+		public static final BlockEntityType<CatwalkBlockEntity> CATWALK = register("catwalk",
+				FabricBlockEntityTypeBuilder.create(CatwalkBlockEntity::new, //
 						CIBlocks.CATWALK, //
 						CIBlocks.YELLOW_CATWALK //
 				).build());
-		public static final BlockEntityType<CatwalkStairsData> CATWALK_STAIRS = register("catwalk_stairs",
-				FabricBlockEntityTypeBuilder.create(CatwalkStairsData::new, //
+		public static final BlockEntityType<CatwalkStairsBlockEntity> CATWALK_STAIRS = register("catwalk_stairs",
+				FabricBlockEntityTypeBuilder.create(CatwalkStairsBlockEntity::new, //
 						CIBlocks.CATWALK_STAIRS, //
 						CIBlocks.YELLOW_CATWALK_STAIRS //
 				).build());

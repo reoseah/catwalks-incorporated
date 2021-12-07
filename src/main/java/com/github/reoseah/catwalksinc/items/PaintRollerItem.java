@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.blocks.Paintable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -64,24 +65,24 @@ public class PaintRollerItem extends SimpleCustomDurabilityItem {
 			return ActionResult.SUCCESS;
 		}
 
-//        if (block instanceof PaintableBlock) {
-//            PaintableBlock paintable = (PaintableBlock) block;
-//
-//            if (paintable.canPaintBlock(this.color, state, world, pos)) {
-//                int amount = paintable.getPaintConsumption(this.color, state, world, pos);
-//                if (amount <= this.getCustomMaxDamage() - this.getDamage(context.getStack())) {
-//                    paintable.onPainted(this.color, state, world, pos);
-//
-//                    this.damage(context.getStack(), amount, context.getPlayer(), player -> {
-//                        player.sendToolBreakStatus(context.getHand());
-//                        player.setStackInHand(context.getHand(), new ItemStack(CUItems.PAINT_ROLLER));
-//                    });
-//
-//                    return ActionResult.SUCCESS;
-//                }
-//            }
-//            return ActionResult.FAIL;
-//        }
+        if (block instanceof Paintable) {
+            Paintable paintable = (Paintable) block;
+
+            if (paintable.canPaintBlock(this.color, state, world, pos)) {
+                int amount = paintable.getPaintConsumption(this.color, state, world, pos);
+                if (amount <= this.getCustomMaxDamage() - this.getDamage(context.getStack())) {
+                    paintable.paintBlock(this.color, state, world, pos);
+
+                    this.damage(context.getStack(), amount, context.getPlayer(), player -> {
+                        player.sendToolBreakStatus(context.getHand());
+                        player.setStackInHand(context.getHand(), new ItemStack(CIItems.PAINT_ROLLER));
+                    });
+
+                    return ActionResult.SUCCESS;
+                }
+            }
+            return ActionResult.FAIL;
+        }
 
 		if (block == Blocks.GLASS) {
 			world.setBlockState(pos, getStainedGlass(this.color).getDefaultState());

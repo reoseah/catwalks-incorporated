@@ -8,7 +8,7 @@ Our customizable catwalk modules can transform into stairs to fit demands of you
   
 Use with our Adjustable Wrench® technology tool for extended customization.
   
-Catwalks, Inc. is a leading industrial provider of personnel foot-traffic solutions, also known as catwalks or elevated walkways. Our ACME-compliant catwalk systems provide cost-effective solutions for access to systems in material handling settings with improved observation, material handling and maintenance access capabilities. Our ACE OV9000-1 Grade 140 certified structural steel catwalks are compliant with ACME building requirements and intergalactical building codes while the slipperiness reduction technology(r) treadplate floor ensures flawless foot-traffic operation.",
+Catwalks, Inc. is a leading industrial provider of personnel foot-traffic solutions, also known as catwalks or elevated walkways. Our ACME-compliant catwalk systems provide cost-effective solutions for access to systems in material handling settings with improved observation, material handling and maintenance access capabilities. Our ACE OV9000-1 Grade 143 certified structural steel catwalks are compliant with ACME building requirements and intergalactical building codes while the slipperiness reduction technology(r) treadplate floor ensures flawless foot-traffic operation.",
   "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
   "block.catwalksinc.cage_lamp": "Cage Lamp",
   "misc.catwalksinc.cage_lamp.info": "ACME-compliant industrial lightning module with the lifetime warranty and enhanced blast resistance¹.
@@ -39,6 +39,14 @@ Our patented Adjustable® technology allows you to instantly recognize systems t
 
 Catwalks Inc. is not liable for any damage to structures or other entities that resulted from a misuse of our tooling.",
 
+  "item.catwalksinc.paint_scraper": "Paint Scraper",
   "item.catwalksinc.paint_roller": "Paint Roller",
+  "misc.catwalksinc.paint_roller.info": "A tool that can paint blocks placed in world.
+
+Our custom-designed Dye Soft Balance® technology allows 100% pigment utilization on a multitude of surfaces.
+  
+However, only the following pigments have been authorized to use with Catwalks Inc. foot-traffic solutions:
+
+- Dandelion Yellow by Vanilla Limited",
   "misc.catwalksinc.yellow": "Yellow"
 }

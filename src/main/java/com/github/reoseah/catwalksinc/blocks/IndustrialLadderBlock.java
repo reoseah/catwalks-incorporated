@@ -10,6 +10,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -17,8 +18,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 
-public class IndustrialLadderBlock extends WaterloggableBlock implements Wrenchable {
+public class IndustrialLadderBlock extends WaterloggableBlock implements Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
 	public static final VoxelShape[] OUTLINE_SHAPES = { //
@@ -67,5 +69,18 @@ public class IndustrialLadderBlock extends WaterloggableBlock implements Wrencha
 			Hand hand, Vec3d hitPos) {
 		world.setBlockState(pos, state.cycle(FACING), 3);
 		return true;
+	}
+
+	@Override
+	public int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+		return 1;
+	}
+
+	@Override
+	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
+		world.setBlockState(pos, PaintedLadderBlock.ofColor(color).getDefaultState() //
+				.with(FACING, state.get(FACING)) //
+				.with(WATERLOGGED, state.get(WATERLOGGED)), //
+				3);
 	}
 }

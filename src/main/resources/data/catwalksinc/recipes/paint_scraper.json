@@ -1,20 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "# #",
-    "I I",
-    "###"
+    "I",
+    "B"
   ],
   "key": {
-    "#": {
+    "I": {
       "tag": "c:iron_ingots"
     },
-    "I": {
+    "B": {
       "tag": "c:iron_rods"
     }
   },
   "result": {
-    "item": "catwalksinc:catwalk",
-    "count": 8
+    "item": "catwalksinc:paint_scraper",
+    "count": 1
   }
 }
