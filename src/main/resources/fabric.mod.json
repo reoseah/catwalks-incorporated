@@ -19,6 +19,7 @@ Our solutions include:
   },
 
   "license": "MIT",
+  "icon": "assets/catwalksinc/icon.png",
 
   "environment": "*",
   "entrypoints": {

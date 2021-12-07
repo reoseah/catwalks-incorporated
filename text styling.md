@@ -24,6 +24,8 @@ ACE is steel standards provider. "ACE OV9000-1 Grade 140 certified structural st
 
 Salem H. - Catwalks Inc. industrial design leader, fixated on observation, produces (supervises) observation related designs.
 
+Vanilla Limited - vanilla content
+
 ## Catwalks Inc. "goals" / customers' needs:
 
 - pre-assembled catwalk sections (modules, systems, solutions...)
