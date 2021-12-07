@@ -11,6 +11,7 @@ import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock.CatwalkStairsDat
 import com.github.reoseah.catwalksinc.blocks.IndustrialLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.PaintedCagedLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.PaintedCatwalkBlock;
+import com.github.reoseah.catwalksinc.blocks.PaintedCatwalkStairsBlock;
 import com.github.reoseah.catwalksinc.blocks.PaintedLadderBlock;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -37,6 +38,8 @@ public class CIBlocks {
 
 	public static final Block YELLOW_CATWALK = register("yellow_catwalk",
 			new PaintedCatwalkBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
+	public static final Block YELLOW_CATWALK_STAIRS = register("yellow_catwalk_stairs",
+			new PaintedCatwalkStairsBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
 	public static final Block YELLOW_LADDER = register("yellow_ladder",
 			new PaintedLadderBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
 	public static final Block YELLOW_CAGED_LADDER = register("yellow_caged_ladder",
@@ -64,9 +67,15 @@ public class CIBlocks {
 
 	public static class BlockEntityTypes {
 		public static final BlockEntityType<CatwalkData> CATWALK = register("catwalk",
-				FabricBlockEntityTypeBuilder.create(CatwalkData::new, CIBlocks.CATWALK).build());
+				FabricBlockEntityTypeBuilder.create(CatwalkData::new, //
+						CIBlocks.CATWALK, //
+						CIBlocks.YELLOW_CATWALK //
+				).build());
 		public static final BlockEntityType<CatwalkStairsData> CATWALK_STAIRS = register("catwalk_stairs",
-				FabricBlockEntityTypeBuilder.create(CatwalkStairsData::new, CIBlocks.CATWALK_STAIRS).build());
+				FabricBlockEntityTypeBuilder.create(CatwalkStairsData::new, //
+						CIBlocks.CATWALK_STAIRS, //
+						CIBlocks.YELLOW_CATWALK_STAIRS //
+				).build());
 
 		private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> type) {
 			return Registry.register(Registry.BLOCK_ENTITY_TYPE, id(name), type);

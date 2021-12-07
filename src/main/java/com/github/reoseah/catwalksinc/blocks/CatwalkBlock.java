@@ -92,8 +92,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 				Block blockAtStairsExit = stateAtStairsExit.getBlock();
 				if (blockAtStairsExit instanceof Catwalk catwalk
 						&& catwalk.canCatwalkConnect(stateAtStairsExit, world, stairsExit, side.getOpposite())) {
-					return CIBlocks.CATWALK_STAIRS.getDefaultState() //
-							.with(CatwalkStairsBlock.FACING, side.getOpposite());
+					return this.convertToStairs(side);
 				}
 			}
 		}
@@ -105,6 +104,11 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 
 		return super.getPlacementState(ctx).with(SOUTH_RAIL, south).with(WEST_RAIL, west).with(NORTH_RAIL, north)
 				.with(EAST_RAIL, east);
+	}
+
+	protected BlockState convertToStairs(Direction facing) {
+		return CIBlocks.CATWALK_STAIRS.getDefaultState() //
+				.with(CatwalkStairsBlock.FACING, facing.getOpposite());
 	}
 
 	@Override

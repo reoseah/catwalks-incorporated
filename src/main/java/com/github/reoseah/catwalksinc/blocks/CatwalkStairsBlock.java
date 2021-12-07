@@ -16,7 +16,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
@@ -201,12 +200,12 @@ public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntit
 
 		DoubleBlockHalf half = state.get(HALF);
 		if (half == DoubleBlockHalf.LOWER && direction == Direction.UP) {
-			if (!newState.isOf(this) || newState.get(HALF) != DoubleBlockHalf.UPPER) {
+			if (!(newState.getBlock() instanceof CatwalkStairsBlock) || newState.get(HALF) != DoubleBlockHalf.UPPER) {
 				return Blocks.AIR.getDefaultState();
 			}
 		}
 		if (half == DoubleBlockHalf.UPPER && direction == Direction.DOWN) {
-			if (!newState.isOf(this) || newState.get(HALF) != DoubleBlockHalf.LOWER) {
+			if (!(newState.getBlock() instanceof CatwalkStairsBlock) || newState.get(HALF) != DoubleBlockHalf.LOWER) {
 				return Blocks.AIR.getDefaultState();
 			}
 		}
@@ -248,7 +247,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntit
 				&& upperNeighbor.getMaterial() != Material.AGGREGATE) {
 			return false;
 		}
-		if (neighbor.isOf(this)) {
+		if (neighbor.getBlock() instanceof CatwalkStairsBlock) {
 			if (neighbor.get(FACING) != state.get(FACING) //
 					|| neighbor.get(HALF) != state.get(HALF)) {
 				// stairs not matching - always have handrails

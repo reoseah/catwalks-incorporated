@@ -29,5 +29,6 @@ public class CatwalksInc implements ModInitializer {
 		// ensure static fields are initialized
 		CIItems.CATWALK.getClass();
 		CIBlocks.BlockEntityTypes.CATWALK.getClass();
+		CIRecipeSerializers.PAINTROLLER_FILLING.getClass();
 	}
 }
