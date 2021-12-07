@@ -21,8 +21,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -44,9 +42,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 
-public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEntityProvider, Catwalk, Wrenchable {
+public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntityProvider, Catwalk, Wrenchable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
-	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 	public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
 	public static final BooleanProperty RIGHT_RAIL = BooleanProperty.of("right");
@@ -54,19 +51,82 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 
 	private static final VoxelShape[][] OUTLINE_SHAPES;
 	private static final VoxelShape[][] COLLISION_SHAPES;
+	static {
+		OUTLINE_SHAPES = new VoxelShape[4][4];
+		COLLISION_SHAPES = new VoxelShape[4][4];
+
+		VoxelShape[] floors = {
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 8, 16, 9, 16),
+						Block.createCuboidShape(0, 16, 0, 16, 17, 8)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 9, 16),
+						Block.createCuboidShape(8, 16, 0, 16, 17, 16)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 16, 9, 8),
+						Block.createCuboidShape(0, 16, 8, 16, 17, 16)),
+				VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 9, 16),
+						Block.createCuboidShape(0, 16, 0, 8, 17, 16)) };
+
+		VoxelShape[] leftRails = {
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 8, 2, 24, 16),
+						Block.createCuboidShape(0, 16, 0, 2, 32, 8)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 24, 2),
+						Block.createCuboidShape(8, 16, 0, 16, 32, 2)),
+				VoxelShapes.union(Block.createCuboidShape(14, 8, 0, 16, 24, 8),
+						Block.createCuboidShape(14, 16, 8, 16, 32, 16)),
+				VoxelShapes.union(Block.createCuboidShape(8, 8, 14, 16, 24, 16),
+						Block.createCuboidShape(0, 16, 14, 8, 32, 16)) };
+		VoxelShape[] rightRails = {
+				VoxelShapes.union(Block.createCuboidShape(14, 8, 8, 16, 24, 16),
+						Block.createCuboidShape(14, 16, 0, 16, 32, 8)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 14, 8, 24, 16),
+						Block.createCuboidShape(8, 16, 14, 16, 32, 16)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 2, 24, 8),
+						Block.createCuboidShape(0, 16, 8, 2, 32, 16)),
+				VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 24, 2),
+						Block.createCuboidShape(0, 16, 0, 8, 32, 2)) };
+
+		VoxelShape[] leftRailsColl = {
+				VoxelShapes.union(Block.createCuboidShape(0.5, 8, 8, 1, 24, 16),
+						Block.createCuboidShape(0.5, 16, 0, 1, 32, 8)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 0.5, 8, 24, 1),
+						Block.createCuboidShape(8, 16, 0.5, 16, 32, 1)),
+				VoxelShapes.union(Block.createCuboidShape(15, 8, 0, 15.5, 24, 8),
+						Block.createCuboidShape(15, 16, 8, 15.5, 32, 16)),
+				VoxelShapes.union(Block.createCuboidShape(8, 8, 15, 16, 24, 15.5),
+						Block.createCuboidShape(0, 16, 15, 8, 32, 15.5)) };
+		VoxelShape[] rightRailsColl = {
+				VoxelShapes.union(Block.createCuboidShape(15, 8, 8, 15.5, 24, 16),
+						Block.createCuboidShape(15, 16, 0, 15.5, 32, 8)),
+				VoxelShapes.union(Block.createCuboidShape(0, 8, 15, 8, 24, 15.5),
+						Block.createCuboidShape(8, 16, 15, 16, 32, 15.5)),
+				VoxelShapes.union(Block.createCuboidShape(0.5, 8, 0, 1, 24, 8),
+						Block.createCuboidShape(0.5, 16, 8, 1, 32, 16)),
+				VoxelShapes.union(Block.createCuboidShape(8, 8, 0.5, 16, 24, 1),
+						Block.createCuboidShape(0, 16, 0.5, 8, 32, 1)) };
+
+		for (int i = 0; i < 4; i++) {
+			COLLISION_SHAPES[i][0] = OUTLINE_SHAPES[i][0] = floors[i];
+			OUTLINE_SHAPES[i][1] = VoxelShapes.union(floors[i], leftRails[i]);
+			OUTLINE_SHAPES[i][2] = VoxelShapes.union(floors[i], rightRails[i]);
+			OUTLINE_SHAPES[i][3] = VoxelShapes.union(floors[i], leftRails[i], rightRails[i]);
+
+			COLLISION_SHAPES[i][1] = VoxelShapes.union(floors[i], leftRailsColl[i]);
+			COLLISION_SHAPES[i][2] = VoxelShapes.union(floors[i], rightRailsColl[i]);
+			COLLISION_SHAPES[i][3] = VoxelShapes.union(floors[i], leftRailsColl[i], rightRailsColl[i]);
+		}
+	}
 
 	public CatwalkStairsBlock(Block.Settings settings) {
 		super(settings);
 		this.setDefaultState(this.getDefaultState() //
 				.with(FACING, Direction.NORTH) //
 				.with(HALF, DoubleBlockHalf.LOWER) //
-				.with(RIGHT_RAIL, true).with(LEFT_RAIL, true) //
-				.with(WATERLOGGED, false));
+				.with(RIGHT_RAIL, true).with(LEFT_RAIL, true));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING, HALF, RIGHT_RAIL, LEFT_RAIL, WATERLOGGED);
+		super.appendProperties(builder);
+		builder.add(FACING, HALF, RIGHT_RAIL, LEFT_RAIL);
 	}
 
 	@Override
@@ -94,13 +154,8 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 	}
 
 	@Override
-	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
-	}
-
-	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+		return super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
 	}
 
 	@Override
@@ -142,6 +197,8 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState,
 			WorldAccess world, BlockPos pos, BlockPos posFrom) {
+		state = super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
+
 		DoubleBlockHalf half = state.get(HALF);
 		if (half == DoubleBlockHalf.LOWER && direction == Direction.UP) {
 			if (!newState.isOf(this) || newState.get(HALF) != DoubleBlockHalf.UPPER) {
@@ -214,70 +271,6 @@ public class CatwalkStairsBlock extends Block implements Waterloggable, BlockEnt
 		return direction.getAxis().isHorizontal() && state2.getBlock() == this && state.get(FACING) == direction
 				&& state2.get(FACING) == direction.getOpposite() && state.get(HALF) == DoubleBlockHalf.LOWER
 				|| super.isSideInvisible(state, state2, direction);
-	}
-
-	static {
-		OUTLINE_SHAPES = new VoxelShape[4][4];
-		COLLISION_SHAPES = new VoxelShape[4][4];
-
-		VoxelShape[] floors = {
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 8, 16, 9, 16),
-						Block.createCuboidShape(0, 16, 0, 16, 17, 8)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 9, 16),
-						Block.createCuboidShape(8, 16, 0, 16, 17, 16)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 16, 9, 8),
-						Block.createCuboidShape(0, 16, 8, 16, 17, 16)),
-				VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 9, 16),
-						Block.createCuboidShape(0, 16, 0, 8, 17, 16)) };
-
-		VoxelShape[] leftRails = {
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 8, 2, 24, 16),
-						Block.createCuboidShape(0, 16, 0, 2, 32, 8)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 24, 2),
-						Block.createCuboidShape(8, 16, 0, 16, 32, 2)),
-				VoxelShapes.union(Block.createCuboidShape(14, 8, 0, 16, 24, 8),
-						Block.createCuboidShape(14, 16, 8, 16, 32, 16)),
-				VoxelShapes.union(Block.createCuboidShape(8, 8, 14, 16, 24, 16),
-						Block.createCuboidShape(0, 16, 14, 8, 32, 16)) };
-		VoxelShape[] rightRails = {
-				VoxelShapes.union(Block.createCuboidShape(14, 8, 8, 16, 24, 16),
-						Block.createCuboidShape(14, 16, 0, 16, 32, 8)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 14, 8, 24, 16),
-						Block.createCuboidShape(8, 16, 14, 16, 32, 16)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 2, 24, 8),
-						Block.createCuboidShape(0, 16, 8, 2, 32, 16)),
-				VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 24, 2),
-						Block.createCuboidShape(0, 16, 0, 8, 32, 2)) };
-
-		VoxelShape[] leftRailsColl = {
-				VoxelShapes.union(Block.createCuboidShape(0.5, 8, 8, 1, 24, 16),
-						Block.createCuboidShape(0.5, 16, 0, 1, 32, 8)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 0.5, 8, 24, 1),
-						Block.createCuboidShape(8, 16, 0.5, 16, 32, 1)),
-				VoxelShapes.union(Block.createCuboidShape(15, 8, 0, 15.5, 24, 8),
-						Block.createCuboidShape(15, 16, 8, 15.5, 32, 16)),
-				VoxelShapes.union(Block.createCuboidShape(8, 8, 15, 16, 24, 15.5),
-						Block.createCuboidShape(0, 16, 15, 8, 32, 15.5)) };
-		VoxelShape[] rightRailsColl = {
-				VoxelShapes.union(Block.createCuboidShape(15, 8, 8, 15.5, 24, 16),
-						Block.createCuboidShape(15, 16, 0, 15.5, 32, 8)),
-				VoxelShapes.union(Block.createCuboidShape(0, 8, 15, 8, 24, 15.5),
-						Block.createCuboidShape(8, 16, 15, 16, 32, 15.5)),
-				VoxelShapes.union(Block.createCuboidShape(0.5, 8, 0, 1, 24, 8),
-						Block.createCuboidShape(0.5, 16, 8, 1, 32, 16)),
-				VoxelShapes.union(Block.createCuboidShape(8, 8, 0.5, 16, 24, 1),
-						Block.createCuboidShape(0, 16, 0.5, 8, 32, 1)) };
-
-		for (int i = 0; i < 4; i++) {
-			COLLISION_SHAPES[i][0] = OUTLINE_SHAPES[i][0] = floors[i];
-			OUTLINE_SHAPES[i][1] = VoxelShapes.union(floors[i], leftRails[i]);
-			OUTLINE_SHAPES[i][2] = VoxelShapes.union(floors[i], rightRails[i]);
-			OUTLINE_SHAPES[i][3] = VoxelShapes.union(floors[i], leftRails[i], rightRails[i]);
-
-			COLLISION_SHAPES[i][1] = VoxelShapes.union(floors[i], leftRailsColl[i]);
-			COLLISION_SHAPES[i][2] = VoxelShapes.union(floors[i], rightRailsColl[i]);
-			COLLISION_SHAPES[i][3] = VoxelShapes.union(floors[i], leftRailsColl[i], rightRailsColl[i]);
-		}
 	}
 
 	@Override

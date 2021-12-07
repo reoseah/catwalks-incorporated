@@ -5,13 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Hand;
@@ -21,11 +17,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 
-public class IndustrialLadderBlock extends Block implements Waterloggable, Wrenchable {
+public class IndustrialLadderBlock extends WaterloggableBlock implements Wrenchable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
-	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
 	public static final VoxelShape[] OUTLINE_SHAPES = { //
 			Block.createCuboidShape(0, 0, 0, 16, 16, 4), //
@@ -44,13 +38,13 @@ public class IndustrialLadderBlock extends Block implements Waterloggable, Wrenc
 	public IndustrialLadderBlock(Block.Settings settings) {
 		super(settings);
 		this.setDefaultState(this.getDefaultState() //
-				.with(FACING, Direction.NORTH) //
-				.with(WATERLOGGED, false));
+				.with(FACING, Direction.NORTH));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(FACING, WATERLOGGED);
+		super.appendProperties(builder);
+		builder.add(FACING);
 	}
 
 	@Override
@@ -65,21 +59,7 @@ public class IndustrialLadderBlock extends Block implements Waterloggable, Wrenc
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
-	}
-
-	@Override
-	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
-	}
-
-	@Override
-	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState,
-			WorldAccess world, BlockPos pos, BlockPos posFrom) {
-		if (state.get(WATERLOGGED)) {
-			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-		}
-		return state;
+		return super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
 	}
 
 	@Override

@@ -1,11 +1,11 @@
 {
   "parent": "block/block",
   "textures": {
-    "front": "catwalksinc:block/industrial_ladder_front",
-    "side": "catwalksinc:block/industrial_ladder_side",
-    "cage": "catwalksinc:block/ladder_cage_extension",
-    "top": "catwalksinc:block/catwalk_top",
-    "particle": "catwalksinc:block/industrial_ladder_front"
+    "front": "catwalksinc:block/yellow_ladder_front",
+    "side": "catwalksinc:block/yellow_ladder_side",
+    "cage": "catwalksinc:block/yellow_ladder_cage_extension",
+    "top": "catwalksinc:block/yellow_catwalk_top",
+    "particle": "catwalksinc:block/yellow_ladder_front"
   },
   "elements": [
     {

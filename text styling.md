@@ -42,7 +42,9 @@ Salem H. - Catwalks Inc. industrial design leader, fixated on observation, produ
 
 - "improve observation capabilities"
 
-- "customize for operational needs and aesthetic preferences"
+- "customize for operational needs and esthetic preferences"
+
+- "superior level of durability (abrasion, corrosion resistance)"
 
 ## Other
 

@@ -1,20 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "# #",
-    "I I",
-    "###"
+    "ILI"
   ],
   "key": {
-    "#": {
-      "tag": "c:iron_ingots"
+    "L": {
+      "item": "catwalksinc:industrial_ladder"
     },
     "I": {
       "tag": "c:iron_rods"
     }
   },
   "result": {
-    "item": "catwalksinc:catwalk",
-    "count": 16
+    "item": "catwalksinc:caged_ladder",
+    "count": 1
   }
 }

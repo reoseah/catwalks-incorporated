@@ -1,37 +1,11 @@
 {
   "parent": "block/block",
   "textures": {
-    "front": "catwalksinc:block/industrial_ladder_front",
-    "side": "catwalksinc:block/industrial_ladder_side",
-    "cage": "catwalksinc:block/ladder_cage_extension",
-    "top": "catwalksinc:block/catwalk_top",
-    "particle": "catwalksinc:block/industrial_ladder_front"
+    "cage": "catwalksinc:block/yellow_ladder_cage_extension",
+    "top": "catwalksinc:block/yellow_catwalk_top",
+    "particle": "catwalksinc:block/yellow_ladder_cage_extension"
   },
   "elements": [
-    {
-      "from": [ 0, 0, 14 ],
-      "to": [ 16, 16, 14 ],
-      "faces": {
-        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#front" },
-        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#front" }
-      }
-    },
-    {
-      "from": [ 2, 0, 13 ],
-      "to": [ 2, 16, 16 ],
-      "faces": {
-        "east": { "uv": [ 0, 0, 3, 16 ], "texture": "#side" },
-        "west": { "uv": [ 13, 0, 16, 16 ], "texture": "#side" }
-      }
-    },
-    {
-      "from": [ 14, 0, 13 ],
-      "to": [ 14, 16, 16 ],
-      "faces": {
-        "east": { "uv": [ 0, 0, 3, 16 ], "texture": "#side" },
-        "west": { "uv": [ 13, 0, 16, 16 ], "texture": "#side" }
-      }
-    },
     {
       "from": [ 0, 0, 1 ],
       "to": [ 16, 16, 1 ],

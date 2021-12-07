@@ -9,6 +9,9 @@ import com.github.reoseah.catwalksinc.blocks.CatwalkBlock.CatwalkData;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock;
 import com.github.reoseah.catwalksinc.blocks.CatwalkStairsBlock.CatwalkStairsData;
 import com.github.reoseah.catwalksinc.blocks.IndustrialLadderBlock;
+import com.github.reoseah.catwalksinc.blocks.PaintedCagedLadderBlock;
+import com.github.reoseah.catwalksinc.blocks.PaintedCatwalkBlock;
+import com.github.reoseah.catwalksinc.blocks.PaintedLadderBlock;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -19,6 +22,7 @@ import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.registry.Registry;
 
 public class CIBlocks {
@@ -30,6 +34,13 @@ public class CIBlocks {
 			new IndustrialLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CAGED_LADDER = register("caged_ladder",
 			new CagedLadderBlock(BlockSettings.IRON_SCAFFOLDING));
+
+	public static final Block YELLOW_CATWALK = register("yellow_catwalk",
+			new PaintedCatwalkBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
+	public static final Block YELLOW_LADDER = register("yellow_ladder",
+			new PaintedLadderBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
+	public static final Block YELLOW_CAGED_LADDER = register("yellow_caged_ladder",
+			new PaintedCagedLadderBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
 
 	private static Block register(String name, Block entry) {
 		return Registry.register(Registry.BLOCK, id(name), entry);
@@ -45,6 +56,9 @@ public class CIBlocks {
 
 		private static final FabricBlockSettings CAGE_LAMP = FabricBlockSettings.copyOf(BlockSettings.IRON_SCAFFOLDING)
 				.luminance(state -> 14);
+
+		private static final FabricBlockSettings YELLOW_SCAFFOLDING = FabricBlockSettings
+				.copyOf(BlockSettings.IRON_SCAFFOLDING).mapColor(DyeColor.YELLOW);
 
 	}
 

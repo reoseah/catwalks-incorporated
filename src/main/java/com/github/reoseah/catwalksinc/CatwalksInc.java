@@ -7,10 +7,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 
 /**
- * TODO Make mod icon, description
- * 
- * TODO Add REI info to all complex items
- * 
  * TODO Add Crankwheel (lever with 16 states)
  * 
  * TODO Add sound to using wrench

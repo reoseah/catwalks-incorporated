@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "catwalksinc:item/paint_scraper"
+  }
+}

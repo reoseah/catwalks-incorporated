@@ -13,12 +13,9 @@ import net.minecraft.block.DoorBlock;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.StateManager;
@@ -36,12 +33,11 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CatwalkBlock extends Block implements Waterloggable, BlockEntityProvider, Catwalk, Wrenchable {
+public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvider, Catwalk, Wrenchable {
 	public static final BooleanProperty SOUTH_RAIL = Properties.SOUTH;
 	public static final BooleanProperty WEST_RAIL = Properties.WEST;
 	public static final BooleanProperty NORTH_RAIL = Properties.NORTH;
 	public static final BooleanProperty EAST_RAIL = Properties.EAST;
-	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
 	private static final VoxelShape[] OUTLINE_SHAPES;
 	private static final VoxelShape[] COLLISION_SHAPES;
@@ -50,13 +46,13 @@ public class CatwalkBlock extends Block implements Waterloggable, BlockEntityPro
 		super(settings);
 		this.setDefaultState(this.getDefaultState() //
 				.with(SOUTH_RAIL, true).with(WEST_RAIL, true) //
-				.with(NORTH_RAIL, true).with(EAST_RAIL, true) //
-				.with(WATERLOGGED, false));
+				.with(NORTH_RAIL, true).with(EAST_RAIL, true));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		builder.add(SOUTH_RAIL, EAST_RAIL, NORTH_RAIL, WEST_RAIL, WATERLOGGED);
+		super.appendProperties(builder);
+		builder.add(SOUTH_RAIL, EAST_RAIL, NORTH_RAIL, WEST_RAIL);
 	}
 
 	@Override
@@ -78,11 +74,6 @@ public class CatwalkBlock extends Block implements Waterloggable, BlockEntityPro
 		int i = (state.get(SOUTH_RAIL) ? 1 : 0) | (state.get(WEST_RAIL) ? 2 : 0) | (state.get(NORTH_RAIL) ? 4 : 0)
 				| (state.get(EAST_RAIL) ? 8 : 0);
 		return OUTLINE_SHAPES[i];
-	}
-
-	@Override
-	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
 	}
 
 	@Override
@@ -112,16 +103,14 @@ public class CatwalkBlock extends Block implements Waterloggable, BlockEntityPro
 		boolean north = this.shouldHaveHandrail(world, pos, Direction.NORTH);
 		boolean east = this.shouldHaveHandrail(world, pos, Direction.EAST);
 
-		return this.getDefaultState().with(SOUTH_RAIL, south).with(WEST_RAIL, west).with(NORTH_RAIL, north)
+		return super.getPlacementState(ctx).with(SOUTH_RAIL, south).with(WEST_RAIL, west).with(NORTH_RAIL, north)
 				.with(EAST_RAIL, east);
 	}
 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState,
 			WorldAccess world, BlockPos pos, BlockPos posFrom) {
-		if (state.get(WATERLOGGED)) {
-			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-		}
+		state = super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
 		if (direction.getAxis().isHorizontal()) {
 			return state.with(sideToProperty(direction), this.shouldHaveHandrail(world, pos, direction));
 		}

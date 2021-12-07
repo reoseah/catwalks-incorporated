@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "catwalksinc:item/yellow_paint_roller"
+  }
+}

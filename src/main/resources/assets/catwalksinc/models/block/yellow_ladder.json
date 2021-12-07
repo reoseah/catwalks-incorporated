@@ -1,0 +1,34 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "front": "catwalksinc:block/yellow_ladder_front",
+    "side": "catwalksinc:block/yellow_ladder_side",
+    "particle": "catwalksinc:block/yellow_ladder_front"
+  },
+  "elements": [
+    {
+      "from": [ 0, 0, 14 ],
+      "to": [ 16, 16, 14 ],
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#front" },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#front" }
+      }
+    },
+    {
+      "from": [ 2, 0, 13 ],
+      "to": [ 2, 16, 16 ],
+      "faces": {
+        "east": { "uv": [ 0, 0, 3, 16 ], "texture": "#side" },
+        "west": { "uv": [ 13, 0, 16, 16 ], "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 14, 0, 13 ],
+      "to": [ 14, 16, 16 ],
+      "faces": {
+        "east": { "uv": [ 0, 0, 3, 16 ], "texture": "#side" },
+        "west": { "uv": [ 13, 0, 16, 16 ], "texture": "#side" }
+      }
+    }
+  ]
+}
