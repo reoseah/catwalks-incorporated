@@ -32,6 +32,9 @@ Our solutions include:
       "com.github.reoseah.catwalksinc.rei.CatwalksIncREI"
     ]
   },
+  "mixins": [
+    "catwalksinc.mixins.json"
+  ],
 
   "depends": {
     "fabricloader": ">=0.11.3",
