@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "catwalksinc:catwalk",
+    "catwalksinc:catwalk_stairs",
+    "catwalksinc:industrial_ladder",
+    "catwalksinc:caged_ladder",
+    "catwalksinc:cage_lamp",
+    "catwalksinc:yellow_catwalk",
+    "catwalksinc:yellow_catwalk_stairs",
+    "catwalksinc:yellow_ladder",
+    "catwalksinc:yellow_caged_ladder"
+  ]
+}

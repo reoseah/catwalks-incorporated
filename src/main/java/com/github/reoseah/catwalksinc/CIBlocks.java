@@ -16,7 +16,6 @@ import com.github.reoseah.catwalksinc.blocks.PaintedLadderBlock;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
@@ -54,8 +53,7 @@ public class CIBlocks {
 				.of(Material.METAL, MapColor.GRAY) //
 				.strength(2F, 10F) //
 				.nonOpaque() //
-				.sounds(BlockSoundGroup.LANTERN) //
-				.breakByTool(FabricToolTags.PICKAXES);
+				.sounds(BlockSoundGroup.LANTERN);
 
 		private static final FabricBlockSettings CAGE_LAMP = FabricBlockSettings.copyOf(BlockSettings.IRON_SCAFFOLDING)
 				.luminance(state -> 14);

@@ -10,13 +10,13 @@
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "catwalks_inc:catwalk_stairs",
+              "block": "catwalksinc:yellow_catwalk_stairs",
               "properties": {
                 "half": "lower"
               }
             }
           ],
-          "name": "catwalks_inc:catwalk"
+          "name": "catwalksinc:yellow_catwalk"
         }
       ],
       "conditions": [
