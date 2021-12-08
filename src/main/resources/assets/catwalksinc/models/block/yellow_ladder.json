@@ -5,6 +5,14 @@
     "side": "catwalksinc:block/yellow_ladder_side",
     "particle": "catwalksinc:block/yellow_ladder_front"
   },
+  "gui_light": "front",
+  "display": {
+    "gui": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 1, 1, 1 ]
+    }
+  },
   "elements": [
     {
       "from": [ 0, 0, 14 ],
