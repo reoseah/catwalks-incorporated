@@ -1,3 +1,5 @@
+# Catwalks Inc
+
 Catwalks Inc. is a leading industrial provider of personnel foot-traffic solutions for the construction, manufacturing and mining industries.
 
 Our innovative solutions have been trusted by thousands of enterprises and millions of people for over 9000 years.
