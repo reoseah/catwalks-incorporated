@@ -2,13 +2,6 @@
   "itemGroup.catwalksinc.main": "Catwalks, Inc.",
   
   "block.catwalksinc.catwalk": "Catwalk",
-  "misc.catwalksinc.catwalk.info": "When placed, it connects automatically to neighbor catwalks, and also ladders, doors, gates and some other blocks.
-
-If the connected-to block is at the higher elevation, catwalk will convert into stairs. 
-  
-Also hand-rails will not be placed when touching solid blocks and certain devices like hoppers.
-
-Alternatively, each hand-rail can be enforced or disabled manually with Wrench.",
   "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
   "block.catwalksinc.cage_lamp": "Cage Lamp",
   "block.catwalksinc.industrial_ladder": "Metal Ladder",
@@ -23,5 +16,8 @@ Alternatively, each hand-rail can be enforced or disabled manually with Wrench."
   
   "item.catwalksinc.paint_scraper": "Paint Scraper",
   "item.catwalksinc.paint_roller": "Paint Roller",
+  "misc.catwalksinc.paint_roller.usage": "Combine with 1-4 dye in a crafting grid. 
+  
+Paint roller with dye can be cleaned by right-clicking on a cauldron with water.",
   "misc.catwalksinc.yellow": "Yellow"
 }

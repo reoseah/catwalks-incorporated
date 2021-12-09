@@ -2,8 +2,10 @@ package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.Side;
 
 import net.minecraft.block.BlockState;
@@ -14,34 +16,41 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
 public class CatwalkStairsBlockEntity extends BlockEntity {
-	// true - forced handrail at that side
-	// false - forced no handrail
-	// no entry - default behavior
-	protected final Map<Side, Boolean> enforced = new EnumMap<>(Side.class);
+	protected final Map<Side, Handrail> handrails = new EnumMap<>(Side.class);
 
 	public CatwalkStairsBlockEntity(BlockPos pos, BlockState state) {
 		super(CIBlocks.BlockEntityTypes.CATWALK_STAIRS, pos, state);
 	}
 
-	public BlockState onWrenched(Side side, BlockState state, PlayerEntity player) {
-		if (!this.enforced.containsKey(side)) {
-			this.enforced.put(side, true);
+	public BlockState useWrench(Side side, BlockState state, PlayerEntity player) {
+		this.markDirty();
+		if (!this.handrails.containsKey(side)) {
+			this.handrails.put(side, Handrail.ALWAYS);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_handrail"), true);
-			return state.with(CatwalkStairsBlock.sideToProperty(side), true);
-		} else if (this.enforced.get(side)) {
-			this.enforced.put(side, false);
+			return state.with(CatwalkStairsBlock.getHandrailProperty(side), true);
+		} else if (this.handrails.get(side) == Handrail.ALWAYS) {
+			this.handrails.put(side, Handrail.NEVER);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_no_handrail"), true);
-			return state.with(CatwalkStairsBlock.sideToProperty(side), false);
+			return state.with(CatwalkStairsBlock.getHandrailProperty(side), false);
 		} else {
-			this.enforced.remove(side);
+			this.handrails.remove(side);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.default_handrail"), true);
-			return state.with(CatwalkStairsBlock.sideToProperty(side), ((CatwalkStairsBlock) state.getBlock()).shouldHaveHandrail(
-					state, this.world, this.pos, CatwalkStairsBlock.sideToDirection(state.get(CatwalkStairsBlock.FACING), side), null));
+			return state.with(CatwalkStairsBlock.getHandrailProperty(side),
+					((CatwalkStairsBlock) state.getBlock()).shouldHaveHandrail(state, this.world, this.pos,
+							CatwalkStairsBlock.getSideDirection(state.get(CatwalkStairsBlock.FACING), side), null));
 		}
 	}
 
+	public Optional<Handrail> getHandrailState(Side side) {
+		return Optional.ofNullable(this.handrails.get(side));
+	}
+
+	public boolean isHandrailForced(Side side) {
+		return this.handrails.get(side) == Handrail.ALWAYS;
+	}
+
 	public boolean canBeRemoved() {
-		return this.enforced.isEmpty();
+		return this.handrails.isEmpty();
 	}
 
 	@Override
@@ -50,9 +59,9 @@ public class CatwalkStairsBlockEntity extends BlockEntity {
 		NbtCompound nbtEnforced = nbt.getCompound("Enforced");
 		for (Side side : Side.values()) {
 			if (nbtEnforced.contains(side.toString())) {
-				this.enforced.put(side, nbtEnforced.getBoolean(side.toString()));
+				this.handrails.put(side, Handrail.from(nbtEnforced.get(side.toString())));
 			} else {
-				this.enforced.remove(side);
+				this.handrails.remove(side);
 			}
 		}
 	}
@@ -61,8 +70,8 @@ public class CatwalkStairsBlockEntity extends BlockEntity {
 	protected void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
 		NbtCompound nbtEnforced = new NbtCompound();
-		for (Map.Entry<Side, Boolean> entry : this.enforced.entrySet()) {
-			nbtEnforced.putBoolean(entry.getKey().toString(), entry.getValue());
+		for (Map.Entry<Side, Handrail> entry : this.handrails.entrySet()) {
+			nbtEnforced.put(entry.getKey().toString(), entry.getValue().toTag());
 		}
 		nbt.put("Enforced", nbtEnforced);
 	}

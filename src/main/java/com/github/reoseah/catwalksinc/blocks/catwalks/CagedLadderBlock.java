@@ -27,7 +27,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CagedLadderBlock extends WaterloggableBlock implements Walkable, Wrenchable, Paintable {
+public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAccessible, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty EXTENSION = BooleanProperty.of("extension");
 
@@ -79,7 +79,7 @@ public class CagedLadderBlock extends WaterloggableBlock implements Walkable, Wr
 		BlockPos supportPos = pos.offset(supportDirection);
 		BlockState support = world.getBlockState(supportPos);
 		if (support.getBlock()instanceof Catwalk catwalk
-				&& catwalk.shouldDisableHandrail(support, world, supportPos, supportDirection.getOpposite())) {
+				&& catwalk.shouldCatwalksDisableHandrail(support, world, supportPos, supportDirection.getOpposite())) {
 			return true;
 		}
 		return false;
@@ -93,11 +93,6 @@ public class CagedLadderBlock extends WaterloggableBlock implements Walkable, Wr
 	}
 
 	@Override
-	public int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
-		return 2;
-	}
-
-	@Override
 	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
 		world.setBlockState(pos, PaintedCagedLadderBlock.ofColor(color).getDefaultState() //
 				.with(FACING, state.get(FACING)) //
@@ -106,7 +101,7 @@ public class CagedLadderBlock extends WaterloggableBlock implements Walkable, Wr
 	}
 
 	@Override
-	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		return state.get(FACING) == side;
+	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		return state.get(FACING) == side.getOpposite();
 	}
 }

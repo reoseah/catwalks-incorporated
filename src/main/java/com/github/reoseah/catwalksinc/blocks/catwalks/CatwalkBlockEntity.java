@@ -27,18 +27,15 @@ public class CatwalkBlockEntity extends BlockEntity {
 
 	public BlockState useWrench(Direction side, BlockState state, PlayerEntity player) {
 		this.markDirty();
-		switch (this.handrails.get(side)) {
-		default: {
+		if (!this.handrails.containsKey(side)) {
 			this.handrails.put(side, Handrail.ALWAYS);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_handrail"), true);
 			return state.cycle(CatwalkBlock.getHandrailProperty(side));
-		}
-		case ALWAYS: {
+		} else if (this.handrails.get(side) == Handrail.ALWAYS) {
 			this.handrails.put(side, Handrail.NEVER);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_no_handrail"), true);
 			return state.cycle(CatwalkBlock.getHandrailProperty(side));
-		}
-		case NEVER:
+		} else {
 			this.handrails.remove(side);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.default_handrail"), true);
 			return state.with(CatwalkBlock.getHandrailProperty(side),

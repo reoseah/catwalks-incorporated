@@ -24,7 +24,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class MetalLadderBlock extends WaterloggableBlock implements Walkable, Wrenchable, Paintable {
+public class MetalLadderBlock extends WaterloggableBlock implements CatwalkAccessible, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
 	public static final VoxelShape[] OUTLINE_SHAPES = { //
@@ -65,7 +65,8 @@ public class MetalLadderBlock extends WaterloggableBlock implements Walkable, Wr
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
+		return super.getPlacementState(ctx) //
+				.with(FACING, ctx.getPlayerFacing().getOpposite());
 	}
 
 	@Override
@@ -73,11 +74,6 @@ public class MetalLadderBlock extends WaterloggableBlock implements Walkable, Wr
 			Hand hand, Vec3d hitPos) {
 		world.setBlockState(pos, state.cycle(FACING), 3);
 		return true;
-	}
-
-	@Override
-	public int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
-		return 1;
 	}
 
 	@Override
@@ -89,7 +85,7 @@ public class MetalLadderBlock extends WaterloggableBlock implements Walkable, Wr
 	}
 
 	@Override
-	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(FACING) == side;
 	}
 }

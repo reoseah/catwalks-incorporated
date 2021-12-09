@@ -47,6 +47,11 @@ public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements Pai
 	}
 
 	@Override
+	public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+		return new ItemStack(PaintedCatwalkBlock.ofColor(this.color));
+	}
+
+	@Override
 	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
 		return false;
 	}
@@ -59,7 +64,7 @@ public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements Pai
 				.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
 				.with(WATERLOGGED, state.get(WATERLOGGED));
 
-		BlockPos lower = lowerHalfPos(state, pos);
+		BlockPos lower = getLowerHalfPos(state, pos);
 		world.setBlockState(lower, uncolored.with(HALF, DoubleBlockHalf.LOWER), 3);
 		world.setBlockState(lower.up(), uncolored.with(HALF, DoubleBlockHalf.UPPER), 3);
 	}

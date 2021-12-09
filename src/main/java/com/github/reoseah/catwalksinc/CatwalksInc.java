@@ -8,12 +8,20 @@ import net.minecraft.util.Identifier;
 
 /**
  * TODO Add Crankwheel (lever with 16 states)
- * 
+ *
  * TODO Add sound to using wrench
- * 
+ *
  * TODO Make arrows/projectiles go through ladders
- * 
+ *
  * FIXME Fix forced handrails desyncing after rejoining a world
+ *
+ * TODO disable Iron Rod recipe if Modern Industrialization is present
+ *
+ * TODO middle clicking catwalk stairs should select normal catwalk instead of doing nothing
+ *
+ * TODO break Cage Lamp when base is broken
+ *
+ * TODO refactor paint roller, get rid of SimpleCustomDurabilityItem
  */
 public class CatwalksInc implements ModInitializer {
 	public static final String MODID = "catwalksinc";

@@ -25,7 +25,19 @@ public class CatwalksIncREI implements REIClientPlugin {
 				return Optional.ofNullable(entry.getIdentifier()) //
 						.filter(id -> id.getNamespace().equals(CatwalksInc.MODID)) //
 						.map(id -> Util.createTranslationKey("misc",
-								new Identifier(id.getNamespace(), id.getPath() + ".info"))) //
+								new Identifier(id.getNamespace(), id.getPath() + ".usage"))) //
+						.filter(I18n::hasTranslation) //
+						.map(info -> DefaultInformationDisplay.createFromEntry(entry, entry.asFormatStrippedText())
+								.line(new TranslatableText(info)))
+						.map(ImmutableList::of);
+			}
+
+			@Override
+			public Optional<List<DefaultInformationDisplay>> getRecipeFor(EntryStack<?> entry) {
+				return Optional.ofNullable(entry.getIdentifier()) //
+						.filter(id -> id.getNamespace().equals(CatwalksInc.MODID)) //
+						.map(id -> Util.createTranslationKey("misc",
+								new Identifier(id.getNamespace(), id.getPath() + ".recipe"))) //
 						.filter(I18n::hasTranslation) //
 						.map(info -> DefaultInformationDisplay.createFromEntry(entry, entry.asFormatStrippedText())
 								.line(new TranslatableText(info)))

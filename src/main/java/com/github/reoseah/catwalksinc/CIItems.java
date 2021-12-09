@@ -20,9 +20,9 @@ public class CIItems {
 			() -> new ItemStack(CIItems.CATWALK));
 
 	public static final Item CATWALK = registerBlockItem(CIBlocks.CATWALK);
-	public static final Item CAGE_LAMP = registerBlockItem(CIBlocks.CAGE_LAMP);
 	public static final Item INDUSTRIAL_LADDER = registerBlockItem(CIBlocks.INDUSTRIAL_LADDER);
 	public static final Item CAGED_LADDER = registerBlockItem(CIBlocks.CAGED_LADDER);
+	public static final Item CAGE_LAMP = registerBlockItem(CIBlocks.CAGE_LAMP);
 
 	public static final Item IRON_ROD = register("iron_rod", new Item(defaultSettings()));
 	public static final Item WRENCH = register("wrench", new WrenchItem(defaultSettings().maxDamage(256)));

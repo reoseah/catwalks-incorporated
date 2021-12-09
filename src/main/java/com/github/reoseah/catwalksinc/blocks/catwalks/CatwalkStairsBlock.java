@@ -1,12 +1,15 @@
 package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.github.reoseah.catwalksinc.CIItems;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -119,7 +122,8 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 		this.setDefaultState(this.getDefaultState() //
 				.with(FACING, Direction.NORTH) //
 				.with(HALF, DoubleBlockHalf.LOWER) //
-				.with(RIGHT_RAIL, true).with(LEFT_RAIL, true));
+				.with(RIGHT_RAIL, true) //
+				.with(LEFT_RAIL, true));
 	}
 
 	@Override
@@ -210,59 +214,56 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 			}
 		}
 
-		Direction left = state.get(FACING).rotateYCounterclockwise();
-//		if (direction == left.getOpposite())
-		{
-			state = state.with(RIGHT_RAIL, this.shouldHaveHandrail(state, world, pos, left, Side.RIGHT));
+		Direction left = state.get(FACING).rotateYClockwise();
+		if (direction == left) {
+			state = state.with(LEFT_RAIL, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT));
 		}
-		Direction right = state.get(FACING).rotateYClockwise();
-//		if (direction == right.getOpposite()) 
-		{
-			state = state.with(LEFT_RAIL, this.shouldHaveHandrail(state, world, pos, right, Side.LEFT));
+		Direction right = state.get(FACING).rotateYCounterclockwise();
+		if (direction == right) {
+			state = state.with(RIGHT_RAIL, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
 		}
-		return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
-
+		return state;
 	}
 
-	boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, Side side) {
+	protected boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction,
+			Side side) {
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
 			pos = pos.down();
 			state = state.with(HALF, DoubleBlockHalf.LOWER);
 		}
 
-		CatwalkStairsBlockEntity be = (CatwalkStairsBlockEntity) world.getBlockEntity(pos);
-		if (be != null) {
-			if (be.enforced.containsKey(side)) {
-				return be.enforced.get(side);
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof CatwalkStairsBlockEntity catwalk) {
+			Optional<Handrail> handrail = catwalk.getHandrailState(side);
+			if (handrail.isPresent()) {
+				return handrail.get() == Handrail.ALWAYS ? true : false;
 			}
 		}
 
 		BlockState neighbor = world.getBlockState(pos.offset(direction));
+		BlockState above = world.getBlockState(pos.offset(direction).up());
 
-		BlockState upperNeighbor = world.getBlockState(pos.offset(direction).up());
 		if (neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite())
 				&& neighbor.getMaterial() != Material.AGGREGATE
-				&& upperNeighbor.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite())
-				&& upperNeighbor.getMaterial() != Material.AGGREGATE) {
+				&& above.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite())
+				&& above.getMaterial() != Material.AGGREGATE) {
 			return false;
 		}
 		if (neighbor.getBlock() instanceof CatwalkStairsBlock) {
 			if (neighbor.get(FACING) != state.get(FACING) //
 					|| neighbor.get(HALF) != state.get(HALF)) {
-				// stairs not matching - always have handrails
+				// stairs not matching
 				return true;
 			}
-			// if it looks stupid but it works...
-			CatwalkStairsBlockEntity neighborData = (CatwalkStairsBlockEntity) world
-					.getBlockEntity(pos.offset(direction));
-			if (neighborData != null) {
-				return neighborData.enforced.getOrDefault(side.opposite(), false);
-			}
-			return false;
+			BlockEntity otherbe = world.getBlockEntity(pos.offset(direction));
+			return otherbe instanceof CatwalkStairsBlockEntity catwalkbe
+					&& catwalkbe.isHandrailForced(side.getOpposite());
+
 		}
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Environment(EnvType.CLIENT)
 	@Override
 	public boolean isSideInvisible(BlockState state, BlockState state2, Direction direction) {
@@ -272,9 +273,12 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	}
 
 	@Override
-	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		return state.get(HALF) == DoubleBlockHalf.LOWER ? side == state.get(FACING)
-				: side == state.get(FACING).getOpposite();
+	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+			return side == state.get(FACING);
+		} else {
+			return side == state.get(FACING).getOpposite();
+		}
 	}
 
 	@Override
@@ -300,15 +304,14 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 			world.addBlockEntity(be);
 		}
 
-		double a = hitPos.getComponentAlongAxis(perpendicular);
-		int coord = pos.getComponentAlongAxis(perpendicular);
+		double relative = hitPos.getComponentAlongAxis(perpendicular) - pos.getComponentAlongAxis(perpendicular);
 
-		Side stairsSide = a - coord > 0.5 && facing.rotateYClockwise().getDirection() == AxisDirection.POSITIVE //
-				|| a - coord < 0.5 && facing.rotateYClockwise().getDirection() == AxisDirection.NEGATIVE //
+		Side stairsSide = facing.rotateYClockwise().getDirection() == AxisDirection.POSITIVE && relative > 0.5 //
+				|| facing.rotateYClockwise().getDirection() == AxisDirection.NEGATIVE && relative < 0.5 //
 						? Side.LEFT
 						: Side.RIGHT;
 
-		BlockState newState = be.onWrenched(stairsSide, state, player);
+		BlockState newState = be.useWrench(stairsSide, state, player);
 
 		world.setBlockState(pos, newState);
 		world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
@@ -328,39 +331,28 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 			return name().toLowerCase(Locale.ROOT);
 		}
 
-		public Side opposite() {
+		public Side getOpposite() {
 			return this == LEFT ? RIGHT : LEFT;
 		}
 	}
 
-	public static BooleanProperty sideToProperty(Side side) {
-		return side == Side.LEFT ? LEFT_RAIL : RIGHT_RAIL;
-	}
-
-	public static Direction sideToDirection(Direction facing, Side side) {
-		return side == Side.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
-	}
-
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		// we'll set block entity manually with world.addBlockEntity
-		// when we need it
-
-		// unfortunately currently it runs in some desync issues...
+		// we add block entity manually with world.addBlockEntity
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		// no super call
-		if (state.hasBlockEntity() && !(state.getBlock() instanceof CatwalkBlock)) {
-			world.removeBlockEntity(pos);
+		if (!(state.getBlock() instanceof CatwalkBlock)) {
+			super.onStateReplaced(state, world, pos, newState, moved);
 		}
 	}
 
 	@Override
-	public int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
-		return 4;
+	public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+		return new ItemStack(CIItems.CATWALK);
 	}
 
 	@Override
@@ -371,15 +363,23 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 				.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
 				.with(WATERLOGGED, state.get(WATERLOGGED));
 
-		BlockPos lower = lowerHalfPos(state, pos);
+		BlockPos lower = getLowerHalfPos(state, pos);
 		world.setBlockState(lower, colored.with(HALF, DoubleBlockHalf.LOWER), 3);
 		world.setBlockState(lower.up(), colored.with(HALF, DoubleBlockHalf.UPPER), 3);
 	}
 
-	protected static BlockPos lowerHalfPos(BlockState state, BlockPos pos) {
+	protected static BlockPos getLowerHalfPos(BlockState state, BlockPos pos) {
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
 			return pos.down();
 		}
 		return pos;
+	}
+
+	public static BooleanProperty getHandrailProperty(Side side) {
+		return side == Side.LEFT ? LEFT_RAIL : RIGHT_RAIL;
+	}
+
+	public static Direction getSideDirection(Direction facing, Side side) {
+		return side == Side.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
 	}
 }

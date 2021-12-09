@@ -140,13 +140,11 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 				.with(EAST_RAIL, this.shouldHaveHandrail(world, pos, Direction.EAST));
 	}
 
-	protected static Optional<Direction> findStairsUpDirection(BlockView world, BlockPos pos) {
+	protected static Optional<Direction> findStairsUpDirection(WorldAccess world, BlockPos pos) {
 		for (Direction facing : Direction.Type.HORIZONTAL) {
 			BlockPos exitPos = pos.up().offset(facing);
 			BlockState exitState = world.getBlockState(exitPos);
-			Block exitBlock = exitState.getBlock();
-			if (exitBlock instanceof Catwalk catwalk
-					&& catwalk.shouldDisableHandrail(exitState, world, exitPos, facing.getOpposite())) {
+			if (Catwalk.shouldConvertToStairsToConnect(exitState, world, exitPos, facing.getOpposite())) {
 				return Optional.of(facing);
 			}
 		}
@@ -204,6 +202,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (!(state.getBlock() instanceof CatwalkBlock)) {
@@ -212,7 +211,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 	}
 
 	@Override
-	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof CatwalkBlockEntity catwalk) {
 			return !catwalk.isHandrailForced(side);
