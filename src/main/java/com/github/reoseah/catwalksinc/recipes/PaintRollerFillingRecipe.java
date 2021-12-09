@@ -58,7 +58,7 @@ public class PaintRollerFillingRecipe extends SpecialCraftingRecipe {
 			if (paintrollerColor != color) {
 				return false;
 			}
-			int uses = item2.getCustomMaxDamage() - item2.getDamage(paintroller);
+			int uses = item2.getMaxPaint() - item2.getDamage(paintroller);
 			int maxAdded = 4 - (int) Math.ceil(uses / 8F);
 			if (dyes.size() > maxAdded) {
 				return false;
@@ -107,7 +107,7 @@ public class PaintRollerFillingRecipe extends SpecialCraftingRecipe {
 			if (paintrollerColor != color) {
 				return ItemStack.EMPTY;
 			}
-			int uses = item2.getCustomMaxDamage() - item2.getDamage(paintroller);
+			int uses = item2.getMaxPaint() - item2.getDamage(paintroller);
 			int maxAdded = 4 - (int) Math.ceil(uses / 8F);
 			if (dyes.size() > maxAdded) {
 				return ItemStack.EMPTY;
@@ -118,10 +118,10 @@ public class PaintRollerFillingRecipe extends SpecialCraftingRecipe {
 			PaintRollerItem resultItem = (PaintRollerItem) paintroller2.getItem();
 			int left = dyes.size() * 8;
 			if (item instanceof PaintRollerItem) {
-				resultItem.setDamage(paintroller2, resultItem.getCustomMaxDamage() - left
-						- resultItem.getCustomMaxDamage() + resultItem.getDamage(paintroller));
+				resultItem.setDamage(paintroller2, resultItem.getMaxPaint() - left
+						- resultItem.getMaxPaint() + resultItem.getDamage(paintroller));
 			} else {
-				resultItem.setDamage(paintroller2, resultItem.getCustomMaxDamage() - left);
+				resultItem.setDamage(paintroller2, resultItem.getMaxPaint() - left);
 
 			}
 			return paintroller2;
