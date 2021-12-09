@@ -31,7 +31,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -45,16 +44,42 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty EXTENSION = BooleanProperty.of("extension");
 
-	public static final VoxelShape COLLISION_SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(),
-			Block.createCuboidShape(1, 0, 1, 15, 16, 15), BooleanBiFunction.ONLY_FIRST);
-
-	public static final VoxelShape[] EXTENSION_COLLISION_SHAPES;
+	public static final VoxelShape[] OUTLINE_SHAPES = new VoxelShape[4];
+	public static final VoxelShape[] EXTENSION_OUTLINE_SHAPES = new VoxelShape[4];
 	static {
-		EXTENSION_COLLISION_SHAPES = new VoxelShape[4];
-		for (int i = 0; i < 4; i++) {
-			EXTENSION_COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(COLLISION_SHAPE,
-					MetalLadderBlock.COLLISION_SHAPES[i], BooleanBiFunction.ONLY_FIRST);
-		}
+		VoxelShape south = Block.createCuboidShape(0, 0, 0, 16, 16, 2);
+		VoxelShape west = Block.createCuboidShape(14, 0, 0, 16, 16, 16);
+		VoxelShape north = Block.createCuboidShape(0, 0, 14, 16, 16, 16);
+		VoxelShape east = Block.createCuboidShape(0, 0, 0, 2, 16, 16);
+
+		OUTLINE_SHAPES[0] = VoxelShapes.union(MetalLadderBlock.OUTLINE_SHAPES[0], west, north, east);
+		OUTLINE_SHAPES[1] = VoxelShapes.union(MetalLadderBlock.OUTLINE_SHAPES[1], south, north, east);
+		OUTLINE_SHAPES[2] = VoxelShapes.union(MetalLadderBlock.OUTLINE_SHAPES[2], south, west, east);
+		OUTLINE_SHAPES[3] = VoxelShapes.union(MetalLadderBlock.OUTLINE_SHAPES[3], south, west, north);
+
+		EXTENSION_OUTLINE_SHAPES[0] = VoxelShapes.union(west, north, east);
+		EXTENSION_OUTLINE_SHAPES[1] = VoxelShapes.union(south, north, east);
+		EXTENSION_OUTLINE_SHAPES[2] = VoxelShapes.union(south, west, east);
+		EXTENSION_OUTLINE_SHAPES[3] = VoxelShapes.union(south, west, north);
+	}
+
+	public static final VoxelShape[] COLLISION_SHAPES = new VoxelShape[4];
+	public static final VoxelShape[] EXTENSION_COLLISION_SHAPES = new VoxelShape[4];
+	static {
+		VoxelShape south = Block.createCuboidShape(0, 0, 0, 16, 16, 0.5);
+		VoxelShape west = Block.createCuboidShape(15.5, 0, 0, 16, 16, 16);
+		VoxelShape north = Block.createCuboidShape(0, 0, 15.5, 16, 16, 16);
+		VoxelShape east = Block.createCuboidShape(0, 0, 0, 0.5, 16, 16);
+
+		COLLISION_SHAPES[0] = VoxelShapes.union(MetalLadderBlock.COLLISION_SHAPES[0], west, north, east);
+		COLLISION_SHAPES[1] = VoxelShapes.union(MetalLadderBlock.COLLISION_SHAPES[1], south, north, east);
+		COLLISION_SHAPES[2] = VoxelShapes.union(MetalLadderBlock.COLLISION_SHAPES[2], south, west, east);
+		COLLISION_SHAPES[3] = VoxelShapes.union(MetalLadderBlock.COLLISION_SHAPES[3], south, west, north);
+
+		EXTENSION_COLLISION_SHAPES[0] = VoxelShapes.union(west, north, east);
+		EXTENSION_COLLISION_SHAPES[1] = VoxelShapes.union(south, north, east);
+		EXTENSION_COLLISION_SHAPES[2] = VoxelShapes.union(south, west, east);
+		EXTENSION_COLLISION_SHAPES[3] = VoxelShapes.union(south, west, north);
 	}
 
 	public CagedLadderBlock(Block.Settings settings) {
@@ -72,12 +97,14 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return state.get(EXTENSION) ? EXTENSION_COLLISION_SHAPES[state.get(FACING).getHorizontal()] : COLLISION_SHAPE;
+		int idx = state.get(FACING).getHorizontal();
+		return state.get(EXTENSION) ? EXTENSION_COLLISION_SHAPES[idx] : COLLISION_SHAPES[idx];
 	}
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return state.get(EXTENSION) ? EXTENSION_COLLISION_SHAPES[state.get(FACING).getHorizontal()] : COLLISION_SHAPE;
+		int idx = state.get(FACING).getHorizontal();
+		return state.get(EXTENSION) ? EXTENSION_OUTLINE_SHAPES[idx] : OUTLINE_SHAPES[idx];
 	}
 
 	@Override
@@ -130,7 +157,7 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 
 	@Override
 	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		return state.get(FACING) == side.getOpposite();
+		return state.get(FACING) == side;
 	}
 
 	public static class PaintedCagedLadderBlock extends CagedLadderBlock implements PaintScrapableBlock {
