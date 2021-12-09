@@ -259,13 +259,22 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 	}
 
 	@Override
+	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+		Block block = PaintedCatwalkBlock.ofColor(color);
+		return block != null;
+	}
+
+	@Override
 	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
-		world.setBlockState(pos, PaintedCatwalkBlock.ofColor(color).getDefaultState() //
-				.with(NORTH_RAIL, state.get(NORTH_RAIL)) //
-				.with(SOUTH_RAIL, state.get(SOUTH_RAIL)) //
-				.with(WEST_RAIL, state.get(WEST_RAIL)) //
-				.with(EAST_RAIL, state.get(EAST_RAIL)) //
-				.with(WATERLOGGED, state.get(WATERLOGGED)), //
-				3);
+		Block block = PaintedCatwalkBlock.ofColor(color);
+		if (block != null) {
+			world.setBlockState(pos, block.getDefaultState() //
+					.with(NORTH_RAIL, state.get(NORTH_RAIL)) //
+					.with(SOUTH_RAIL, state.get(SOUTH_RAIL)) //
+					.with(WEST_RAIL, state.get(WEST_RAIL)) //
+					.with(EAST_RAIL, state.get(EAST_RAIL)) //
+					.with(WATERLOGGED, state.get(WATERLOGGED)), //
+					3);
+		}
 	}
 }

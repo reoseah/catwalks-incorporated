@@ -19,5 +19,20 @@
   "misc.catwalksinc.paint_roller.usage": "Combine with 1-4 dye in a crafting grid. 
   
 Paint roller with dye can be cleaned by right-clicking on a cauldron with water.",
-  "misc.catwalksinc.yellow": "Yellow"
+  "misc.catwalksinc.white": "White",
+  "misc.catwalksinc.orange": "Orange",
+  "misc.catwalksinc.magenta": "Magenta",
+  "misc.catwalksinc.light_blue": "Light Blue",
+  "misc.catwalksinc.yellow": "Yellow",
+  "misc.catwalksinc.lime": "Lime",
+  "misc.catwalksinc.pink": "Pink",
+  "misc.catwalksinc.gray": "Gray",
+  "misc.catwalksinc.light_gray": "Light Gray",
+  "misc.catwalksinc.cyan": "Cyan",
+  "misc.catwalksinc.purple": "Purple",
+  "misc.catwalksinc.blue": "Blue",
+  "misc.catwalksinc.brown": "Brown",
+  "misc.catwalksinc.green": "Green",
+  "misc.catwalksinc.red": "Red",
+  "misc.catwalksinc.black": "Black"
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "catwalksinc:item/cyan_paint_roller"
+  }
+}

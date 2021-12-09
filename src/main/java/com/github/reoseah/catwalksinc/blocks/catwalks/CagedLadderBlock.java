@@ -93,11 +93,20 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 	}
 
 	@Override
+	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+		Block block = PaintedCatwalkBlock.ofColor(color);
+		return block != null;
+	}
+
+	@Override
 	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
-		world.setBlockState(pos, PaintedCagedLadderBlock.ofColor(color).getDefaultState() //
-				.with(FACING, state.get(FACING)) //
-				.with(WATERLOGGED, state.get(WATERLOGGED)), //
-				3);
+		Block block = PaintedCatwalkBlock.ofColor(color);
+		if (block != null) {
+			world.setBlockState(pos, block.getDefaultState() //
+					.with(FACING, state.get(FACING)) //
+					.with(WATERLOGGED, state.get(WATERLOGGED)), //
+					3);
+		}
 	}
 
 	@Override

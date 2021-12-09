@@ -356,16 +356,25 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	}
 
 	@Override
-	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
-		BlockState colored = PaintedCatwalkStairsBlock.ofColor(color).getDefaultState() //
-				.with(FACING, state.get(FACING)) //
-				.with(RIGHT_RAIL, state.get(RIGHT_RAIL)) //
-				.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
-				.with(WATERLOGGED, state.get(WATERLOGGED));
+	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+		Block block = PaintedCatwalkBlock.ofColor(color);
+		return block != null;
+	}
 
-		BlockPos lower = getLowerHalfPos(state, pos);
-		world.setBlockState(lower, colored.with(HALF, DoubleBlockHalf.LOWER), 3);
-		world.setBlockState(lower.up(), colored.with(HALF, DoubleBlockHalf.UPPER), 3);
+	@Override
+	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
+		Block block = PaintedCatwalkBlock.ofColor(color);
+		if (block != null) {
+			BlockState colored = block.getDefaultState() //
+					.with(FACING, state.get(FACING)) //
+					.with(RIGHT_RAIL, state.get(RIGHT_RAIL)) //
+					.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
+					.with(WATERLOGGED, state.get(WATERLOGGED));
+
+			BlockPos lower = getLowerHalfPos(state, pos);
+			world.setBlockState(lower, colored.with(HALF, DoubleBlockHalf.LOWER), 3);
+			world.setBlockState(lower.up(), colored.with(HALF, DoubleBlockHalf.UPPER), 3);
+		}
 	}
 
 	protected static BlockPos getLowerHalfPos(BlockState state, BlockPos pos) {
