@@ -14,6 +14,7 @@ import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 
 import net.fabricmc.api.EnvType;
@@ -401,7 +402,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 		return side == Side.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
 	}
 
-	public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements PaintScrapableBlock {
+	public static class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements PaintScrapableBlock {
 		protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
 
 		protected final DyeColor color;
