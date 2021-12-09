@@ -6,12 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
+import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.PaintedCatwalkStairsBlock;
+import com.github.reoseah.catwalksinc.util.WrenchHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -40,7 +42,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvider, Catwalk, Wrenchable, Paintable {
+public class CatwalkBlock extends WaterloggableBlock
+		implements BlockEntityProvider, CatwalkAccess, Wrenchable, Paintable {
 	public static final BooleanProperty SOUTH_RAIL = Properties.SOUTH;
 	public static final BooleanProperty WEST_RAIL = Properties.WEST;
 	public static final BooleanProperty NORTH_RAIL = Properties.NORTH;
@@ -62,6 +65,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		// collision shapes are only half-pixel thick
 		// otherwise you bump into edges of handrails too much
 		VoxelShape floorColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 1, 15.5);
+		
 		VoxelShape southColl = Block.createCuboidShape(0.5, 0, 15, 15.5, 16, 15.5);
 		VoxelShape westColl = Block.createCuboidShape(0.5, 0, 0.5, 1, 16, 15.5);
 		VoxelShape northColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 16, 1);
@@ -154,7 +158,9 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		for (Direction facing : Direction.Type.HORIZONTAL) {
 			BlockPos exitPos = pos.up().offset(facing);
 			BlockState exitState = world.getBlockState(exitPos);
-			if (Catwalk.shouldConvertToStairsToConnect(exitState, world, exitPos, facing.getOpposite())) {
+			if (exitState.getBlock()instanceof CatwalkAccess catwalk
+					&& catwalk.needsCatwalkConnectivity(exitState, world, pos, facing.getOpposite())
+					|| CatwalkHelper.hasBuiltinCatwalksConnectivity(exitState, world, exitPos, facing.getOpposite())) {
 				return Optional.of(facing);
 			}
 		}
@@ -201,9 +207,13 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		}
 
 		BlockPos neighborPos = pos.offset(side);
-		BlockState neighborState = world.getBlockState(neighborPos);
+		BlockState neighbor = world.getBlockState(neighborPos);
 
-		return !Catwalk.shouldDisableHandrail(neighborState, world, neighborPos, side.getOpposite());
+		if (neighbor.getBlock()instanceof CatwalkAccess accessible) {
+			return accessible.needsCatwalkAccess(neighbor, world, neighborPos, side);
+		}
+
+		return !CatwalkHelper.hasBuiltinCatwalksAccess(neighbor, world, neighborPos, side.getOpposite());
 	}
 
 	@Override
@@ -221,7 +231,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 	}
 
 	@Override
-	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof CatwalkBlockEntity catwalk) {
 			return !catwalk.isHandrailForced(side);
@@ -230,9 +240,14 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 	}
 
 	@Override
+	public boolean needsCatwalkConnectivity(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		return this.needsCatwalkAccess(state, world, pos, side);
+	}
+
+	@Override
 	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, PlayerEntity player,
 			Hand hand, Vec3d hitPos) {
-		Direction dir = getTargetedQuarter(pos, hitPos);
+		Direction dir = WrenchHelper.getTargetedQuarter(pos, hitPos);
 
 		CatwalkBlockEntity catwalk = (CatwalkBlockEntity) world.getBlockEntity(pos);
 		if (catwalk == null) {
@@ -247,25 +262,6 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		}
 
 		return true;
-	}
-
-	public static Direction getTargetedQuarter(BlockPos pos, Vec3d point) {
-		double dx = point.getX() - pos.getX();
-		double dz = point.getZ() - pos.getZ();
-
-		if (Math.abs(dx - 0.5) > Math.abs(dz - 0.5)) {
-			if (dx > 0.5) {
-				return Direction.EAST;
-			} else {
-				return Direction.WEST;
-			}
-		} else {
-			if (dz > 0.5) {
-				return Direction.SOUTH;
-			} else {
-				return Direction.NORTH;
-			}
-		}
 	}
 
 	@Override

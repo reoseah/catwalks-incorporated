@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
@@ -37,7 +38,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class MetalLadderBlock extends WaterloggableBlock implements CatwalkAccessible, Wrenchable, Paintable {
+public class MetalLadderBlock extends WaterloggableBlock implements CatwalkAccess, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
 	public static final VoxelShape[] OUTLINE_SHAPES = { //
@@ -107,7 +108,7 @@ public class MetalLadderBlock extends WaterloggableBlock implements CatwalkAcces
 	}
 
 	@Override
-	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(FACING) == side;
 	}
 

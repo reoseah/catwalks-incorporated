@@ -2,7 +2,6 @@ package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,12 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
+import com.github.reoseah.catwalksinc.util.Side;
+import com.github.reoseah.catwalksinc.util.WrenchHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -43,8 +45,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.Direction.AxisDirection;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -54,7 +54,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 
 public class CatwalkStairsBlock extends WaterloggableBlock
-		implements BlockEntityProvider, Catwalk, Wrenchable, Paintable {
+		implements BlockEntityProvider, CatwalkAccess, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
@@ -283,7 +283,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	}
 
 	@Override
-	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		if (state.get(HALF) == DoubleBlockHalf.LOWER) {
 			return side == state.get(FACING);
 		} else {
@@ -292,11 +292,13 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	}
 
 	@Override
+	public boolean needsCatwalkConnectivity(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		return this.needsCatwalkAccess(state, world, pos, side);
+	}
+
+	@Override
 	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, PlayerEntity player,
 			Hand hand, Vec3d hitPos) {
-		Direction facing = state.get(FACING);
-		Axis perpendicular = facing.rotateYClockwise().getAxis();
-
 		if (state.get(HALF) == DoubleBlockHalf.UPPER) {
 			pos = pos.down();
 			state = world.getBlockState(pos);
@@ -314,12 +316,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 			world.addBlockEntity(be);
 		}
 
-		double relative = hitPos.getComponentAlongAxis(perpendicular) - pos.getComponentAlongAxis(perpendicular);
-
-		Side stairsSide = facing.rotateYClockwise().getDirection() == AxisDirection.POSITIVE && relative > 0.5 //
-				|| facing.rotateYClockwise().getDirection() == AxisDirection.NEGATIVE && relative < 0.5 //
-						? Side.LEFT
-						: Side.RIGHT;
+		Side stairsSide = WrenchHelper.getBlockHalf(pos, hitPos, state.get(FACING));
 
 		BlockState newState = be.useWrench(stairsSide, state, player);
 
@@ -331,19 +328,6 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 		}
 
 		return true;
-	}
-
-	public enum Side {
-		LEFT, RIGHT;
-
-		@Override
-		public String toString() {
-			return name().toLowerCase(Locale.ROOT);
-		}
-
-		public Side getOpposite() {
-			return this == LEFT ? RIGHT : LEFT;
-		}
 	}
 
 	@Override

@@ -14,12 +14,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
 
-public interface Catwalk extends CatwalkAccessible {
-	static boolean shouldDisableHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction side) {
+public class CatwalkHelper {
+	public static boolean hasBuiltinCatwalksAccess(BlockState state, WorldAccess world, BlockPos pos, Direction side) {
 		Block block = state.getBlock();
-		if (block instanceof CatwalkAccessible walkable) {
-			return walkable.shouldCatwalksDisableHandrail(state, world, pos, side);
-		}
 		if (block instanceof DoorBlock) {
 			return state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
 		}
@@ -37,11 +34,9 @@ public interface Catwalk extends CatwalkAccessible {
 		return state.isSideSolidFullSquare(world, pos, side) && state.getMaterial() != Material.AGGREGATE;
 	}
 
-	static boolean shouldConvertToStairsToConnect(BlockState state, WorldAccess world, BlockPos pos, Direction side) {
+	public static boolean hasBuiltinCatwalksConnectivity(BlockState state, WorldAccess world, BlockPos pos,
+			Direction side) {
 		Block block = state.getBlock();
-		if (block instanceof Catwalk catwalk) {
-			return catwalk.shouldCatwalksDisableHandrail(state, world, pos, side);
-		}
 		if (block instanceof DoorBlock) {
 			return state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
 		}

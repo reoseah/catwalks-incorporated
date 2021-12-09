@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
-import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.Side;
+import com.github.reoseah.catwalksinc.util.Side;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

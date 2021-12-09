@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
@@ -40,7 +41,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAccessible, Wrenchable, Paintable {
+public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAccess, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty EXTENSION = BooleanProperty.of("extension");
 
@@ -75,6 +76,11 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 	}
 
 	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return state.get(EXTENSION) ? EXTENSION_COLLISION_SHAPES[state.get(FACING).getHorizontal()] : COLLISION_SHAPE;
+	}
+
+	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
 		BlockState state = this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
 		return state.with(EXTENSION, this.shouldChangeToExtension(state, ctx.getWorld(), ctx.getBlockPos()));
@@ -91,8 +97,8 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 		Direction supportDirection = state.get(FACING).getOpposite();
 		BlockPos supportPos = pos.offset(supportDirection);
 		BlockState support = world.getBlockState(supportPos);
-		if (support.getBlock()instanceof Catwalk catwalk
-				&& catwalk.shouldCatwalksDisableHandrail(support, world, supportPos, supportDirection.getOpposite())) {
+		if (support.getBlock()instanceof CatwalkAccess catwalk
+				&& catwalk.needsCatwalkConnectivity(support, world, supportPos, supportDirection.getOpposite())) {
 			return true;
 		}
 		return false;
@@ -123,7 +129,7 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 	}
 
 	@Override
-	public boolean shouldCatwalksDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(FACING) == side.getOpposite();
 	}
 
