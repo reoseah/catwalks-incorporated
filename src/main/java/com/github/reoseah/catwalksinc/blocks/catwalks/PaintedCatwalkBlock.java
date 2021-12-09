@@ -1,4 +1,4 @@
-package com.github.reoseah.catwalksinc.blocks;
+package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -8,7 +8,6 @@ import com.github.reoseah.catwalksinc.CIBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -19,12 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements PaintScrapableBlock {
+public class PaintedCatwalkBlock extends CatwalkBlock implements PaintScrapableBlock {
 	protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
 
 	protected final DyeColor color;
 
-	public PaintedCatwalkStairsBlock(DyeColor color, Block.Settings settings) {
+	public PaintedCatwalkBlock(DyeColor color, Block.Settings settings) {
 		super(settings);
 		this.color = color;
 		INSTANCES.put(color, this);
@@ -36,7 +35,7 @@ public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements Pai
 
 	@Override
 	public String getTranslationKey() {
-		return CIBlocks.CATWALK_STAIRS.getTranslationKey();
+		return CIBlocks.CATWALK.getTranslationKey();
 	}
 
 	@Override
@@ -46,20 +45,23 @@ public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements Pai
 	}
 
 	@Override
+	protected BlockState getMatchingStairs() {
+		return PaintedCatwalkStairsBlock.ofColor(this.color).getDefaultState();
+	}
+
+	@Override
 	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
 		return false;
 	}
 
 	@Override
 	public void scrapPaint(BlockState state, WorldAccess world, BlockPos pos) {
-		BlockState uncolored = CIBlocks.CATWALK_STAIRS.getDefaultState() //
-				.with(FACING, state.get(FACING)) //
-				.with(RIGHT_RAIL, state.get(RIGHT_RAIL)) //
-				.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
-				.with(WATERLOGGED, state.get(WATERLOGGED));
-
-		BlockPos lower = lowerHalfPos(state, pos);
-		world.setBlockState(lower, uncolored.with(HALF, DoubleBlockHalf.LOWER), 3);
-		world.setBlockState(lower.up(), uncolored.with(HALF, DoubleBlockHalf.UPPER), 3);
+		world.setBlockState(pos, CIBlocks.CATWALK.getDefaultState() //
+				.with(NORTH_RAIL, state.get(NORTH_RAIL)) //
+				.with(SOUTH_RAIL, state.get(SOUTH_RAIL)) //
+				.with(WEST_RAIL, state.get(WEST_RAIL)) //
+				.with(EAST_RAIL, state.get(EAST_RAIL)) //
+				.with(WATERLOGGED, state.get(WATERLOGGED)), //
+				3);
 	}
 }

@@ -47,6 +47,6 @@ public abstract class WaterloggableBlock extends Block implements Waterloggable 
 		if (state.get(WATERLOGGED).booleanValue()) {
 			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
-		return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+		return state;
 	}
 }

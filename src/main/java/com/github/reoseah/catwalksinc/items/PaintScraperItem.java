@@ -1,6 +1,6 @@
 package com.github.reoseah.catwalksinc.items;
 
-import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.PaintScrapableBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

@@ -1,14 +1,14 @@
-package com.github.reoseah.catwalksinc.blocks;
+package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
-import com.github.reoseah.catwalksinc.CIItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -19,12 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-public class PaintedLadderBlock extends IndustrialLadderBlock implements PaintScrapableBlock {
+public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements PaintScrapableBlock {
 	protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
 
 	protected final DyeColor color;
 
-	public PaintedLadderBlock(DyeColor color, Block.Settings settings) {
+	public PaintedCatwalkStairsBlock(DyeColor color, Block.Settings settings) {
 		super(settings);
 		this.color = color;
 		INSTANCES.put(color, this);
@@ -36,7 +36,7 @@ public class PaintedLadderBlock extends IndustrialLadderBlock implements PaintSc
 
 	@Override
 	public String getTranslationKey() {
-		return CIItems.INDUSTRIAL_LADDER.getTranslationKey();
+		return CIBlocks.CATWALK_STAIRS.getTranslationKey();
 	}
 
 	@Override
@@ -52,9 +52,14 @@ public class PaintedLadderBlock extends IndustrialLadderBlock implements PaintSc
 
 	@Override
 	public void scrapPaint(BlockState state, WorldAccess world, BlockPos pos) {
-		world.setBlockState(pos, CIBlocks.INDUSTRIAL_LADDER.getDefaultState() //
+		BlockState uncolored = CIBlocks.CATWALK_STAIRS.getDefaultState() //
 				.with(FACING, state.get(FACING)) //
-				.with(WATERLOGGED, state.get(WATERLOGGED)), //
-				3);
+				.with(RIGHT_RAIL, state.get(RIGHT_RAIL)) //
+				.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
+				.with(WATERLOGGED, state.get(WATERLOGGED));
+
+		BlockPos lower = lowerHalfPos(state, pos);
+		world.setBlockState(lower, uncolored.with(HALF, DoubleBlockHalf.LOWER), 3);
+		world.setBlockState(lower.up(), uncolored.with(HALF, DoubleBlockHalf.UPPER), 3);
 	}
 }

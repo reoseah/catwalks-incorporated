@@ -1,4 +1,4 @@
-package com.github.reoseah.catwalksinc.blocks;
+package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

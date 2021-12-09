@@ -1,4 +1,4 @@
-package com.github.reoseah.catwalksinc.blocks;
+package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -19,12 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-public class PaintedCagedLadderBlock extends CagedLadderBlock implements PaintScrapableBlock {
+public class PaintedLadderBlock extends IndustrialLadderBlock implements PaintScrapableBlock {
 	protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
 
 	protected final DyeColor color;
 
-	public PaintedCagedLadderBlock(DyeColor color, Block.Settings settings) {
+	public PaintedLadderBlock(DyeColor color, Block.Settings settings) {
 		super(settings);
 		this.color = color;
 		INSTANCES.put(color, this);
@@ -36,7 +36,7 @@ public class PaintedCagedLadderBlock extends CagedLadderBlock implements PaintSc
 
 	@Override
 	public String getTranslationKey() {
-		return CIItems.CAGED_LADDER.getTranslationKey();
+		return CIItems.INDUSTRIAL_LADDER.getTranslationKey();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class PaintedCagedLadderBlock extends CagedLadderBlock implements PaintSc
 
 	@Override
 	public void scrapPaint(BlockState state, WorldAccess world, BlockPos pos) {
-		world.setBlockState(pos, CIBlocks.CAGED_LADDER.getDefaultState() //
+		world.setBlockState(pos, CIBlocks.INDUSTRIAL_LADDER.getDefaultState() //
 				.with(FACING, state.get(FACING)) //
 				.with(WATERLOGGED, state.get(WATERLOGGED)), //
 				3);

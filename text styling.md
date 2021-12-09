@@ -12,7 +12,7 @@ The goal of text should still be achieved, e.g.:
 
 Nonsense flavor texts can be written after and only after the goal of text was achieved.
 
-## Repeated actors
+## Used planned/actors
 
 Catwalks Inc. is a leading catwalk manufacturer.
 
@@ -25,6 +25,8 @@ ACE is steel standards provider. "ACE OV9000-1 Grade 140 certified structural st
 Salem H. - Catwalks Inc. industrial design leader, fixated on observation, produces (supervises) observation related designs.
 
 Vanilla Limited - vanilla content
+
+Based Frog LLC - Curseforge
 
 ## Catwalks Inc. "goals" / customers' needs:
 

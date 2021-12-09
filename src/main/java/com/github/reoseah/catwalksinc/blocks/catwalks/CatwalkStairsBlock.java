@@ -1,8 +1,12 @@
-package com.github.reoseah.catwalksinc.blocks;
+package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import java.util.Locale;
 
 import org.jetbrains.annotations.Nullable;
+
+import com.github.reoseah.catwalksinc.blocks.Paintable;
+import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
+import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -268,7 +272,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	}
 
 	@Override
-	public boolean canCatwalkConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean canOthersConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(HALF) == DoubleBlockHalf.LOWER ? side == state.get(FACING)
 				: side == state.get(FACING).getOpposite();
 	}

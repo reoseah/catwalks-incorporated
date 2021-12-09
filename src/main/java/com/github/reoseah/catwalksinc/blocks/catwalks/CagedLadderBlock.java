@@ -1,6 +1,10 @@
-package com.github.reoseah.catwalksinc.blocks;
+package com.github.reoseah.catwalksinc.blocks.catwalks;
 
 import org.jetbrains.annotations.Nullable;
+
+import com.github.reoseah.catwalksinc.blocks.Paintable;
+import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
+import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -77,7 +81,7 @@ public class CagedLadderBlock extends WaterloggableBlock implements Wrenchable, 
 		BlockPos supportPos = pos.offset(supportDirection);
 		BlockState support = world.getBlockState(supportPos);
 		if (support.getBlock()instanceof Catwalk catwalk
-				&& catwalk.canCatwalkConnect(support, world, supportPos, supportDirection.getOpposite())) {
+				&& catwalk.canOthersConnect(support, world, supportPos, supportDirection.getOpposite())) {
 			return true;
 		} else {
 			return false;
