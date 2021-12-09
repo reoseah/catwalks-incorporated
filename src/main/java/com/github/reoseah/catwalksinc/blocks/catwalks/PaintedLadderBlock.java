@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 
-public class PaintedLadderBlock extends IndustrialLadderBlock implements PaintScrapableBlock {
+public class PaintedLadderBlock extends MetalLadderBlock implements PaintScrapableBlock {
 	protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
 
 	protected final DyeColor color;

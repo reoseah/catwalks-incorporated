@@ -8,7 +8,7 @@ import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlockEntity;
-import com.github.reoseah.catwalksinc.blocks.catwalks.IndustrialLadderBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedCagedLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedCatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedCatwalkStairsBlock;
@@ -31,7 +31,7 @@ public class CIBlocks {
 			new CatwalkStairsBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CAGE_LAMP = register("cage_lamp", new CageLampBlock(BlockSettings.CAGE_LAMP));
 	public static final Block INDUSTRIAL_LADDER = register("industrial_ladder",
-			new IndustrialLadderBlock(BlockSettings.IRON_SCAFFOLDING));
+			new MetalLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CAGED_LADDER = register("caged_ladder",
 			new CagedLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 

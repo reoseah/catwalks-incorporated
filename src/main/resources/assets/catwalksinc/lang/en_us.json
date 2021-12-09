@@ -2,51 +2,26 @@
   "itemGroup.catwalksinc.main": "Catwalks, Inc.",
   
   "block.catwalksinc.catwalk": "Catwalk",
-  "misc.catwalksinc.catwalk.info": "Pre-assembled catwalk section by Catwalks Inc.
+  "misc.catwalksinc.catwalk.info": "When placed, it connects automatically to neighbor catwalks, and also ladders, doors, gates and some other blocks.
+
+If the connected-to block is at the higher elevation, catwalk will convert into stairs. 
   
-Our customizable catwalk modules can transform into stairs to fit demands of your specific application.
-  
-Use with our Adjustable Wrench® technology tool for extended customization.
-  
-Catwalks, Inc. is a leading industrial provider of personnel foot-traffic solutions, also known as catwalks or elevated walkways. Our ACME-compliant catwalk systems provide cost-effective solutions for access to systems in material handling settings with improved observation, material handling and maintenance access capabilities. Our ACE OV9000-1 Grade 143 certified structural steel catwalks are compliant with ACME building requirements and intergalactical building codes while the slipperiness reduction technology(r) treadplate floor ensures flawless foot-traffic operation.",
+Also hand-rails will not be placed when touching solid blocks and certain devices like hoppers.
+
+Alternatively, each hand-rail can be enforced or disabled manually with Wrench.",
   "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
   "block.catwalksinc.cage_lamp": "Cage Lamp",
-  "misc.catwalksinc.cage_lamp.info": "ACME-compliant industrial lightning module with the lifetime warranty and enhanced blast resistance¹.
-  
-Use our Adjustable Wrench tool to adjust lamp orientation.
-
-¹ enhanced blast resistance is not guaranteed in case of lamp base surface structural failure.",
-  "block.catwalksinc.industrial_ladder": "Industrial Ladder",
-  "misc.catwalksinc.industrial_ladder.info": "Pre-assembled industrial ladder section with self-supported design.
-  
-Use our Adjustable Wrench tool to adjust ladder orientation.",
-  "block.catwalksinc.caged_ladder": "Caged Industrial Ladder",
-  "misc.catwalksinc.caged_ladder.info": "Industrial ladder section with enhanced worker safety cage.
-  
-ACME-555 compliant cage extension will be installed automatically when placing the ladder against a catwalk section.
-  
-Use our Adjustable Wrench tool to adjust ladder orientation.",
+  "block.catwalksinc.industrial_ladder": "Metal Ladder",
+  "block.catwalksinc.caged_ladder": "Caged Ladder",
   
   "misc.catwalksinc.forced_handrail": "Handrail: Always",
   "misc.catwalksinc.forced_no_handrail": "Handrail: Never",
   "misc.catwalksinc.default_handrail": "Handrail: Auto",
     
   "item.catwalksinc.iron_rod": "Iron Bar",
-  "item.catwalksinc.wrench": "Adjustable Wrench",
-  "misc.catwalksinc.wrench.info": "A tool to adjust Catwalks' Inc. structural features.
+  "item.catwalksinc.wrench": "Wrench",
   
-Our patented Adjustable® technology allows you to instantly recognize systems that fit this wrench as long as you hold the wrench in your hand.
-
-Catwalks Inc. is not liable for any damage to structures or other entities that resulted from a misuse of our tooling.",
-
   "item.catwalksinc.paint_scraper": "Paint Scraper",
   "item.catwalksinc.paint_roller": "Paint Roller",
-  "misc.catwalksinc.paint_roller.info": "A tool that can paint blocks placed in world.
-
-Our custom-designed Dye Soft Balance® technology allows 100% pigment utilization on a multitude of surfaces.
-  
-However, only the following pigments have been authorized to use with Catwalks Inc. foot-traffic solutions:
-
-• Dandelion Yellow by Vanilla Limited",
   "misc.catwalksinc.yellow": "Yellow"
 }

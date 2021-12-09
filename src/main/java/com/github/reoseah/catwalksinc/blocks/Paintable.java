@@ -15,10 +15,12 @@ public interface Paintable {
 	}
 
 	/**
-	 * @return 1 unit = 1/8 of a vanilla dye, since vanilla dyes 8 glass blocks with
-	 *         one dye
+	 * @return 1 unit = 1/8 of a vanilla dye, i.e. one dye item will allow to paint
+	 *         8 blocks
 	 */
-	int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos);
+	default int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+		return 1;
+	}
 
 	void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos);
 }

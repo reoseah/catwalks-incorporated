@@ -272,7 +272,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	}
 
 	@Override
-	public boolean canOthersConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
+	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(HALF) == DoubleBlockHalf.LOWER ? side == state.get(FACING)
 				: side == state.get(FACING).getOpposite();
 	}

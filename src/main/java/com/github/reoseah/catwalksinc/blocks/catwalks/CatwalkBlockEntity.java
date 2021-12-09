@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class CatwalkBlockEntity extends BlockEntity {
-	protected final Map<Direction, @Nullable ForcedHandrail> handrails = new EnumMap<>(Direction.class);
+	protected final Map<Direction, @Nullable Handrail> handrails = new EnumMap<>(Direction.class);
 
 	public CatwalkBlockEntity(BlockPos pos, BlockState state) {
 		super(CIBlocks.BlockEntityTypes.CATWALK, pos, state);
@@ -29,12 +29,12 @@ public class CatwalkBlockEntity extends BlockEntity {
 		this.markDirty();
 		switch (this.handrails.get(side)) {
 		default: {
-			this.handrails.put(side, ForcedHandrail.ALWAYS);
+			this.handrails.put(side, Handrail.ALWAYS);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_handrail"), true);
 			return state.cycle(CatwalkBlock.getHandrailProperty(side));
 		}
 		case ALWAYS: {
-			this.handrails.put(side, ForcedHandrail.NEVER);
+			this.handrails.put(side, Handrail.NEVER);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_no_handrail"), true);
 			return state.cycle(CatwalkBlock.getHandrailProperty(side));
 		}
@@ -46,12 +46,12 @@ public class CatwalkBlockEntity extends BlockEntity {
 		}
 	}
 
-	public Optional<ForcedHandrail> getHandrailState(Direction side) {
+	public Optional<Handrail> getHandrailState(Direction side) {
 		return Optional.ofNullable(this.handrails.get(side));
 	}
 
-	public boolean canOthersConnect(Direction side) {
-		return this.handrails.get(side) != ForcedHandrail.ALWAYS;
+	public boolean isHandrailForced(Direction side) {
+		return this.handrails.get(side) == Handrail.ALWAYS;
 	}
 
 	public boolean canBeRemoved() {
@@ -64,7 +64,7 @@ public class CatwalkBlockEntity extends BlockEntity {
 		NbtCompound nbtEnforced = nbt.getCompound("Enforced");
 		for (Direction side : Direction.Type.HORIZONTAL) {
 			if (nbtEnforced.contains(side.toString())) {
-				this.handrails.put(side, ForcedHandrail.from(nbtEnforced.get(side.toString())));
+				this.handrails.put(side, Handrail.from(nbtEnforced.get(side.toString())));
 			} else {
 				this.handrails.remove(side);
 			}
@@ -75,20 +75,20 @@ public class CatwalkBlockEntity extends BlockEntity {
 	protected void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
 		NbtCompound nbtEnforced = new NbtCompound();
-		for (Map.Entry<Direction, ForcedHandrail> entry : this.handrails.entrySet()) {
+		for (Map.Entry<Direction, Handrail> entry : this.handrails.entrySet()) {
 			nbtEnforced.put(entry.getKey().toString(), entry.getValue().toTag());
 		}
 		nbt.put("Enforced", nbtEnforced);
 	}
 
-	public enum ForcedHandrail {
+	public enum Handrail {
 		ALWAYS, NEVER;
 
 		public NbtElement toTag() {
 			return this == ALWAYS ? NbtByte.ONE : NbtByte.ZERO;
 		}
 
-		public static ForcedHandrail from(NbtElement nbt) {
+		public static Handrail from(NbtElement nbt) {
 			return NbtByte.ONE.equals(nbt) ? ALWAYS : NEVER;
 		}
 	}

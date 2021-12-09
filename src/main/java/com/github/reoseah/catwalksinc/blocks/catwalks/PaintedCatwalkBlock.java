@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
+import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

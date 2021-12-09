@@ -6,17 +6,13 @@ import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
-import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.ForcedHandrail;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 
-import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -61,10 +57,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		VoxelShape northColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 16, 1);
 		VoxelShape eastColl = Block.createCuboidShape(15, 0, 0.5, 15.5, 16, 15.5);
 
-		// used to cut out 4 squares from collision boxes
-		// corresponding to empty space in the texture
-		// this allows projectiles to shoot through catwalks sides
-		VoxelShape shootableThroughSpace = VoxelShapes.union( //
+		VoxelShape sidesCutout = VoxelShapes.union( //
 				Block.createCuboidShape(0, 2, 2, 16, 13, 14), //
 				Block.createCuboidShape(2, 2, 0, 14, 13, 16));
 
@@ -87,9 +80,8 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 				outline = VoxelShapes.union(outline, east);
 				collision = VoxelShapes.union(collision, eastColl);
 			}
-			OUTLINE_SHAPES[i] = outline;
-			COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(collision, shootableThroughSpace,
-					BooleanBiFunction.ONLY_FIRST);
+			OUTLINE_SHAPES[i] = VoxelShapes.combineAndSimplify(outline, sidesCutout, BooleanBiFunction.ONLY_FIRST);
+			COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(collision, sidesCutout, BooleanBiFunction.ONLY_FIRST);
 		}
 	}
 
@@ -133,10 +125,12 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getBlockPos();
 
-		Optional<Direction> stairsFacing = findStairsUpExit(world, pos);
-		if (stairsFacing.isPresent()) {
-			return this.getMatchingStairs() //
-					.with(CatwalkStairsBlock.FACING, stairsFacing.get().getOpposite());
+		if (world.getBlockState(pos.up()).isAir()) {
+			Optional<Direction> stairsFacing = findStairsUpDirection(world, pos);
+			if (stairsFacing.isPresent()) {
+				return this.getMatchingStairs() //
+						.with(CatwalkStairsBlock.FACING, stairsFacing.get().getOpposite());
+			}
 		}
 
 		return super.getPlacementState(ctx) //
@@ -146,16 +140,14 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 				.with(EAST_RAIL, this.shouldHaveHandrail(world, pos, Direction.EAST));
 	}
 
-	protected static Optional<Direction> findStairsUpExit(BlockView world, BlockPos pos) {
-		if (world.getBlockState(pos.up()).isAir()) {
-			for (Direction facing : Direction.Type.HORIZONTAL) {
-				BlockPos exitPos = pos.up().offset(facing);
-				BlockState exitState = world.getBlockState(exitPos);
-				Block exitBlock = exitState.getBlock();
-				if (exitBlock instanceof Catwalk catwalk
-						&& catwalk.canOthersConnect(exitState, world, exitPos, facing.getOpposite())) {
-					return Optional.of(facing);
-				}
+	protected static Optional<Direction> findStairsUpDirection(BlockView world, BlockPos pos) {
+		for (Direction facing : Direction.Type.HORIZONTAL) {
+			BlockPos exitPos = pos.up().offset(facing);
+			BlockState exitState = world.getBlockState(exitPos);
+			Block exitBlock = exitState.getBlock();
+			if (exitBlock instanceof Catwalk catwalk
+					&& catwalk.shouldDisableHandrail(exitState, world, exitPos, facing.getOpposite())) {
+				return Optional.of(facing);
 			}
 		}
 
@@ -177,41 +169,6 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		return state;
 	}
 
-	public boolean shouldHaveHandrail(BlockView world, BlockPos pos, Direction side) {
-		BlockEntity be = world.getBlockEntity(pos);
-		if (be instanceof CatwalkBlockEntity catwalk) {
-			Optional<ForcedHandrail> handrail = catwalk.getHandrailState(side);
-			if (handrail.isPresent()) {
-				return handrail.get() == ForcedHandrail.ALWAYS ? true : false;
-			}
-		}
-
-		BlockPos neighborPos = pos.offset(side);
-		BlockState neighborState = world.getBlockState(neighborPos);
-		Block neighbor = neighborState.getBlock();
-
-		// no fence to other catwalks
-		if (neighbor instanceof Walkable catwalk
-				&& catwalk.canOthersConnect(neighborState, world, neighborPos, side.getOpposite())
-				// no fence to ladders
-				|| neighbor instanceof IndustrialLadderBlock
-						&& neighborState.get(Properties.HORIZONTAL_FACING) == side.getOpposite()
-				// connect to most blocks with solid full sides
-				|| neighborState.isSideSolidFullSquare(world, neighborPos, side.getOpposite())
-						// except sand/gravel
-						&& neighborState.getMaterial() != Material.AGGREGATE
-				// connect to cauldrons, they look pretty solid to me
-				|| neighbor instanceof AbstractCauldronBlock
-				// to caged ladders
-				|| neighbor instanceof CagedLadderBlock
-				// to doors
-				|| neighbor instanceof DoorBlock && neighborState.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
-			return false;
-		}
-		// have handrail to everything by default
-		return true;
-	}
-
 	protected static BooleanProperty getHandrailProperty(Direction direction) {
 		switch (direction) {
 		case SOUTH:
@@ -226,11 +183,39 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		}
 	}
 
-	@Override
-	public boolean canOthersConnect(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		BlockEntity be = (BlockEntity) world.getBlockEntity(pos);
+	protected boolean shouldHaveHandrail(WorldAccess world, BlockPos pos, Direction side) {
+		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof CatwalkBlockEntity catwalk) {
-			return catwalk.canOthersConnect(side);
+			Optional<Handrail> handrail = catwalk.getHandrailState(side);
+			if (handrail.isPresent()) {
+				return handrail.get() == Handrail.ALWAYS ? true : false;
+			}
+		}
+
+		BlockPos neighborPos = pos.offset(side);
+		BlockState neighborState = world.getBlockState(neighborPos);
+
+		return !Catwalk.shouldDisableHandrail(neighborState, world, neighborPos, side.getOpposite());
+	}
+
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		// we add block entity manually with world.addBlockEntity
+		return null;
+	}
+
+	@Override
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+		if (!(state.getBlock() instanceof CatwalkBlock)) {
+			super.onStateReplaced(state, world, pos, newState, moved);
+		}
+	}
+
+	@Override
+	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof CatwalkBlockEntity catwalk) {
+			return !catwalk.isHandrailForced(side);
 		}
 		return true;
 	}
@@ -240,15 +225,15 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 			Hand hand, Vec3d hitPos) {
 		Direction dir = getTargetedQuarter(pos, hitPos);
 
-		CatwalkBlockEntity be = (CatwalkBlockEntity) world.getBlockEntity(pos);
-		if (be == null) {
-			be = new CatwalkBlockEntity(pos, state);
-			world.addBlockEntity(be);
+		CatwalkBlockEntity catwalk = (CatwalkBlockEntity) world.getBlockEntity(pos);
+		if (catwalk == null) {
+			catwalk = new CatwalkBlockEntity(pos, state);
+			world.addBlockEntity(catwalk);
 		}
 
-		world.setBlockState(pos, be.useWrench(dir, state, player));
+		world.setBlockState(pos, catwalk.useWrench(dir, state, player));
 
-		if (be.canBeRemoved()) {
+		if (catwalk.canBeRemoved()) {
 			world.removeBlockEntity(pos);
 		}
 
@@ -272,24 +257,6 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 				return Direction.NORTH;
 			}
 		}
-	}
-
-	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		// we add block entity manually with world.addBlockEntity
-		return null;
-	}
-
-	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if (!(state.getBlock() instanceof CatwalkBlock)) {
-			super.onStateReplaced(state, world, pos, newState, moved);
-		}
-	}
-
-	@Override
-	public int getPaintConsumption(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
-		return 4;
 	}
 
 	@Override

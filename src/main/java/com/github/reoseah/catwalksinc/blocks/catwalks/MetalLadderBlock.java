@@ -24,7 +24,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class IndustrialLadderBlock extends WaterloggableBlock implements Wrenchable, Paintable {
+public class MetalLadderBlock extends WaterloggableBlock implements Walkable, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 
 	public static final VoxelShape[] OUTLINE_SHAPES = { //
@@ -41,7 +41,7 @@ public class IndustrialLadderBlock extends WaterloggableBlock implements Wrencha
 			Block.createCuboidShape(0, 0, 0, 1, 16, 16), //
 	};
 
-	public IndustrialLadderBlock(Block.Settings settings) {
+	public MetalLadderBlock(Block.Settings settings) {
 		super(settings);
 		this.setDefaultState(this.getDefaultState() //
 				.with(FACING, Direction.NORTH));
@@ -86,5 +86,10 @@ public class IndustrialLadderBlock extends WaterloggableBlock implements Wrencha
 				.with(FACING, state.get(FACING)) //
 				.with(WATERLOGGED, state.get(WATERLOGGED)), //
 				3);
+	}
+
+	@Override
+	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		return state.get(FACING) == side;
 	}
 }

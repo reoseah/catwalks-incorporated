@@ -1,6 +1,6 @@
 ## General
 
-All user facing text is to be written in the particular style.
+Some user facing text is to be written in the particular style.
 
 This style mainly parodies corporative language, aggressive or manipulative marketing and legal disclaimers.
 
@@ -12,13 +12,13 @@ The goal of text should still be achieved, e.g.:
 
 Nonsense flavor texts can be written after and only after the goal of text was achieved.
 
-## Used planned/actors
+## Used/planned actors
 
 Catwalks Inc. is a leading catwalk manufacturer.
 
 ACME is construction standards provider. E.g.: "ACME building requirements", "ACME compliant catwalk systems".
 
-ACE is steel standards provider. "ACE OV9000-1 Grade 140 certified structural steel" is material from which catwalks are made.
+HAYO is material standards provider. "HAYO OV9000-1 Grade 140 certified structural steel" is material from which catwalks are made.
 
 "Intergalactical building codes" - some other building standards.
 

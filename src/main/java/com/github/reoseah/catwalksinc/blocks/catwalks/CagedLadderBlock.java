@@ -27,7 +27,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CagedLadderBlock extends WaterloggableBlock implements Wrenchable, Paintable {
+public class CagedLadderBlock extends WaterloggableBlock implements Walkable, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty EXTENSION = BooleanProperty.of("extension");
 
@@ -39,7 +39,7 @@ public class CagedLadderBlock extends WaterloggableBlock implements Wrenchable, 
 		EXTENSION_COLLISION_SHAPES = new VoxelShape[4];
 		for (int i = 0; i < 4; i++) {
 			EXTENSION_COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(COLLISION_SHAPE,
-					IndustrialLadderBlock.COLLISION_SHAPES[i], BooleanBiFunction.ONLY_FIRST);
+					MetalLadderBlock.COLLISION_SHAPES[i], BooleanBiFunction.ONLY_FIRST);
 		}
 	}
 
@@ -70,10 +70,8 @@ public class CagedLadderBlock extends WaterloggableBlock implements Wrenchable, 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState,
 			WorldAccess world, BlockPos pos, BlockPos posFrom) {
-		state = super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
-		state = state.with(EXTENSION, this.shouldChangeToExtension(state, world, pos));
-
-		return state;
+		super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
+		return state.with(EXTENSION, this.shouldChangeToExtension(state, world, pos));
 	}
 
 	private boolean shouldChangeToExtension(BlockState state, WorldAccess world, BlockPos pos) {
@@ -81,11 +79,10 @@ public class CagedLadderBlock extends WaterloggableBlock implements Wrenchable, 
 		BlockPos supportPos = pos.offset(supportDirection);
 		BlockState support = world.getBlockState(supportPos);
 		if (support.getBlock()instanceof Catwalk catwalk
-				&& catwalk.canOthersConnect(support, world, supportPos, supportDirection.getOpposite())) {
+				&& catwalk.shouldDisableHandrail(support, world, supportPos, supportDirection.getOpposite())) {
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -106,5 +103,10 @@ public class CagedLadderBlock extends WaterloggableBlock implements Wrenchable, 
 				.with(FACING, state.get(FACING)) //
 				.with(WATERLOGGED, state.get(WATERLOGGED)), //
 				3);
+	}
+
+	@Override
+	public boolean shouldDisableHandrail(BlockState state, BlockView world, BlockPos pos, Direction side) {
+		return state.get(FACING) == side;
 	}
 }
