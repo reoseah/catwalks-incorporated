@@ -1,24 +1,34 @@
 package com.github.reoseah.catwalksinc.blocks.catwalks;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
+import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.PaintedCatwalkStairsBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
@@ -269,6 +279,54 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 		Block block = PaintedCatwalkBlock.ofColor(color);
 		if (block != null) {
 			world.setBlockState(pos, block.getDefaultState() //
+					.with(NORTH_RAIL, state.get(NORTH_RAIL)) //
+					.with(SOUTH_RAIL, state.get(SOUTH_RAIL)) //
+					.with(WEST_RAIL, state.get(WEST_RAIL)) //
+					.with(EAST_RAIL, state.get(EAST_RAIL)) //
+					.with(WATERLOGGED, state.get(WATERLOGGED)), //
+					3);
+		}
+	}
+
+	public static class PaintedCatwalkBlock extends CatwalkBlock implements PaintScrapableBlock {
+		protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
+
+		protected final DyeColor color;
+
+		public PaintedCatwalkBlock(DyeColor color, Block.Settings settings) {
+			super(settings);
+			this.color = color;
+			INSTANCES.put(color, this);
+		}
+
+		public static Block ofColor(DyeColor color) {
+			return INSTANCES.get(color);
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return CIBlocks.CATWALK.getTranslationKey();
+		}
+
+		@Override
+		public void appendTooltip(ItemStack stack, BlockView world, List<Text> tooltip, TooltipContext options) {
+			super.appendTooltip(stack, world, tooltip, options);
+			tooltip.add(new TranslatableText("misc.catwalksinc." + this.color.asString()).formatted(Formatting.GRAY));
+		}
+
+		@Override
+		protected BlockState getMatchingStairs() {
+			return PaintedCatwalkStairsBlock.ofColor(this.color).getDefaultState();
+		}
+
+		@Override
+		public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+			return false;
+		}
+
+		@Override
+		public void scrapPaint(BlockState state, WorldAccess world, BlockPos pos) {
+			world.setBlockState(pos, CIBlocks.CATWALK.getDefaultState() //
 					.with(NORTH_RAIL, state.get(NORTH_RAIL)) //
 					.with(SOUTH_RAIL, state.get(SOUTH_RAIL)) //
 					.with(WEST_RAIL, state.get(WEST_RAIL)) //

@@ -1,11 +1,16 @@
 package com.github.reoseah.catwalksinc.blocks.catwalks;
 
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
@@ -21,6 +26,7 @@ import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -29,7 +35,10 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -390,5 +399,55 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 
 	public static Direction getSideDirection(Direction facing, Side side) {
 		return side == Side.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
+	}
+
+	public class PaintedCatwalkStairsBlock extends CatwalkStairsBlock implements PaintScrapableBlock {
+		protected static final Map<DyeColor, Block> INSTANCES = new EnumMap<>(DyeColor.class);
+
+		protected final DyeColor color;
+
+		public PaintedCatwalkStairsBlock(DyeColor color, Block.Settings settings) {
+			super(settings);
+			this.color = color;
+			INSTANCES.put(color, this);
+		}
+
+		public static Block ofColor(DyeColor color) {
+			return INSTANCES.get(color);
+		}
+
+		@Override
+		public String getTranslationKey() {
+			return CIBlocks.CATWALK_STAIRS.getTranslationKey();
+		}
+
+		@Override
+		public void appendTooltip(ItemStack stack, BlockView world, List<Text> tooltip, TooltipContext options) {
+			super.appendTooltip(stack, world, tooltip, options);
+			tooltip.add(new TranslatableText("misc.catwalksinc." + this.color.asString()).formatted(Formatting.GRAY));
+		}
+
+		@Override
+		public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+			return new ItemStack(PaintedCatwalkBlock.ofColor(this.color));
+		}
+
+		@Override
+		public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
+			return false;
+		}
+
+		@Override
+		public void scrapPaint(BlockState state, WorldAccess world, BlockPos pos) {
+			BlockState uncolored = CIBlocks.CATWALK_STAIRS.getDefaultState() //
+					.with(FACING, state.get(FACING)) //
+					.with(RIGHT_RAIL, state.get(RIGHT_RAIL)) //
+					.with(LEFT_RAIL, state.get(LEFT_RAIL)) //
+					.with(WATERLOGGED, state.get(WATERLOGGED));
+
+			BlockPos lower = getLowerHalfPos(state, pos);
+			world.setBlockState(lower, uncolored.with(HALF, DoubleBlockHalf.LOWER), 3);
+			world.setBlockState(lower.up(), uncolored.with(HALF, DoubleBlockHalf.UPPER), 3);
+		}
 	}
 }

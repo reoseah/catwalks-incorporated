@@ -4,15 +4,15 @@ import static com.github.reoseah.catwalksinc.CatwalksInc.id;
 
 import com.github.reoseah.catwalksinc.blocks.CageLampBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CagedLadderBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CagedLadderBlock.PaintedCagedLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.PaintedCatwalkStairsBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlockEntity;
 import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock;
-import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedCagedLadderBlock;
-import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedCatwalkBlock;
-import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedCatwalkStairsBlock;
-import com.github.reoseah.catwalksinc.blocks.catwalks.PaintedLadderBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock.PaintedLadderBlock;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
