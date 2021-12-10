@@ -11,7 +11,6 @@ import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
-import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.PaintedCatwalkStairsBlock;
 import com.github.reoseah.catwalksinc.util.WrenchHelper;
 
@@ -200,9 +199,9 @@ public class CatwalkBlock extends WaterloggableBlock
 	protected boolean shouldHaveHandrail(WorldAccess world, BlockPos pos, Direction side) {
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof CatwalkBlockEntity catwalk) {
-			Optional<Handrail> handrail = catwalk.getHandrailState(side);
+			Optional<ElementMode> handrail = catwalk.getHandrailState(side);
 			if (handrail.isPresent()) {
-				return handrail.get() == Handrail.ALWAYS ? true : false;
+				return handrail.get() == ElementMode.ALWAYS;
 			}
 		}
 
@@ -249,15 +248,15 @@ public class CatwalkBlock extends WaterloggableBlock
 			Hand hand, Vec3d hitPos) {
 		Direction dir = WrenchHelper.getTargetedQuarter(pos, hitPos);
 
-		CatwalkBlockEntity catwalk = (CatwalkBlockEntity) world.getBlockEntity(pos);
-		if (catwalk == null) {
-			catwalk = new CatwalkBlockEntity(pos, state);
-			world.addBlockEntity(catwalk);
+		CatwalkBlockEntity be = (CatwalkBlockEntity) world.getBlockEntity(pos);
+		if (be == null) {
+			be = new CatwalkBlockEntity(pos, state);
+			world.addBlockEntity(be);
 		}
 
-		world.setBlockState(pos, catwalk.useWrench(dir, state, player));
+		world.setBlockState(pos, be.useWrench(dir, state, player));
 
-		if (catwalk.canBeRemoved()) {
+		if (be.canBeRemoved()) {
 			world.removeBlockEntity(pos);
 		}
 

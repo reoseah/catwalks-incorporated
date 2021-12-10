@@ -12,6 +12,7 @@
   "misc.catwalksinc.default_handrail": "Handrail: Auto",
     
   "item.catwalksinc.iron_rod": "Iron Bar",
+  "item.catwalksinc.axle": "Axle",
   "item.catwalksinc.wrench": "Wrench",
   
   "item.catwalksinc.paint_scraper": "Paint Scraper",
@@ -34,5 +35,22 @@ Paint roller with dye can be cleaned by right-clicking on a cauldron with water.
   "misc.catwalksinc.brown": "Brown",
   "misc.catwalksinc.green": "Green",
   "misc.catwalksinc.red": "Red",
-  "misc.catwalksinc.black": "Black"
+  "misc.catwalksinc.black": "Black",
+  
+  "misc.catwalksinc.catwalk.usage": "When placed, it changes shape to match surroundings.
+  
+Catwalks connect other catwalks, most doors, ladders and some other blocks. If that block is one block above, and the space right above the catwalk is empty, it will transform into stairs.
+
+Also, catwalks will not have hand-rails in front of some interactable blocks, like hoppers and chests.
+
+This default connectivity can be overridden with Wrench. 
+
+For stairs, normal click cycles through hand-rail modes, while shift-click rotates the block.",
+  "misc.catwalksinc.caged_ladder.usage": "When placed, it changes shape to match surroundings.
+  
+If the block behind the ladder is a catwalk or another walkable block, the ladder will be disabled leaving just the cage.
+
+In other words, you can have just the cage extend one block over the ladder when placed against walkable block.
+
+Alternatively, you can enable or disable ladder element with Wrench. Use Wrench while sneaking to rotate the block instead."
 }

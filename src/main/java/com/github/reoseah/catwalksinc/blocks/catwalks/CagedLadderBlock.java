@@ -3,6 +3,7 @@ package com.github.reoseah.catwalksinc.blocks.catwalks;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -16,8 +17,10 @@ import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -40,7 +43,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAccess, Wrenchable, Paintable {
+public class CagedLadderBlock extends WaterloggableBlock
+		implements BlockEntityProvider, CatwalkAccess, Wrenchable, Paintable {
 	public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty EXTENSION = BooleanProperty.of("extension");
 
@@ -120,7 +124,15 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 		return state.with(EXTENSION, this.shouldChangeToExtension(state, world, pos));
 	}
 
-	private boolean shouldChangeToExtension(BlockState state, WorldAccess world, BlockPos pos) {
+	public boolean shouldChangeToExtension(BlockState state, WorldAccess world, BlockPos pos) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof CagedLadderBlockEntity ladder) {
+			Optional<ElementMode> mode = ladder.getLadderState();
+			if (mode.isPresent()) {
+				return mode.get() == ElementMode.ALWAYS;
+			}
+		}
+
 		Direction supportDirection = state.get(FACING).getOpposite();
 		BlockPos supportPos = pos.offset(supportDirection);
 		BlockState support = world.getBlockState(supportPos);
@@ -134,7 +146,23 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 	@Override
 	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, @Nullable PlayerEntity player,
 			Hand hand, Vec3d hitPos) {
-		world.setBlockState(pos, state.cycle(FACING), 3);
+		if (player.isSneaking()) {
+			world.setBlockState(pos, state.cycle(FACING), 3);
+			return true;
+		}
+
+		CagedLadderBlockEntity be = (CagedLadderBlockEntity) world.getBlockEntity(pos);
+		if (be == null) {
+			be = new CagedLadderBlockEntity(pos, state);
+			world.addBlockEntity(be);
+		}
+
+		world.setBlockState(pos, be.useWrench(state, player));
+
+		if (be.canBeRemoved()) {
+			world.removeBlockEntity(pos);
+		}
+
 		return true;
 	}
 
@@ -198,5 +226,10 @@ public class CagedLadderBlock extends WaterloggableBlock implements CatwalkAcces
 					.with(WATERLOGGED, state.get(WATERLOGGED)), //
 					3);
 		}
+	}
+
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return null;
 	}
 }

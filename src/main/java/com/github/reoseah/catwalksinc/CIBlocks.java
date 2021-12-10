@@ -74,6 +74,11 @@ public class CIBlocks {
 						CIBlocks.CATWALK_STAIRS, //
 						CIBlocks.YELLOW_CATWALK_STAIRS //
 				).build());
+		public static final BlockEntityType<CatwalkBlockEntity> CAGED_LADDER = register("caged_ladder",
+				FabricBlockEntityTypeBuilder.create(CatwalkBlockEntity::new, //
+						CIBlocks.CAGED_LADDER, //
+						CIBlocks.YELLOW_CAGED_LADDER //
+				).build());
 
 		private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> type) {
 			return Registry.register(Registry.BLOCK_ENTITY_TYPE, id(name), type);

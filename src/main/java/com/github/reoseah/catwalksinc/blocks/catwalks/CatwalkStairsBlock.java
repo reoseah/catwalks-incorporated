@@ -15,7 +15,6 @@ import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
-import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlockEntity.Handrail;
 import com.github.reoseah.catwalksinc.util.Side;
 import com.github.reoseah.catwalksinc.util.WrenchHelper;
 
@@ -244,9 +243,9 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof CatwalkStairsBlockEntity catwalk) {
-			Optional<Handrail> handrail = catwalk.getHandrailState(side);
+			Optional<ElementMode> handrail = catwalk.getHandrailState(side);
 			if (handrail.isPresent()) {
-				return handrail.get() == Handrail.ALWAYS ? true : false;
+				return handrail.get() == ElementMode.ALWAYS ? true : false;
 			}
 		}
 
