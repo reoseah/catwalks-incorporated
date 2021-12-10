@@ -98,6 +98,7 @@ public class CrankWheelBlock extends RotatableDecorationBlock {
 		return state;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (moved || state.isOf(newState.getBlock())) {
