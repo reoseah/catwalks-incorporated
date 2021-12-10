@@ -224,11 +224,13 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 		}
 
 		Direction left = state.get(FACING).rotateYClockwise();
-		if (direction == left) {
+//		if (direction == left) 
+		{
 			state = state.with(LEFT_RAIL, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT));
 		}
 		Direction right = state.get(FACING).rotateYCounterclockwise();
-		if (direction == right) {
+//		if (direction == right) 
+		{
 			state = state.with(RIGHT_RAIL, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
 		}
 		return state;

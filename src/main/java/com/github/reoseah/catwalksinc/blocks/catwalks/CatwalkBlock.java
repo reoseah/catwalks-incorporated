@@ -209,7 +209,7 @@ public class CatwalkBlock extends WaterloggableBlock
 		BlockState neighbor = world.getBlockState(neighborPos);
 
 		if (neighbor.getBlock()instanceof CatwalkAccess accessible) {
-			return !accessible.needsCatwalkAccess(neighbor, world, neighborPos, side);
+			return !accessible.needsCatwalkAccess(neighbor, world, neighborPos, side.getOpposite());
 		}
 
 		return !CatwalkHelper.hasBuiltinCatwalksAccess(neighbor, world, neighborPos, side.getOpposite());

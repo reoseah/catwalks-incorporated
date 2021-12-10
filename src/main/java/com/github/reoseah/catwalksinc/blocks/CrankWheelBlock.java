@@ -1,8 +1,10 @@
 package com.github.reoseah.catwalksinc.blocks;
 
+import com.github.reoseah.catwalksinc.util.Side;
+import com.github.reoseah.catwalksinc.util.WrenchHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LeverBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DustParticleEffect;
@@ -16,6 +18,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -60,7 +63,7 @@ public class CrankWheelBlock extends RotatableDecorationBlock {
 			}
 			return ActionResult.SUCCESS;
 		}
-		BlockState blockState = this.togglePower(state, world, pos);
+		BlockState blockState = this.togglePower(state, world, pos, hit, player);
 		float f = blockState.get(ROTATION) > 0 ? 0.6f : 0.5f;
 		world.playSound(null, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3f, f);
 		world.emitGameEvent(player, blockState.get(ROTATION) > 0 ? GameEvent.BLOCK_SWITCH : GameEvent.BLOCK_UNSWITCH,
@@ -77,11 +80,33 @@ public class CrankWheelBlock extends RotatableDecorationBlock {
 		world.addParticle(new DustParticleEffect(DustParticleEffect.RED, alpha), d, e, f, 0.0, 0.0, 0.0);
 	}
 
-	public BlockState togglePower(BlockState state, World world, BlockPos pos) {
-		state = state.cycle(ROTATION);
+	public BlockState togglePower(BlockState state, World world, BlockPos pos, BlockHitResult hitResult,
+			PlayerEntity player) {
+		Direction facing = state.get(FACING);
+		if (facing.getAxis() == Axis.Y) {
+			facing = player.getHorizontalFacing().getOpposite();
+		}
+		Side side = WrenchHelper.getBlockHalf(pos, hitResult.getPos(), facing);
+		if (side == Side.RIGHT) {
+			state = state.with(ROTATION, Math.min(15, state.get(ROTATION) + 1));
+		} else {
+			state = state.with(ROTATION, Math.max(0, state.get(ROTATION) - 1));
+		}
+
 		world.setBlockState(pos, state, Block.NOTIFY_ALL);
 		this.updateNeighbors(state, world, pos);
 		return state;
+	}
+
+	@Override
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+		if (moved || state.isOf(newState.getBlock())) {
+			return;
+		}
+		if (state.get(ROTATION) > 0) {
+			this.updateNeighbors(state, world, pos);
+		}
+		super.onStateReplaced(state, world, pos, newState, moved);
 	}
 
 	private void updateNeighbors(BlockState state, World world, BlockPos pos) {
