@@ -11,6 +11,9 @@
   "misc.catwalksinc.forced_handrail": "Handrail: Always",
   "misc.catwalksinc.forced_no_handrail": "Handrail: Never",
   "misc.catwalksinc.default_handrail": "Handrail: Auto",
+  "misc.catwalksinc.forced_ladder": "Ladder: Always",
+  "misc.catwalksinc.forced_no_ladder": "Ladder: Never",
+  "misc.catwalksinc.default_ladder": "Ladder: Auto",
     
   "item.catwalksinc.iron_rod": "Iron Bar",
   "item.catwalksinc.axle": "Axle",
