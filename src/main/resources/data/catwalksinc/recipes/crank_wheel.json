@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "INI",
+    " I "
+  ],
+  "key": {
+    "#": {
+      "tag": "c:iron_nuggets"
+    },
+    "I": {
+      "tag": "c:iron_rods"
+    }
+  },
+  "result": {
+    "item": "catwalksinc:crank_wheel",
+    "count": 1
+  }
+}
