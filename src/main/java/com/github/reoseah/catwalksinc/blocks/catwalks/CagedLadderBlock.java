@@ -185,7 +185,7 @@ public class CagedLadderBlock extends WaterloggableBlock
 
 	@Override
 	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		return state.get(FACING) == side;
+		return state.get(FACING) == side.getOpposite();
 	}
 
 	public static class PaintedCagedLadderBlock extends CagedLadderBlock implements PaintScrapableBlock {
