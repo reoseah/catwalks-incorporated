@@ -22,6 +22,9 @@ import net.minecraft.util.Identifier;
  * TODO break Cage Lamp when base is broken
  *
  * TODO refactor paint roller, get rid of SimpleCustomDurabilityItem
+ * 
+ * TODO add melting recipes for stuff back into iron
+ * - possible more efficient recipes if tech mods are available
  */
 public class CatwalksInc implements ModInitializer {
 	public static final String MODID = "catwalksinc";
