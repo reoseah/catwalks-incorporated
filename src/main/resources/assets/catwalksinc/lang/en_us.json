@@ -3,9 +3,10 @@
   
   "block.catwalksinc.catwalk": "Catwalk",
   "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
-  "block.catwalksinc.cage_lamp": "Cage Lamp",
   "block.catwalksinc.industrial_ladder": "Metal Ladder",
   "block.catwalksinc.caged_ladder": "Caged Ladder",
+  "block.catwalksinc.cage_lamp": "Cage Lamp",
+  "block.catwalksinc.crank_wheel": "Crank Wheel",
   
   "misc.catwalksinc.forced_handrail": "Handrail: Always",
   "misc.catwalksinc.forced_no_handrail": "Handrail: Never",
