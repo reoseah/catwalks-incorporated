@@ -9,6 +9,9 @@ Currently we provide following solutions:
 - Catwalks, also known as elevated walkways
 - Ladder systems, including caged and self-supported designs
 - Industrial Lightning
+- Crank Wheels
+
+Order now at [Curseforge](https://www.curseforge.com/minecraft/mc-mods/catwalks-inc)
 
 ## Setup
 
