@@ -53,5 +53,6 @@ If the block behind the ladder is a catwalk or another walkable block, the ladde
 
 In other words, you can have just the cage extend one block over the ladder when placed against walkable block.
 
-Alternatively, you can enable or disable ladder element with Wrench. Use Wrench while sneaking to rotate the block instead."
+Alternatively, you can enable or disable ladder element with Wrench. Use Wrench while sneaking to rotate the block instead.",
+  "misc.catwalksinc.crank_wheel.usage": "Can output arbitrary redstone level. Use left side to decrease level by one, right side to increase by one."
 }
