@@ -1,5 +1,6 @@
 package com.github.reoseah.catwalksinc.items;
 
+import com.github.reoseah.catwalksinc.CISounds;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -16,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -48,6 +51,9 @@ public class WrenchItem extends ToolItem {
 			if (player != null) {
 				context.getStack().damage(1, player, p -> p.sendToolBreakStatus(hand));
 			}
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), CISounds.WRENCH_USE,
+					SoundCategory.PLAYERS, 1.0f, 1.0f / (world.getRandom().nextFloat() * 0.4f + 1.2f));
+
 			return ActionResult.SUCCESS;
 		}
 		return super.useOnBlock(context);

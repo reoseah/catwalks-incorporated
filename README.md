@@ -16,3 +16,9 @@ Order now at [Curseforge](https://www.curseforge.com/minecraft/mc-mods/catwalks-
 ## Setup
 
 For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+
+## Sound Credits
+
+Below sounds are used under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/) or [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/):
+
+- wrench use https://freesound.org/people/yfjesse/sounds/131200/
