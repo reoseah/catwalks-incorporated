@@ -1,5 +1,6 @@
 package com.github.reoseah.catwalksinc.blocks;
 
+import com.github.reoseah.catwalksinc.CISounds;
 import com.github.reoseah.catwalksinc.util.Side;
 import com.github.reoseah.catwalksinc.util.WrenchHelper;
 
@@ -64,10 +65,12 @@ public class CrankWheelBlock extends RotatableDecorationBlock {
 			return ActionResult.SUCCESS;
 		}
 		BlockState blockState = this.togglePower(state, world, pos, hit, player);
-		float f = blockState.get(ROTATION) > 0 ? 0.6f : 0.5f;
-		world.playSound(null, pos, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3f, f);
-		world.emitGameEvent(player, blockState.get(ROTATION) > 0 ? GameEvent.BLOCK_SWITCH : GameEvent.BLOCK_UNSWITCH,
-				pos);
+		float f = world.random.nextFloat() * 0.1F + blockState.get(ROTATION) > 0 ? 0.6f : 0.5f;
+		if (blockState != state) {
+			world.playSound(null, pos, CISounds.CRANK_WHEEL_USE, SoundCategory.BLOCKS, 0.3f, f);
+			world.emitGameEvent(player,
+					blockState.get(ROTATION) > 0 ? GameEvent.BLOCK_SWITCH : GameEvent.BLOCK_UNSWITCH, pos);
+		}
 		return ActionResult.CONSUME;
 	}
 

@@ -59,5 +59,6 @@ In other words, you can have just the cage extend one block over the ladder when
 Alternatively, you can enable or disable ladder element with Wrench. Use Wrench while sneaking to rotate the block instead.",
   "misc.catwalksinc.crank_wheel.usage": "Can output arbitrary redstone level. Use left side to decrease level by one, right side to increase by one.",
   
-  "subtitles.catwalksinc.wrench_use": "Wrench used"
+  "subtitles.catwalksinc.wrench_use": "Wrench used",
+  "subtitles.catwalksinc.crank_wheel_use": "Crank wheel rotated"
 }

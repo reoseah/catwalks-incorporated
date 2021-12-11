@@ -4,5 +4,11 @@
     "sounds": [
       "catwalksinc:wrench_use"
     ]
+  },
+  "crank_wheel_use": {
+    "subtitle": "subtitles.catwalksinc.crank_wheel_use",
+    "sounds": [
+      "catwalksinc:crank_wheel_use"
+    ]
   }
 }
