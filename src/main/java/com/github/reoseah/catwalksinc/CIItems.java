@@ -24,7 +24,8 @@ public class CIItems {
 	public static final Item CAGED_LADDER = registerBlockItem(CIBlocks.CAGED_LADDER);
 	public static final Item CAGE_LAMP = registerBlockItem(CIBlocks.CAGE_LAMP);
 	public static final Item CRANK_WHEEL = registerBlockItem(CIBlocks.CRANK_WHEEL);
-	
+	public static final Item FACADE_FRAME = registerBlockItem(CIBlocks.FACADE_FRAME);
+
 	public static final Item YELLOW_CATWALK = registerBlockItem(CIBlocks.YELLOW_CATWALK);
 	public static final Item YELLOW_LADDER = registerBlockItem(CIBlocks.YELLOW_LADDER);
 	public static final Item YELLOW_CAGED_LADDER = registerBlockItem(CIBlocks.YELLOW_CAGED_LADDER);

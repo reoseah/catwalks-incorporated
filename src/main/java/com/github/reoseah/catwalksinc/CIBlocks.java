@@ -14,6 +14,7 @@ import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlock.Painted
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkStairsBlockEntity;
 import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock;
 import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock.PaintedLadderBlock;
+import com.github.reoseah.catwalksinc.blocks.facades.FacadeFrameBlock;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -35,7 +36,10 @@ public class CIBlocks {
 	public static final Block CAGED_LADDER = register("caged_ladder",
 			new CagedLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CAGE_LAMP = register("cage_lamp", new CageLampBlock(BlockSettings.CAGE_LAMP));
-	public static final Block CRANK_WHEEL = register("crank_wheel", new CrankWheelBlock(BlockSettings.IRON_SCAFFOLDING));
+	public static final Block CRANK_WHEEL = register("crank_wheel",
+			new CrankWheelBlock(BlockSettings.IRON_SCAFFOLDING));
+	public static final Block FACADE_FRAME = register("facade_frame",
+			new FacadeFrameBlock(BlockSettings.IRON_SCAFFOLDING));
 
 	public static final Block YELLOW_CATWALK = register("yellow_catwalk",
 			new PaintedCatwalkBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
