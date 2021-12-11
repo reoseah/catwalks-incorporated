@@ -36,6 +36,7 @@ public class CatwalksIncClient implements ClientModInitializer {
 				(ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity, int i) -> {
 					if (entity instanceof PlayerEntity player) {
 						if (player.getMainHandStack() == stack || player.getOffHandStack() == stack) {
+							@SuppressWarnings("resource")
 							float reachDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
 							HitResult hit = player.raycast(reachDistance, 0, false);
 							if (hit instanceof BlockHitResult blockhit) {
