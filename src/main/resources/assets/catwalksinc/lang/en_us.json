@@ -43,7 +43,7 @@ Paint roller with dye can be cleaned by right-clicking on a cauldron with water.
   
   "misc.catwalksinc.catwalk.usage": "When placed, it changes shape to match surroundings.
   
-Catwalks connect other catwalks, most doors, ladders and some other blocks. If that block is one block above, and the space right above the catwalk is empty, it will transform into stairs.
+Catwalks connect to other catwalks, most doors, ladders and some other blocks. If that block is one block above, and the space right above the catwalk is empty, it will transform into stairs.
 
 Also, catwalks will not have hand-rails in front of some interactable blocks, like hoppers and chests.
 
