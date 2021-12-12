@@ -130,4 +130,8 @@ public class CrankWheelBlock extends RotatableDecorationBlock {
 		return 0;
 	}
 
+	@Override
+	public boolean emitsRedstonePower(BlockState state) {
+		return true;
+	}
 }

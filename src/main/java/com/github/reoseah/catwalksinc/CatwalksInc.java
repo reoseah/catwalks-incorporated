@@ -7,10 +7,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 
 /**
- * TODO Add sound to using wrench
- *
- * TODO Make arrows/projectiles go through ladders
- *
  * FIXME Fix forced handrails desyncing after rejoining a world
  *
  * TODO disable Iron Rod recipe if Modern Industrialization is present
