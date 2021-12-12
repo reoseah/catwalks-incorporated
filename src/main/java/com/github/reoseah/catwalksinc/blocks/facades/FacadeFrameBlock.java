@@ -10,12 +10,4 @@ public class FacadeFrameBlock extends WaterloggableBlock {
 	public FacadeFrameBlock(Block.Settings settings) {
 		super(settings);
 	}
-
-	@Override
-	public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
-		if (stateFrom.isOf(this)) {
-			return true;
-		}
-		return false;
-	}
 }
