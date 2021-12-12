@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": [
+    {
+      "item": "catwalksinc:wrench"
+    },
+    {
+      "item": "catwalksinc:paint_scraper"
+    },
+    {
+      "item": "catwalksinc:paint_roller"
+    },
+    {
+      "tag": "catwalksinc:filled_paint_rollers"
+    }
+  ],
+  "result": "minecraft:iron_nugget",
+  "experience": 0.1,
+  "cookingtime": 100
+}
