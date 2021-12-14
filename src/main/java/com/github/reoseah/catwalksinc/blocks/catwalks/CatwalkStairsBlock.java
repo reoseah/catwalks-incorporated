@@ -31,6 +31,7 @@ import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
@@ -172,7 +173,10 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-		world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), 3);
+		world.setBlockState(pos.up(), //
+				state.with(HALF, DoubleBlockHalf.UPPER) //
+						.with(WATERLOGGED, world.getFluidState(pos.up()).getFluid() == Fluids.WATER),
+				3);
 	}
 
 	@Override
@@ -224,12 +228,12 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 		}
 
 		Direction left = state.get(FACING).rotateYClockwise();
-//		if (direction == left) 
+//		if (direction == left)
 		{
 			state = state.with(LEFT_RAIL, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT));
 		}
 		Direction right = state.get(FACING).rotateYCounterclockwise();
-//		if (direction == right) 
+//		if (direction == right)
 		{
 			state = state.with(RIGHT_RAIL, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
 		}

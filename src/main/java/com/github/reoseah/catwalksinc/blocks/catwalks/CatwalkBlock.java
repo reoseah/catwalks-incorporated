@@ -17,10 +17,12 @@ import com.github.reoseah.catwalksinc.util.WrenchHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
@@ -64,7 +66,7 @@ public class CatwalkBlock extends WaterloggableBlock
 		// collision shapes are only half-pixel thick
 		// otherwise you bump into edges of handrails too much
 		VoxelShape floorColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 1, 15.5);
-		
+
 		VoxelShape southColl = Block.createCuboidShape(0.5, 0, 15, 15.5, 16, 15.5);
 		VoxelShape westColl = Block.createCuboidShape(0.5, 0, 0.5, 1, 16, 15.5);
 		VoxelShape northColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 16, 1);
@@ -138,10 +140,11 @@ public class CatwalkBlock extends WaterloggableBlock
 		World world = ctx.getWorld();
 		BlockPos pos = ctx.getBlockPos();
 
-		if (world.getBlockState(pos.up()).isAir()) {
+		if (world.getBlockState(pos.up()).isAir() || world.getBlockState(pos.up()).isOf(Blocks.WATER)) {
 			Optional<Direction> stairsFacing = findStairsUpDirection(world, pos);
 			if (stairsFacing.isPresent()) {
 				return this.getMatchingStairs() //
+						.with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
 						.with(CatwalkStairsBlock.FACING, stairsFacing.get().getOpposite());
 			}
 		}
