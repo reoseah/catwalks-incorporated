@@ -113,7 +113,7 @@ public class CagedLadderBlock extends WaterloggableBlock
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState state = this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
+		BlockState state =  super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
 		return state.with(EXTENSION, this.shouldChangeToExtension(state, ctx.getWorld(), ctx.getBlockPos()));
 	}
 
