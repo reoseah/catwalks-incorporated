@@ -28,11 +28,11 @@ public class CatwalkBlockEntity extends BlockEntity {
 		if (!this.handrails.containsKey(side)) {
 			this.handrails.put(side, ElementMode.ALWAYS);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_handrail"), true);
-			return state.cycle(CatwalkBlock.getHandrailProperty(side));
+			return state.with(CatwalkBlock.getHandrailProperty(side), true);
 		} else if (this.handrails.get(side) == ElementMode.ALWAYS) {
 			this.handrails.put(side, ElementMode.NEVER);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.forced_no_handrail"), true);
-			return state.cycle(CatwalkBlock.getHandrailProperty(side));
+			return state.with(CatwalkBlock.getHandrailProperty(side), false);
 		} else {
 			this.handrails.remove(side);
 			player.sendMessage(new TranslatableText("misc.catwalksinc.default_handrail"), true);
