@@ -6,18 +6,6 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 
-/**
- * TODO Add sound to using wrench
- *
- * TODO Make arrows/projectiles go through ladders
- *
- * FIXME Fix forced handrails desyncing after rejoining a world
- *
- * TODO disable Iron Rod recipe if Modern Industrialization is present
- * 
- * TODO add melting recipes for stuff back into iron
- * - possible more efficient recipes if tech mods are available
- */
 public class CatwalksInc implements ModInitializer {
 	public static final String MODID = "catwalksinc";
 
@@ -33,5 +21,6 @@ public class CatwalksInc implements ModInitializer {
 		CIItems.CATWALK.getClass();
 		CIBlocks.BlockEntityTypes.CATWALK.getClass();
 		CIRecipeSerializers.PAINTROLLER_FILLING.getClass();
+		CISounds.WRENCH_USE.getClass();
 	}
 }

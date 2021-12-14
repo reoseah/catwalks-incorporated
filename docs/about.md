@@ -61,6 +61,17 @@ Use our Adjustable Wrench® tool to adjust lamp orientation.
 ¹ enhanced blast resistance is not guaranteed in case of lamp base surface structural failure.
 
 
+#### Crank Wheel
+
+![](https://raw.githubusercontent.com/Reoseah/catwalks-incorporated/1.18/docs/img/crank_wheel.png)
+
+Ever tired of Vanilla Limited "Lever" only having 2 output levels? Our Crank Wheel has 16!
+
+Use left side to rotate counter-clockwise and decrease level by one, right side to rotate clockwise and increase by one.
+
+(Lubricant is not included.)
+
+
 _Catwalks Inc. tools:_
 
 #### Adjustable Wrench

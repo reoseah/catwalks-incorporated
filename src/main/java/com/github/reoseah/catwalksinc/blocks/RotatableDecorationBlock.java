@@ -71,7 +71,19 @@ public abstract class RotatableDecorationBlock extends WaterloggableBlock implem
 	@Override
 	public boolean useWrench(BlockState state, World world, BlockPos pos, Direction side, @Nullable PlayerEntity player,
 			Hand hand, Vec3d hitPos) {
-		world.setBlockState(pos, state.cycle(FACING), 3);
-		return true;
+		Direction original = state.get(FACING);
+
+		for (Direction i = next(original); i != original; i = next(i)) {
+			BlockState rotated = state.with(FACING, i);
+			if (this.canPlaceAt(rotated, world, pos)) {
+				world.setBlockState(pos, rotated, 3);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static Direction next(Direction direction) {
+		return Direction.byId(direction.getId() + 1);
 	}
 }
