@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
+import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
@@ -33,6 +34,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -303,7 +305,7 @@ public class CatwalkBlock extends WaterloggableBlock
 
 		@Override
 		public String getTranslationKey() {
-			return CIBlocks.CATWALK.getTranslationKey();
+			return Util.createTranslationKey("misc", CatwalksInc.id("painted_catwalk"));
 		}
 
 		@Override

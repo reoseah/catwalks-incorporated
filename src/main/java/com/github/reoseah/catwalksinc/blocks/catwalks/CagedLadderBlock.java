@@ -8,13 +8,14 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
-import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
+import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock.PaintedLadderBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -34,6 +35,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -168,13 +170,13 @@ public class CagedLadderBlock extends WaterloggableBlock
 
 	@Override
 	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
-		Block block = PaintedCatwalkBlock.ofColor(color);
+		Block block = PaintedCagedLadderBlock.ofColor(color);
 		return block != null;
 	}
 
 	@Override
 	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
-		Block block = PaintedCatwalkBlock.ofColor(color);
+		Block block = PaintedCagedLadderBlock.ofColor(color);
 		if (block != null) {
 			world.setBlockState(pos, block.getDefaultState() //
 					.with(FACING, state.get(FACING)) //
@@ -213,7 +215,7 @@ public class CagedLadderBlock extends WaterloggableBlock
 
 		@Override
 		public String getTranslationKey() {
-			return CIItems.CAGED_LADDER.getTranslationKey();
+			return Util.createTranslationKey("misc", CatwalksInc.id("painted_caged_ladder"));
 		}
 
 		@Override

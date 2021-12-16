@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.github.reoseah.catwalksinc.CIBlocks;
 import com.github.reoseah.catwalksinc.CIItems;
+import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.blocks.CatwalkAccess;
 import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
@@ -43,6 +44,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -356,13 +358,13 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 
 	@Override
 	public boolean canPaintBlock(DyeColor color, BlockState state, BlockView world, BlockPos pos) {
-		Block block = PaintedCatwalkBlock.ofColor(color);
+		Block block = PaintedCatwalkStairsBlock.ofColor(color);
 		return block != null;
 	}
 
 	@Override
 	public void paintBlock(DyeColor color, BlockState state, WorldAccess world, BlockPos pos) {
-		Block block = PaintedCatwalkBlock.ofColor(color);
+		Block block = PaintedCatwalkStairsBlock.ofColor(color);
 		if (block != null) {
 			BlockState colored = block.getDefaultState() //
 					.with(FACING, state.get(FACING)) //
@@ -408,7 +410,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 
 		@Override
 		public String getTranslationKey() {
-			return CIBlocks.CATWALK_STAIRS.getTranslationKey();
+			return Util.createTranslationKey("misc", CatwalksInc.id("painted_catwalk_stairs"));
 		}
 
 		@Override

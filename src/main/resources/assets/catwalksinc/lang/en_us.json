@@ -8,6 +8,11 @@
   "block.catwalksinc.cage_lamp": "Cage Lamp",
   "block.catwalksinc.crank_wheel": "Crank Wheel",
   
+  "misc.catwalksinc.painted_catwalk": "Painted Catwalk",
+  "misc.catwalksinc.painted_catwalk_stairs": "Painted Catwalk Stairs",
+  "misc.catwalksinc.painted_ladder": "Painted Metal Ladder",
+  "misc.catwalksinc.painted_caged_ladder": "Painted Caged Ladder",
+  
   "misc.catwalksinc.forced_handrail": "Handrail: Always",
   "misc.catwalksinc.forced_no_handrail": "Handrail: Never",
   "misc.catwalksinc.default_handrail": "Handrail: Auto",
