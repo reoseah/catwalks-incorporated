@@ -26,7 +26,7 @@ Use with our Adjustable Wrench® technology tool for extended customization.
 
 Our ACME-compliant catwalk systems provide cost-effective solutions for access to systems in material handling settings with improved observation, material handling and maintenance access capabilities. Our ACE OV9000-1 Grade 143% certified structural steel catwalks are compliant with ACME building requirements and intergalactical building codes while the Slipperiness Reduction Technology treadplate floor ensures flawless foot-traffic operation.
 
-Available in Industrial Metal and Dandelion Yellow variants.
+Currently available in Industrial Metal, Dandelion Yellow and Rose Red variants.
 
 #### Industrial Ladder
 
@@ -36,7 +36,7 @@ Pre-assembled industrial ladder section with self-supported design. 
 
 Use our Adjustable Wrench® tool to adjust orientation.
 
-Available in Industrial Metal and Dandelion Yellow variants.
+Currently available in Industrial Metal, Dandelion Yellow and Rose Red variants.
 
 #### Caged Industrial Ladder
 
@@ -48,7 +48,7 @@ ACME-555 compliant cage extension will be installed automatically when placing t
 
 Use our Adjustable Wrench® tool to adjust ladder orientation.
 
- Available in Industrial Metal and Dandelion Yellow variants.
+ Currently available in Industrial Metal, Dandelion Yellow and Rose Red variants.
 
 #### Cage Lamp
 
@@ -95,6 +95,7 @@ Our custom-designed Dye Soft Balance® technology allows 100% pigment utilizatio
 However, only the following pigments have been authorized to use with Catwalks Inc. foot-traffic solutions:
 
 - Dandelion Yellow by Vanilla Limited
+- Rose Red by Vanilla Limited
 
 #### Paint Scrapper
 
