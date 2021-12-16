@@ -4,12 +4,14 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
 import com.github.reoseah.catwalksinc.CIItems;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
@@ -19,11 +21,18 @@ import net.minecraft.block.LeveledCauldronBlock;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
+import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -92,13 +101,52 @@ public class PaintRollerItem extends Item implements CustomDurabilityItem {
 			return ActionResult.FAIL;
 		}
 
-		if (block == Blocks.GLASS) {
-			world.setBlockState(pos, getStainedGlass(this.color).getDefaultState());
-			this.damage(context.getStack(), 1, context.getPlayer(), player -> {
-				player.sendToolBreakStatus(context.getHand());
-				player.setStackInHand(context.getHand(), new ItemStack(CIItems.PAINT_ROLLER));
-			});
-			return ActionResult.SUCCESS;
+		Set<Property<?>> allowedProperties = ImmutableSet.of( //
+				Properties.ROTATION, //
+				Properties.AXIS, Properties.HORIZONTAL_AXIS, //
+				Properties.FACING, Properties.HORIZONTAL_FACING, Properties.VERTICAL_DIRECTION, //
+				Properties.LIT, Properties.POWERED, Properties.SNOWY);
+
+		if (!state.hasBlockEntity() //
+				&& allowedProperties.containsAll(state.getProperties())) {
+			Item blockItem = state.getBlock().asItem();
+			if (blockItem instanceof BlockItem //
+					&& ((BlockItem) blockItem).getBlock() == block) {
+				CraftingInventory inventory = new CraftingInventory(new ScreenHandler(null, -1) {
+					@Override
+					public boolean canUse(PlayerEntity player) {
+						return false;
+					}
+				}, 3, 3);
+				for (int i = 0; i < 3; i++) {
+					for (int j = 0; j < 3; j++) {
+						if (i == 1 && j == 1) {
+							inventory.setStack(i * 3 + j, DyeItem.byColor(this.color).getDefaultStack());
+						} else {
+							inventory.setStack(i * 3 + j, blockItem.getDefaultStack());
+						}
+					}
+				}
+				ItemStack result = world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, inventory, world)
+						.map(recipe -> recipe.craft(inventory)).orElse(null);
+				if (result != null && !result.hasNbt() && result.getItem() instanceof BlockItem resultItem) {
+					Block resultBlock = ((BlockItem) resultItem).getBlock();
+					BlockState resultState = resultBlock.getDefaultState();
+					for (Property<?> property : resultState.getProperties()) {
+						if (!state.contains(property)) {
+							return ActionResult.FAIL;
+						}
+						resultState = resultState.with((Property) property, state.get(property));
+					}
+
+					world.setBlockState(pos, resultState);
+					this.damage(context.getStack(), 1, context.getPlayer(), player -> {
+						player.sendToolBreakStatus(context.getHand());
+						player.setStackInHand(context.getHand(), new ItemStack(CIItems.PAINT_ROLLER));
+					});
+					return ActionResult.SUCCESS;
+				}
+			}
 		}
 		return ActionResult.FAIL;
 	}
