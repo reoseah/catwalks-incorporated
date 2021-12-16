@@ -14,8 +14,6 @@ import com.github.reoseah.catwalksinc.blocks.PaintScrapableBlock;
 import com.github.reoseah.catwalksinc.blocks.Paintable;
 import com.github.reoseah.catwalksinc.blocks.WaterloggableBlock;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
-import com.github.reoseah.catwalksinc.blocks.catwalks.CatwalkBlock.PaintedCatwalkBlock;
-import com.github.reoseah.catwalksinc.blocks.catwalks.MetalLadderBlock.PaintedLadderBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
