@@ -113,7 +113,7 @@ public class CagedLadderBlock extends WaterloggableBlock
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		BlockState state =  super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
+		BlockState state = super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
 		return state.with(EXTENSION, this.shouldChangeToExtension(state, ctx.getWorld(), ctx.getBlockPos()));
 	}
 
@@ -136,7 +136,7 @@ public class CagedLadderBlock extends WaterloggableBlock
 		Direction supportDirection = state.get(FACING).getOpposite();
 		BlockPos supportPos = pos.offset(supportDirection);
 		BlockState support = world.getBlockState(supportPos);
-		if (support.getBlock()instanceof CatwalkAccess catwalk
+		if (support.getBlock() instanceof CatwalkAccess catwalk
 				&& catwalk.needsCatwalkConnectivity(support, world, supportPos, supportDirection.getOpposite())) {
 			return true;
 		}
@@ -186,6 +186,14 @@ public class CagedLadderBlock extends WaterloggableBlock
 	@Override
 	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
 		return state.get(FACING) == side.getOpposite();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+		if (!(newState.getBlock() instanceof CagedLadderBlock)) {
+			super.onStateReplaced(state, world, pos, newState, moved);
+		}
 	}
 
 	public static class PaintedCagedLadderBlock extends CagedLadderBlock implements PaintScrapableBlock {

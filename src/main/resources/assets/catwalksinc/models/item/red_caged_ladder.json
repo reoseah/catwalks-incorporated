@@ -1,0 +1,85 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "front": "catwalksinc:block/red_ladder_front",
+    "side": "catwalksinc:block/red_ladder_side",
+    "cage": "catwalksinc:block/red_ladder_cage_extension",
+    "top": "catwalksinc:block/red_catwalk_top",
+    "particle": "catwalksinc:block/red_ladder_front"
+  },
+  "elements": [
+    {
+      "from": [ 0, 0, 14 ],
+      "to": [ 16, 16, 14 ],
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#front" },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#front" }
+      }
+    },
+    {
+      "from": [ 2, 0, 13 ],
+      "to": [ 2, 16, 16 ],
+      "faces": {
+        "east": { "uv": [ 0, 0, 3, 16 ], "texture": "#side" },
+        "west": { "uv": [ 13, 0, 16, 16 ], "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 14, 0, 13 ],
+      "to": [ 14, 16, 16 ],
+      "faces": {
+        "east": { "uv": [ 0, 0, 3, 16 ], "texture": "#side" },
+        "west": { "uv": [ 13, 0, 16, 16 ], "texture": "#side" }
+      }
+    },
+    {
+      "from": [ 0, 0, 1 ],
+      "to": [ 16, 16, 1 ],
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#cage" },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#cage" }
+      }
+    },
+    {
+      "from": [ 1, 0, 0 ],
+      "to": [ 1, 16, 16 ],
+      "faces": {
+        "east": { "uv": [ 16, 0, 0, 16 ], "texture": "#cage" },
+        "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#cage" }
+      }
+    },
+    {
+      "from": [ 15, 0, 0 ],
+      "to": [ 15, 16, 16 ],
+      "faces": {
+        "east": { "uv": [ 16, 0, 0, 16 ], "texture": "#cage" },
+        "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#cage" }
+      }
+    },
+    
+    {
+      "from": [ 0, 16, 0 ],
+      "to": [ 16, 16, 2 ],
+      "faces": {
+        "up": { "texture": "#top" },
+        "down": {  "texture": "#top" }
+      }
+    },
+    {
+      "from": [ 0, 16, 0 ],
+      "to": [ 2, 16, 16 ],
+      "faces": {
+        "up": { "texture": "#top" },
+        "down": {  "texture": "#top" }
+      }
+    },
+    {
+      "from": [ 14, 16, 0 ],
+      "to": [ 16, 16, 16 ],
+      "faces": {
+        "up": { "texture": "#top" },
+        "down": {  "texture": "#top" }
+      }
+    }
+  ]
+}

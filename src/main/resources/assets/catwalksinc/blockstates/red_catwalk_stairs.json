@@ -1,0 +1,56 @@
+{   
+  "multipart": [
+    {   
+      "when": { "facing": "north", "half": "lower" },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_treadplate" }
+    },
+    {   
+      "when": { "facing": "east", "half": "lower" },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_treadplate", "uvlock": true, "y": 90 }
+    },
+    {   
+      "when": { "facing": "south", "half": "lower" },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_treadplate", "uvlock": true, "y": 180 }
+    },
+    {   
+      "when": { "facing": "west", "half": "lower" },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_treadplate", "uvlock": true, "y": 270 }
+    },
+    
+    {   
+      "when": { "facing": "north", "half": "lower", "left": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_left_rail", "uvlock": true, "y": 90 }
+    },
+    {   
+      "when": { "facing": "north", "half": "lower", "right": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_right_rail", "uvlock": true, "y": 90 }
+    },
+    
+    {   
+      "when": { "facing": "east", "half": "lower", "left": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_left_rail", "uvlock": true, "y": 180 }
+    },
+    {   
+      "when": { "facing": "east", "half": "lower", "right": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_right_rail", "uvlock": true, "y": 180 }
+    },
+    
+    {   
+      "when": { "facing": "south", "half": "lower", "left": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_left_rail", "uvlock": true, "y": 270 }
+    },
+    {   
+      "when": { "facing": "south", "half": "lower", "right": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_right_rail", "uvlock": true, "y": 270 }
+    },
+    
+    {   
+      "when": { "facing": "west", "half": "lower", "left": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_left_rail", "uvlock": true }
+    },
+    {   
+      "when": { "facing": "west", "half": "lower", "right": true },
+      "apply": { "model": "catwalksinc:block/red_catwalk_stairs_right_rail", "uvlock": true }
+    }
+  ]
+}

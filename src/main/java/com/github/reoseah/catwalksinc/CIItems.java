@@ -25,10 +25,6 @@ public class CIItems {
 	public static final Item CAGE_LAMP = registerBlockItem(CIBlocks.CAGE_LAMP);
 	public static final Item CRANK_WHEEL = registerBlockItem(CIBlocks.CRANK_WHEEL);
 
-	public static final Item YELLOW_CATWALK = registerBlockItem(CIBlocks.YELLOW_CATWALK);
-	public static final Item YELLOW_LADDER = registerBlockItem(CIBlocks.YELLOW_LADDER);
-	public static final Item YELLOW_CAGED_LADDER = registerBlockItem(CIBlocks.YELLOW_CAGED_LADDER);
-
 	public static final Item IRON_ROD = register("iron_rod", new Item(defaultSettings()));
 	public static final Item WRENCH = register("wrench", new WrenchItem(defaultSettings().maxDamage(256)));
 	public static final Item PAINT_SCRAPER = register("paint_scraper",
@@ -50,6 +46,14 @@ public class CIItems {
 	public static final Item GREEN_PAINT_ROLLER = createPaintRoller(DyeColor.GREEN);
 	public static final Item RED_PAINT_ROLLER = createPaintRoller(DyeColor.RED);
 	public static final Item BLACK_PAINT_ROLLER = createPaintRoller(DyeColor.BLACK);
+
+	public static final Item YELLOW_CATWALK = registerBlockItem(CIBlocks.YELLOW_CATWALK);
+	public static final Item YELLOW_LADDER = registerBlockItem(CIBlocks.YELLOW_LADDER);
+	public static final Item YELLOW_CAGED_LADDER = registerBlockItem(CIBlocks.YELLOW_CAGED_LADDER);
+	
+	public static final Item RED_CATWALK = registerBlockItem(CIBlocks.RED_CATWALK);
+	public static final Item RED_LADDER = registerBlockItem(CIBlocks.RED_LADDER);
+	public static final Item RED_CAGED_LADDER = registerBlockItem(CIBlocks.RED_CAGED_LADDER);
 
 	private static Item registerBlockItem(Block block) {
 		return Registry.register(Registry.ITEM, Registry.BLOCK.getId(block), new BlockItem(block, defaultSettings()));

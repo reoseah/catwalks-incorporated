@@ -29,7 +29,9 @@ public class CatwalksIncClient implements ClientModInitializer {
 				CIBlocks.CAGE_LAMP, CIBlocks.CRANK_WHEEL, //
 				CIBlocks.INDUSTRIAL_LADDER, CIBlocks.CAGED_LADDER, //
 				CIBlocks.YELLOW_CATWALK, CIBlocks.YELLOW_CATWALK_STAIRS, //
-				CIBlocks.YELLOW_LADDER, CIBlocks.YELLOW_CAGED_LADDER //
+				CIBlocks.YELLOW_LADDER, CIBlocks.YELLOW_CAGED_LADDER, //
+				CIBlocks.RED_CATWALK, CIBlocks.RED_CATWALK_STAIRS, //
+				CIBlocks.RED_LADDER, CIBlocks.RED_CAGED_LADDER //
 		);
 
 		FabricModelPredicateProviderRegistry.register(CIItems.WRENCH, new Identifier("open"),

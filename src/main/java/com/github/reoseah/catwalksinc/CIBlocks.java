@@ -35,7 +35,8 @@ public class CIBlocks {
 	public static final Block CAGED_LADDER = register("caged_ladder",
 			new CagedLadderBlock(BlockSettings.IRON_SCAFFOLDING));
 	public static final Block CAGE_LAMP = register("cage_lamp", new CageLampBlock(BlockSettings.CAGE_LAMP));
-	public static final Block CRANK_WHEEL = register("crank_wheel", new CrankWheelBlock(BlockSettings.IRON_SCAFFOLDING));
+	public static final Block CRANK_WHEEL = register("crank_wheel",
+			new CrankWheelBlock(BlockSettings.IRON_SCAFFOLDING));
 
 	public static final Block YELLOW_CATWALK = register("yellow_catwalk",
 			new PaintedCatwalkBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
@@ -45,6 +46,15 @@ public class CIBlocks {
 			new PaintedLadderBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
 	public static final Block YELLOW_CAGED_LADDER = register("yellow_caged_ladder",
 			new PaintedCagedLadderBlock(DyeColor.YELLOW, BlockSettings.YELLOW_SCAFFOLDING));
+
+	public static final Block RED_CATWALK = register("red_catwalk",
+			new PaintedCatwalkBlock(DyeColor.RED, BlockSettings.RED_SCAFFOLDING));
+	public static final Block RED_CATWALK_STAIRS = register("red_catwalk_stairs",
+			new PaintedCatwalkStairsBlock(DyeColor.RED, BlockSettings.RED_SCAFFOLDING));
+	public static final Block RED_LADDER = register("red_ladder",
+			new PaintedLadderBlock(DyeColor.RED, BlockSettings.RED_SCAFFOLDING));
+	public static final Block RED_CAGED_LADDER = register("red_caged_ladder",
+			new PaintedCagedLadderBlock(DyeColor.RED, BlockSettings.RED_SCAFFOLDING));
 
 	private static Block register(String name, Block entry) {
 		return Registry.register(Registry.BLOCK, id(name), entry);
@@ -62,24 +72,28 @@ public class CIBlocks {
 
 		private static final FabricBlockSettings YELLOW_SCAFFOLDING = FabricBlockSettings
 				.copyOf(BlockSettings.IRON_SCAFFOLDING).mapColor(DyeColor.YELLOW);
-
+		private static final FabricBlockSettings RED_SCAFFOLDING = FabricBlockSettings
+				.copyOf(BlockSettings.IRON_SCAFFOLDING).mapColor(DyeColor.RED);
 	}
 
 	public static class BlockEntityTypes {
 		public static final BlockEntityType<CatwalkBlockEntity> CATWALK = register("catwalk",
 				FabricBlockEntityTypeBuilder.create(CatwalkBlockEntity::new, //
 						CIBlocks.CATWALK, //
-						CIBlocks.YELLOW_CATWALK //
+						CIBlocks.YELLOW_CATWALK, //
+						CIBlocks.RED_CATWALK //
 				).build());
 		public static final BlockEntityType<CatwalkStairsBlockEntity> CATWALK_STAIRS = register("catwalk_stairs",
 				FabricBlockEntityTypeBuilder.create(CatwalkStairsBlockEntity::new, //
 						CIBlocks.CATWALK_STAIRS, //
-						CIBlocks.YELLOW_CATWALK_STAIRS //
+						CIBlocks.YELLOW_CATWALK_STAIRS, //
+						CIBlocks.RED_CATWALK_STAIRS //
 				).build());
 		public static final BlockEntityType<CatwalkBlockEntity> CAGED_LADDER = register("caged_ladder",
 				FabricBlockEntityTypeBuilder.create(CatwalkBlockEntity::new, //
 						CIBlocks.CAGED_LADDER, //
-						CIBlocks.YELLOW_CAGED_LADDER //
+						CIBlocks.YELLOW_CAGED_LADDER, //
+						CIBlocks.RED_CAGED_LADDER //
 				).build());
 
 		private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType<T> type) {

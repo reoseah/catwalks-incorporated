@@ -9,6 +9,10 @@
     "catwalksinc:yellow_catwalk",
     "catwalksinc:yellow_catwalk_stairs",
     "catwalksinc:yellow_ladder",
-    "catwalksinc:yellow_caged_ladder"
+    "catwalksinc:yellow_caged_ladder",
+    "catwalksinc:red_catwalk",
+    "catwalksinc:red_catwalk_stairs",
+    "catwalksinc:red_ladder",
+    "catwalksinc:red_caged_ladder"
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "catwalksinc:block/red_treadplate",
+    "texture": "catwalksinc:block/red_treadplate"
+  },
+  "elements": [
+    {   
+      "from": [ 0, 1, 0 ],
+      "to": [ 16, 1, 16 ],
+      "faces": {
+        "up":  { "texture": "#texture" },
+        "down":  { "texture": "#texture" }
+      }
+    }
+  ]
+}

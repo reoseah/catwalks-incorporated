@@ -109,7 +109,7 @@ public class MetalLadderBlock extends WaterloggableBlock implements CatwalkAcces
 
 	@Override
 	public boolean needsCatwalkAccess(BlockState state, BlockView world, BlockPos pos, Direction side) {
-		return state.get(FACING) != side;
+		return state.get(FACING) == side;
 	}
 
 	public static class PaintedLadderBlock extends MetalLadderBlock implements PaintScrapableBlock {

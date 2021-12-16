@@ -344,7 +344,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if (!(state.getBlock() instanceof CatwalkBlock)) {
+		if (!(newState.getBlock() instanceof CatwalkStairsBlock)) {
 			super.onStateReplaced(state, world, pos, newState, moved);
 		}
 	}
