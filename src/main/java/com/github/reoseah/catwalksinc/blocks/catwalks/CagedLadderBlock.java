@@ -178,7 +178,8 @@ public class CagedLadderBlock extends WaterloggableBlock
 		if (block != null) {
 			world.setBlockState(pos, block.getDefaultState() //
 					.with(FACING, state.get(FACING)) //
-					.with(WATERLOGGED, state.get(WATERLOGGED)), //
+					.with(WATERLOGGED, state.get(WATERLOGGED)) //
+					.with(EXTENSION, state.get(EXTENSION)), //
 					3);
 		}
 	}
