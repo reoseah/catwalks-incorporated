@@ -27,7 +27,7 @@ Our solutions include:
       "com.github.reoseah.catwalksinc.CatwalksInc"
     ],
     "client": [
-      "com.github.reoseah.catwalksinc.CatwalksIncClient"
+      "com.github.reoseah.catwalksinc.client.CatwalksIncClient"
     ],
     "rei_plugins": [
       "com.github.reoseah.catwalksinc.rei.CatwalksIncREI"

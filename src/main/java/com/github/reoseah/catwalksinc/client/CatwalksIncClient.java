@@ -1,13 +1,16 @@
-package com.github.reoseah.catwalksinc;
+package com.github.reoseah.catwalksinc.client;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.github.reoseah.catwalksinc.CIBlocks;
+import com.github.reoseah.catwalksinc.CIItems;
 import com.github.reoseah.catwalksinc.blocks.Wrenchable;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -51,5 +54,7 @@ public class CatwalksIncClient implements ClientModInitializer {
 					}
 					return 0;
 				});
+
+		WorldRenderEvents.BLOCK_OUTLINE.register(new CIBlockOutline());
 	}
 }
