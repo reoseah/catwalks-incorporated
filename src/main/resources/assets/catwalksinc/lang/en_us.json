@@ -26,7 +26,9 @@
   
   "item.catwalksinc.paint_scraper": "Paint Scraper",
   "item.catwalksinc.paint_roller": "Paint Roller",
-  "misc.catwalksinc.paint_roller.usage": "Combine with 1-4 dye in a crafting grid. 
+  "misc.catwalksinc.paint_roller.usage": "Combine with 1-4 dye in a crafting grid to fill or refill. One dye equals eight points of durability.
+
+Paintable blocks are inferred automatically from recipes. A block will be dyeable if it has the recipe with a dye surrounded by the blocks and yielding eight blocks as result. With Paint roller you can dye such blocks in world, consuming 1 point of durability from paint roller.
   
 Paint roller with dye can be cleaned by right-clicking on a cauldron with water.",
   "misc.catwalksinc.white": "White",
