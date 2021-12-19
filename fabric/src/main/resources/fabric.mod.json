@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "catwalksinc",
+  "version": "${version}",
+  "name": "Catwalks Inc.",
+  "description": "Catwalks, caged ladders and other industrial stuff for building or just decoration.",
+  "authors": [
+    "Reoseah"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/catwalks-inc",
+    "sources": "https://github.com/Reoseah/catwalks-incorporated"
+  },
+  "license": "MIT",
+  "icon": "assets/catwalksinc/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.reoseah.catwalksinc.fabric.CatwalksIncFabric"
+    ],
+    "client": [
+      "com.github.reoseah.catwalksinc.fabric.CatwalksIncClientFabric"
+    ]
+  },
+  "mixins": [
+    "catwalksinc.mixins.json"
+  ],
+
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.18",
+    "architectury": ">=3.2.47"
+  },
+  "suggests": {
+    
+  }
+}
