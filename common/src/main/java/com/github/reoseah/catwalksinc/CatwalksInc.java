@@ -19,5 +19,6 @@ public class CatwalksInc {
         CIncBlockEntityTypes.REGISTER.register();
         CIncItems.REGISTER.register();
         CIncSoundEvents.REGISTER.register();
+        CIRecipeSerializers.REGISTER.register();
     }
 }

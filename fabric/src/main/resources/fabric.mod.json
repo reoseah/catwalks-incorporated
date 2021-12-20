@@ -19,7 +19,10 @@
       "com.github.reoseah.catwalksinc.fabric.CatwalksIncFabric"
     ],
     "client": [
-      "com.github.reoseah.catwalksinc.fabric.CatwalksIncClientFabric"
+      "com.github.reoseah.catwalksinc.fabric.client.CatwalksIncClientFabric"
+    ],
+    "rei_plugins": [
+      "com.github.reoseah.catwalksinc.rei.CatwalksIncREI"
     ]
   },
   "mixins": [
