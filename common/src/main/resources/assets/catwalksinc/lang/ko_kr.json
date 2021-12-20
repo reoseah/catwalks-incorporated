@@ -1,0 +1,69 @@
+{
+  "itemGroup.catwalksinc.main": "캣워크 주식회사",
+  
+  "block.catwalksinc.catwalk": "캣워크",
+  "block.catwalksinc.catwalk_stairs": "캣워크 계단",
+  "block.catwalksinc.industrial_ladder": "금속 사다리",
+  "block.catwalksinc.caged_ladder": "케이지 사다리",
+  "block.catwalksinc.cage_lamp": "케이지 램프",
+  "block.catwalksinc.crank_wheel": "크랭크휠",
+  
+  "misc.catwalksinc.painted_catwalk": "색칠 된 캣워크",
+  "misc.catwalksinc.painted_catwalk_stairs": "색칠 된 캣워크 계단",
+  "misc.catwalksinc.painted_ladder": "색칠 된 금속 사다리",
+  "misc.catwalksinc.painted_caged_ladder": "색칠 된 케이지 사다리",
+  
+  "misc.catwalksinc.forced_handrail": "난간: 항상",
+  "misc.catwalksinc.forced_no_handrail": "난간: 사용안함",
+  "misc.catwalksinc.default_handrail": "난간: 자동",
+  "misc.catwalksinc.forced_ladder": "사다리: 항상",
+  "misc.catwalksinc.forced_no_ladder": "사다리: 사용안함",
+  "misc.catwalksinc.default_ladder": "사다리: 자동",
+    
+  "item.catwalksinc.iron_rod": "각철장",
+  "item.catwalksinc.axle": "액슬",
+  "item.catwalksinc.wrench": "렌치",
+  
+  "item.catwalksinc.paint_scraper": "페인트 긁게",
+  "item.catwalksinc.paint_roller": "페인트 롤러",
+  "misc.catwalksinc.paint_roller.usage": "조합 영역에서 1-4 염료를 섞으세요. 
+  
+염료가 묻은 페인트 롤러는 물이 채워진 가마솥에 마우스 오른쪽 버튼을 클릭하여 깨끗하게 할 수 있습니다.",
+  "misc.catwalksinc.white": "하얀색",
+  "misc.catwalksinc.orange": "주황색",
+  "misc.catwalksinc.magenta": "자홍색",
+  "misc.catwalksinc.light_blue": "하늘색",
+  "misc.catwalksinc.yellow": "노란색",
+  "misc.catwalksinc.lime": "연두색",
+  "misc.catwalksinc.pink": "분홍색",
+  "misc.catwalksinc.gray": "회색",
+  "misc.catwalksinc.light_gray": "회백색",
+  "misc.catwalksinc.cyan": "청록색",
+  "misc.catwalksinc.purple": "보라색",
+  "misc.catwalksinc.blue": "파란색",
+  "misc.catwalksinc.brown": "갈색",
+  "misc.catwalksinc.green": "초록색",
+  "misc.catwalksinc.red": "빨간색",
+  "misc.catwalksinc.black": "검은색",
+  
+  "misc.catwalksinc.catwalk.usage": "배치 시 주변 환경에 맞게 모양이 바뀝니다.
+  
+캣워크는 다른 캣워크, 대부분의 문, 사다리, 일부 다른 블록에 연결합니다. 블록이 한 블록 위에 있고 캣워크 바로 위 공간이 비어 있으면 계단으로 변합니다.
+
+또, 캣워크는 호퍼나 상자처럼 상호작용할 수 있는 블록의 앞에 난간이 생기지 않습니다.
+
+이 기본 연결은 렌치로 변경할 수 있습니다.
+
+계단의 경우 일반 클릭은 난간 모드를 순차적으로 변경하고, Shift 키를 누른 상태에서 클릭하면 블록이 회전합니다.",
+  "misc.catwalksinc.caged_ladder.usage": "배치 시 주변 환경에 맞게 모양이 바뀝니다.
+  
+사다리 뒤에 있는 블록이 캣워크 또는 다른 걸을 수 있는 블록인 경우 케이지는 남고 사다리는 비활성화됩니다.
+
+다시 말해 걸을 수 있는 블록에 대고 배치할 경우 케이지를 사다리 위로 한 블록 확장시킬 수 있습니다.
+
+또는 렌치를 사용하여 사다리를 활성화 또는 비활성화할 수 있습니다. 앉은 상태로 렌치를 사용하면 블록을 회전할 수 있습니다.",
+  "misc.catwalksinc.crank_wheel.usage": "임의로 레드스톤 레벨을 출력할 수 있습니다. 왼쪽을 사용하여 레벨을 하나씩 낮추고 오른쪽을 사용하여 레벨을 높이세요.",
+  
+  "subtitles.catwalksinc.wrench_use": "렌치 사용함",
+  "subtitles.catwalksinc.crank_wheel_use": "크랭크휠 회전함"
+}
