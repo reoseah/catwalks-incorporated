@@ -2,6 +2,7 @@ package com.github.reoseah.catwalksinc.forge;
 
 import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.client.CatwalksIncClient;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -11,6 +12,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class CatwalksIncClientForge {
     @SubscribeEvent
     public static void onInitializeClient(final FMLClientSetupEvent event) {
-        CatwalksIncClient.init();
+        CatwalksIncClient.init(ModelPredicateProviderRegistry::register);
     }
 }
