@@ -20,25 +20,9 @@ import org.jetbrains.annotations.Nullable;
 public class CatwalksIncClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        CatwalksIncClient.init();
+        CatwalksIncClient.init(FabricModelPredicateProviderRegistry::register);
 
-        FabricModelPredicateProviderRegistry.register(CIncItems.WRENCH, new Identifier("open"),
-                (ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity, int i) -> {
-                    if (entity instanceof PlayerEntity player) {
-                        if ((player.getMainHandStack() == stack) || (player.getOffHandStack() == stack)) {
-                            @SuppressWarnings("resource")
-                            float reachDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
-                            HitResult hit = player.raycast(reachDistance, 0, false);
-                            if (hit instanceof BlockHitResult blockhit) {
-                                BlockPos pos = blockhit.getBlockPos();
-                                if (entity.getEntityWorld().getBlockState(pos).getBlock() instanceof Wrenchable) {
-                                    return 1;
-                                }
-                            }
-                        }
-                    }
-                    return 0;
-                });
+
 
         WorldRenderEvents.BLOCK_OUTLINE.register(new CIncBlockOutline());
     }
