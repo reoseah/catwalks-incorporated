@@ -13,11 +13,11 @@ import net.minecraft.util.registry.Registry;
 public class CIncItems {
     public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(CatwalksInc.ID, Registry.ITEM_KEY);
 
-    public static final Item CATWALK = registerBlockItem(CIncBlocks.CATWALK);
-    public static final Item INDUSTRIAL_LADDER = registerBlockItem(CIncBlocks.INDUSTRIAL_LADDER);
-    public static final Item CAGED_LADDER = registerBlockItem(CIncBlocks.CAGED_LADDER);
-    public static final Item CAGE_LAMP = registerBlockItem(CIncBlocks.CAGE_LAMP);
-    public static final Item CRANK_WHEEL = registerBlockItem(CIncBlocks.CRANK_WHEEL);
+    public static final Item CATWALK = register("catwalk", CIncBlocks.CATWALK);
+    public static final Item INDUSTRIAL_LADDER = register("industrial_ladder", CIncBlocks.INDUSTRIAL_LADDER);
+    public static final Item CAGED_LADDER = register("caged_ladder", CIncBlocks.CAGED_LADDER);
+    public static final Item CAGE_LAMP = register("cage_lamp", CIncBlocks.CAGE_LAMP);
+    public static final Item CRANK_WHEEL = register("crank_wheel", CIncBlocks.CRANK_WHEEL);
 
     public static final Item IRON_ROD = register("iron_rod", new Item(defaultSettings()));
     public static final Item WRENCH = register("wrench", new WrenchItem(defaultSettings().maxDamage(256)));
@@ -41,23 +41,21 @@ public class CIncItems {
     public static final Item RED_PAINT_ROLLER = createPaintRoller(DyeColor.RED);
     public static final Item BLACK_PAINT_ROLLER = createPaintRoller(DyeColor.BLACK);
 
-    public static final Item YELLOW_CATWALK = registerBlockItem(CIncBlocks.YELLOW_CATWALK);
-    public static final Item YELLOW_LADDER = registerBlockItem(CIncBlocks.YELLOW_LADDER);
-    public static final Item YELLOW_CAGED_LADDER = registerBlockItem(CIncBlocks.YELLOW_CAGED_LADDER);
+    public static final Item YELLOW_CATWALK = register("yellow_catwalk", CIncBlocks.YELLOW_CATWALK);
+    public static final Item YELLOW_LADDER = register("yellow_ladder", CIncBlocks.YELLOW_LADDER);
+    public static final Item YELLOW_CAGED_LADDER = register("yellow_caged_ladder", CIncBlocks.YELLOW_CAGED_LADDER);
 
-    public static final Item RED_CATWALK = registerBlockItem(CIncBlocks.RED_CATWALK);
-    public static final Item RED_LADDER = registerBlockItem(CIncBlocks.RED_LADDER);
-    public static final Item RED_CAGED_LADDER = registerBlockItem(CIncBlocks.RED_CAGED_LADDER);
+    public static final Item RED_CATWALK = register("red_catwalk", CIncBlocks.RED_CATWALK);
+    public static final Item RED_LADDER = register("red_ladder", CIncBlocks.RED_LADDER);
+    public static final Item RED_CAGED_LADDER = register("red_caged_ladder", CIncBlocks.RED_CAGED_LADDER);
 
     private static Item register(String name, Item item) {
         REGISTER.register(name, () -> item);
         return item;
     }
 
-    private static Item registerBlockItem(Block block) {
-        Item item = new BlockItem(block, defaultSettings());
-        REGISTER.register(Registry.BLOCK.getId(block), () -> item);
-        return item;
+    private static Item register(String name, Block block) {
+        return register(name, new BlockItem(block, defaultSettings()));
     }
 
     private static Item.Settings defaultSettings() {
