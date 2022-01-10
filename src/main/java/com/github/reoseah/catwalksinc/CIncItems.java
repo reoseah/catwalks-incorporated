@@ -3,7 +3,6 @@ package com.github.reoseah.catwalksinc;
 import com.github.reoseah.catwalksinc.item.PaintRollerItem;
 import com.github.reoseah.catwalksinc.item.PaintScraperItem;
 import com.github.reoseah.catwalksinc.item.WrenchItem;
-import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -11,7 +10,6 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.registry.Registry;
 
 public class CIncItems {
-    public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(CatwalksInc.ID, Registry.ITEM_KEY);
 
     public static final Item CATWALK = register("catwalk", CIncBlocks.CATWALK);
     public static final Item INDUSTRIAL_LADDER = register("industrial_ladder", CIncBlocks.INDUSTRIAL_LADDER);
@@ -50,8 +48,7 @@ public class CIncItems {
     public static final Item RED_CAGED_LADDER = register("red_caged_ladder", CIncBlocks.RED_CAGED_LADDER);
 
     private static Item register(String name, Item item) {
-        REGISTER.register(name, () -> item);
-        return item;
+        return Registry.register(Registry.ITEM, CatwalksInc.id(name), item);
     }
 
     private static Item register(String name, Block block) {

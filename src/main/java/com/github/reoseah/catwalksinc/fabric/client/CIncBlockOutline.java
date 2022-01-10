@@ -19,7 +19,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 
 public final class CIncBlockOutline implements BlockOutline {
-
 	@SuppressWarnings("resource")
 	@Override
 	public boolean onBlockOutline(WorldRenderContext wrc, BlockOutlineContext boc) {

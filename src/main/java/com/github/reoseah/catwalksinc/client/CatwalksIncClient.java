@@ -3,9 +3,9 @@ package com.github.reoseah.catwalksinc.client;
 import com.github.reoseah.catwalksinc.CIncBlocks;
 import com.github.reoseah.catwalksinc.CIncItems;
 import com.github.reoseah.catwalksinc.block.Wrenchable;
-import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.RenderLayer;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public class CatwalksIncClient {
     public static void init(TriConsumer<Item, Identifier, UnclampedModelPredicateProvider> modelPredicateRegister) {
-        RenderTypeRegistry.register(RenderLayer.getCutoutMipped(),
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutoutMipped(),
                 CIncBlocks.CATWALK, CIncBlocks.CATWALK_STAIRS,
                 CIncBlocks.INDUSTRIAL_LADDER, CIncBlocks.CAGED_LADDER,
                 CIncBlocks.CAGE_LAMP, CIncBlocks.CRANK_WHEEL,

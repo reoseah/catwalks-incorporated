@@ -22,8 +22,6 @@ public class CatwalksIncClientFabric implements ClientModInitializer {
     public void onInitializeClient() {
         CatwalksIncClient.init(FabricModelPredicateProviderRegistry::register);
 
-
-
         WorldRenderEvents.BLOCK_OUTLINE.register(new CIncBlockOutline());
     }
 }
