@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "catwalksinc:iron_rod",
-    { "required": false, "id": "modern_industrialization:iron_rod" }
-  ]
-}

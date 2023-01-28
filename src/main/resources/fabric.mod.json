@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "catwalksinc",
+  "id": "catwalks",
   "version": "${version}",
   "name": "Catwalks Inc.",
   "description": "Catwalks, caged ladders and other industrial stuff for building or just decoration.",
@@ -16,13 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.github.reoseah.catwalksinc.fabric.CatwalksIncFabric"
+      "com.github.reoseah.catwalks.CatwalksInc"
     ],
     "client": [
-      "com.github.reoseah.catwalksinc.fabric.client.CatwalksIncClientFabric"
-    ],
-    "rei_plugins": [
-      "com.github.reoseah.catwalksinc.rei.CatwalksIncREI"
+      "com.github.reoseah.catwalks.CatwalksInc"
     ]
   },
   "mixins": [

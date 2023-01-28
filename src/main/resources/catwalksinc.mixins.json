@@ -1,12 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.reoseah.catwalksinc.mixin",
+  "package": "com.github.reoseah.catwalks.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
   ],
   "client": [
-    "client.MixinItemRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
