@@ -1,8 +1,7 @@
-package com.github.reoseah.catwalks.part;
+package com.github.reoseah.catwalksinc.part;
 
 import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
-import alexiil.mc.lib.multipart.api.NativeMultipart;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
@@ -10,8 +9,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
-import com.github.reoseah.catwalks.block.CageLampBlock;
-import com.google.common.collect.ImmutableList;
+import com.github.reoseah.catwalksinc.block.CageLampBlock;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import net.minecraft.block.BlockState;
@@ -24,8 +22,7 @@ import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class CageLampPart extends CatwalksPart {
-    public static final PartDefinition DEFINITION = new PartDefinition(new Identifier("catwalks:cage_lamp"), CageLampPart::readFromNbt, CageLampPart::loadFromBuffer);
-    public static final NativeMultipart NATIVE_MULTIPART = (world, pos, state) -> ImmutableList.of(holder -> new CageLampPart(DEFINITION, holder, state.get(CageLampBlock.FACING)));
+    public static final PartDefinition DEFINITION = new PartDefinition(new Identifier("catwalksinc:cage_lamp"), CageLampPart::readFromNbt, CageLampPart::loadFromBuffer);
 
     private final Direction facing;
 
@@ -60,6 +57,8 @@ public class CageLampPart extends CatwalksPart {
     @Override
     public void onAdded(MultipartEventBus bus) {
         super.onAdded(bus);
+
+        this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, this.getBlockState().getLuminance());
         bus.addListener(this, PartAddedEvent.class, event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, this.getBlockState().getLuminance()));
     }
 

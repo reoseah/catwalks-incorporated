@@ -1,4 +1,4 @@
-package com.github.reoseah.catwalks.part;
+package com.github.reoseah.catwalksinc.part;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartEventBus;
@@ -8,20 +8,18 @@ import alexiil.mc.lib.multipart.api.event.NeighbourStateUpdateEvent;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.part.BasePart;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
-/**
- * Based on VanillaPart class from VanillaParts.
- */
 public abstract class CatwalksPart extends BasePart {
     private final CategorySet categories;
 
     public CatwalksPart(PartDefinition definition, MultipartHolder holder) {
         super(definition, holder);
-        this.categories = Util.make(CategorySet.builder(), this::addCategories).build();
+        CategorySet.Builder builder = CategorySet.builder();
+        this.addCategories(builder);
+        this.categories = builder.build();
     }
 
     protected abstract void addCategories(CategorySet.Builder builder);

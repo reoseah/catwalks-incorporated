@@ -2,9 +2,9 @@
   "credit": "Made with Blockbench",
   "parent": "block/block",
   "textures": {
-    "particle": "catwalks:block/cage_lamp_side",
-    "side": "catwalks:block/cage_lamp_side",
-    "top": "catwalks:block/cage_lamp_top"
+    "particle": "catwalksinc:block/cage_lamp_side",
+    "side": "catwalksinc:block/cage_lamp_side",
+    "top": "catwalksinc:block/cage_lamp_top"
   },
   "elements": [
     {

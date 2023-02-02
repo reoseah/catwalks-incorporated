@@ -1,26 +1,26 @@
 {
   "variants": {
     "facing=up": {
-      "model": "catwalks:block/cage_lamp"
+      "model": "catwalksinc:block/cage_lamp"
     },
     "facing=down": {
-      "model": "catwalks:block/cage_lamp",
+      "model": "catwalksinc:block/cage_lamp",
       "x": 180
     },
     "facing=north": {
-      "model": "catwalks:block/cage_lamp",
+      "model": "catwalksinc:block/cage_lamp",
       "x": 90
     },
     "facing=south": {
-      "model": "catwalks:block/cage_lamp",
+      "model": "catwalksinc:block/cage_lamp",
       "x": 90, "y": 180
     },
     "facing=west": {
-      "model": "catwalks:block/cage_lamp",
+      "model": "catwalksinc:block/cage_lamp",
       "x": 90, "y": 270
     },
     "facing=east": {
-      "model": "catwalks:block/cage_lamp",
+      "model": "catwalksinc:block/cage_lamp",
       "x": 90, "y": 90
     }
   }

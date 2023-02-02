@@ -1,4 +1,4 @@
-package com.github.reoseah.catwalks.block;
+package com.github.reoseah.catwalksinc.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,6 +17,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
+@SuppressWarnings("deprecation")
 public class WallDecorationBlock extends WaterloggableBlock {
     public static final EnumProperty<Direction> FACING = Properties.FACING;
 
@@ -45,7 +46,6 @@ public class WallDecorationBlock extends WaterloggableBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         return canPlaceAt(world, pos, state.get(FACING).getOpposite());
     }
@@ -67,13 +67,11 @@ public class WallDecorationBlock extends WaterloggableBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, BlockMirror mirror) {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }

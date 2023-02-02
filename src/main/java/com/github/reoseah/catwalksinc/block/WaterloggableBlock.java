@@ -1,4 +1,4 @@
-package com.github.reoseah.catwalks.block;
+package com.github.reoseah.catwalksinc.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,9 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class WaterloggableBlock extends Block implements Waterloggable {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
@@ -30,7 +29,6 @@ public class WaterloggableBlock extends Block implements Waterloggable {
         builder.add(WATERLOGGED);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStill(false) : Fluids.EMPTY.getDefaultState();
@@ -44,7 +42,6 @@ public class WaterloggableBlock extends Block implements Waterloggable {
         return this.getDefaultState().with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     @MustBeInvokedByOverriders
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
