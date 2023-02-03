@@ -8,6 +8,7 @@ import com.github.reoseah.catwalksinc.block.CageLampBlock;
 import com.github.reoseah.catwalksinc.block.CatwalkBlock;
 import com.github.reoseah.catwalksinc.block.CatwalksIncBlock;
 import com.github.reoseah.catwalksinc.block.CrankWheelBlock;
+import com.github.reoseah.catwalksinc.item.WrenchItem;
 import com.github.reoseah.catwalksinc.part.CageLampPart;
 import com.github.reoseah.catwalksinc.part.CatwalkPart;
 import com.github.reoseah.catwalksinc.part.CrankWheelPart;
@@ -54,7 +55,9 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         Registry.register(Registry.ITEM, "catwalksinc:crank_wheel", CrankWheelBlock.ITEM);
         CrankWheelPart.DEFINITION.register();
 
-        UseBlockCallback.EVENT.register(CatwalksInc::interact);
+        Registry.register(Registry.ITEM, "catwalksinc:wrench", WrenchItem.INSTANCE);
+
+        UseBlockCallback.EVENT.register(CatwalksInc::handleMultipartPlacement);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(CrankWheelBlock.INSTANCE, RenderLayer.getCutoutMipped());
     }
 
-    private static ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+    private static ActionResult handleMultipartPlacement(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         ItemStack stack = player.getStackInHand(hand);
         Item item = stack.getItem();
         if (item instanceof BlockItem blockItem) {

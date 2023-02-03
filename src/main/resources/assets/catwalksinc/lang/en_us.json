@@ -2,5 +2,6 @@
   "itemGroup.catwalksinc.main": "Catwalks, Inc.",
   "block.catwalksinc.catwalk": "Catwalk",
   "block.catwalksinc.cage_lamp": "Cage Lamp",
-  "block.catwalksinc.crank_wheel": "Crank Wheel"
+  "block.catwalksinc.crank_wheel": "Crank Wheel",
+  "item.catwalksinc.wrench": "Wrench"
 }

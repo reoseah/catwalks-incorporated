@@ -34,7 +34,7 @@ public class CatwalksUtil {
         int dx = target.getX() - origin.getX();
         int dy = target.getY() - origin.getY();
         int dz = target.getZ() - origin.getZ();
-        
+
         if (dx == -1) {
             return Direction.WEST;
         } else if (dx == 1) {

@@ -147,10 +147,10 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         BlockPos pos = ctx.getBlockPos();
 
         return super.getPlacementState(ctx) //
-                .with(SOUTH, this.shouldHaveHandrail(world, pos, Direction.SOUTH)) //
-                .with(WEST, this.shouldHaveHandrail(world, pos, Direction.WEST)) //
-                .with(NORTH, this.shouldHaveHandrail(world, pos, Direction.NORTH)) //
-                .with(EAST, this.shouldHaveHandrail(world, pos, Direction.EAST));
+                .with(SOUTH, shouldHaveHandrail(world, pos, Direction.SOUTH)) //
+                .with(WEST, shouldHaveHandrail(world, pos, Direction.WEST)) //
+                .with(NORTH, shouldHaveHandrail(world, pos, Direction.NORTH)) //
+                .with(EAST, shouldHaveHandrail(world, pos, Direction.EAST));
     }
 
     @Override
