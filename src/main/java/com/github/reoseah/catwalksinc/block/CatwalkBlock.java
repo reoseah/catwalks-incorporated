@@ -1,6 +1,12 @@
 package com.github.reoseah.catwalksinc.block;
 
+import alexiil.mc.lib.multipart.api.AbstractPart;
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import alexiil.mc.lib.multipart.api.MultipartUtil;
+import alexiil.mc.lib.multipart.api.NativeMultipart;
 import com.github.reoseah.catwalksinc.CatwalksInc;
+import com.github.reoseah.catwalksinc.part.CatwalkPart;
+import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
@@ -20,51 +26,57 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class CatwalkBlock extends WaterloggableBlock {
+public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
     public static final BooleanProperty SOUTH = Properties.SOUTH;
     public static final BooleanProperty WEST = Properties.WEST;
     public static final BooleanProperty NORTH = Properties.NORTH;
     public static final BooleanProperty EAST = Properties.EAST;
 
-    private static final VoxelShape[] OUTLINE_SHAPES;
-    private static final VoxelShape[] COLLISION_SHAPES;
+    public static final VoxelShape[] OUTLINE_SHAPES;
+    public static final VoxelShape[] COLLISION_SHAPES;
+
+    public static final VoxelShape FLOOR_SHAPE = Block.createCuboidShape(0, 0, 0, 16, 1, 16);
+
+    public static final VoxelShape CUTOUT_SHAPE = VoxelShapes.union( //
+            Block.createCuboidShape(0, 2, 2, 16, 13, 14), //
+            Block.createCuboidShape(2, 2, 0, 14, 13, 16));
+    public static final VoxelShape SOUTH_HANDRAIL_SHAPE = VoxelShapes.combineAndSimplify(Block.createCuboidShape(0, 0, 14, 16, 16, 16), CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
+    public static final VoxelShape WEST_HANDRAIL_SHAPE = VoxelShapes.combineAndSimplify(Block.createCuboidShape(0, 0, 0, 2, 16, 16), CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
+    public static final VoxelShape NORTH_HANDRAIL_SHAPE = VoxelShapes.combineAndSimplify(Block.createCuboidShape(0, 0, 0, 16, 16, 2), CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
+    public static final VoxelShape EAST_HANDRAIL_SHAPE = VoxelShapes.combineAndSimplify(Block.createCuboidShape(14, 0, 0, 16, 16, 16), CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
 
     static {
         OUTLINE_SHAPES = new VoxelShape[16];
         COLLISION_SHAPES = new VoxelShape[16];
 
-        VoxelShape floor = Block.createCuboidShape(0, 0, 0, 16, 1, 16);
-
-        VoxelShape south = Block.createCuboidShape(0, 0, 14, 16, 16, 16);
-        VoxelShape west = Block.createCuboidShape(0, 0, 0, 2, 16, 16);
-        VoxelShape north = Block.createCuboidShape(0, 0, 0, 16, 16, 2);
-        VoxelShape east = Block.createCuboidShape(14, 0, 0, 16, 16, 16);
+        VoxelShape south = SOUTH_HANDRAIL_SHAPE;
+        VoxelShape west = WEST_HANDRAIL_SHAPE;
+        VoxelShape north = NORTH_HANDRAIL_SHAPE;
+        VoxelShape east = EAST_HANDRAIL_SHAPE;
 
         // collision shapes are only half-pixel thick
         // otherwise you bump into edges of handrails too much
-        VoxelShape floorColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 1, 15.5);
-
-        VoxelShape southColl = Block.createCuboidShape(0.5, 0, 15, 15.5, 16, 15.5);
-        VoxelShape westColl = Block.createCuboidShape(0.5, 0, 0.5, 1, 16, 15.5);
+        VoxelShape floorCollision = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 1, 15.5);
+        VoxelShape southCollision = Block.createCuboidShape(0.5, 0, 15, 15.5, 16, 15.5);
+        VoxelShape westCollision = Block.createCuboidShape(0.5, 0, 0.5, 1, 16, 15.5);
         VoxelShape northColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 16, 1);
         VoxelShape eastColl = Block.createCuboidShape(15, 0, 0.5, 15.5, 16, 15.5);
 
-        VoxelShape sidesCutout = VoxelShapes.union( //
-                Block.createCuboidShape(0, 2, 2, 16, 13, 14), //
-                Block.createCuboidShape(2, 2, 0, 14, 13, 16));
-
         for (int i = 0; i < 16; i++) {
-            VoxelShape outline = floor;
-            VoxelShape collision = floorColl;
+            VoxelShape outline = FLOOR_SHAPE;
+            VoxelShape collision = floorCollision;
             if ((i & 1) != 0) {
                 outline = VoxelShapes.union(outline, south);
-                collision = VoxelShapes.union(collision, southColl);
+                collision = VoxelShapes.union(collision, southCollision);
             }
             if ((i & 2) != 0) {
                 outline = VoxelShapes.union(outline, west);
-                collision = VoxelShapes.union(collision, westColl);
+                collision = VoxelShapes.union(collision, westCollision);
             }
             if ((i & 4) != 0) {
                 outline = VoxelShapes.union(outline, north);
@@ -74,8 +86,8 @@ public class CatwalkBlock extends WaterloggableBlock {
                 outline = VoxelShapes.union(outline, east);
                 collision = VoxelShapes.union(collision, eastColl);
             }
-            OUTLINE_SHAPES[i] = VoxelShapes.combineAndSimplify(outline, sidesCutout, BooleanBiFunction.ONLY_FIRST);
-            COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(collision, sidesCutout, BooleanBiFunction.ONLY_FIRST);
+            OUTLINE_SHAPES[i] = VoxelShapes.combineAndSimplify(outline, CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
+            COLLISION_SHAPES[i] = VoxelShapes.combineAndSimplify(collision, CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
         }
     }
 
@@ -84,9 +96,7 @@ public class CatwalkBlock extends WaterloggableBlock {
 
     public CatwalkBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState() //
-                .with(SOUTH, true).with(WEST, true) //
-                .with(NORTH, true).with(EAST, true));
+        this.setDefaultState(this.getDefaultState().with(SOUTH, true).with(WEST, true).with(NORTH, true).with(EAST, true));
     }
 
     @Override
@@ -101,10 +111,24 @@ public class CatwalkBlock extends WaterloggableBlock {
     }
 
     protected static int getShapeIndex(BlockState state) {
-        return (state.get(SOUTH) ? 1 : 0) //
-                | (state.get(WEST) ? 2 : 0) //
-                | (state.get(NORTH) ? 4 : 0) //
-                | (state.get(EAST) ? 8 : 0);
+        return getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST));
+    }
+
+    public static int getShapeIndex(boolean south, boolean west, boolean north, boolean east) {
+        int result = 0;
+        if (south) {
+            result |= 1;
+        }
+        if (west) {
+            result |= 0b10;
+        }
+        if (north) {
+            result |= 0b100;
+        }
+        if (east) {
+            result |= 0b1000;
+        }
+        return result;
     }
 
     @Override
@@ -134,17 +158,25 @@ public class CatwalkBlock extends WaterloggableBlock {
         super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
 
         if (direction.getAxis().isHorizontal()) {
-            return state.with(getHandrailProperty(direction), this.shouldHaveHandrail(world, pos, direction));
+            return state.with(getHandrailProperty(direction), shouldHaveHandrail(world, pos, direction));
         }
         return state;
     }
 
-    public boolean shouldHaveHandrail(WorldAccess world, BlockPos pos, Direction side) {
+    public static boolean shouldHaveHandrail(WorldAccess world, BlockPos pos, Direction side) {
         BlockPos neighborPos = pos.offset(side);
         BlockState neighbor = world.getBlockState(neighborPos);
 
-        if (neighbor.isOf(this)) {
+        if (neighbor.isOf(INSTANCE)) {
             return false;
+        }
+        MultipartContainer container = MultipartUtil.get(world, neighborPos);
+        if (container != null) {
+            for (AbstractPart part : container.getAllParts()) {
+                if (part instanceof CatwalkPart) {
+                    return false;
+                }
+            }
         }
         return !needsCatwalkAccess(neighbor, world, neighborPos, side.getOpposite());
     }
@@ -176,5 +208,12 @@ public class CatwalkBlock extends WaterloggableBlock {
             case EAST -> EAST;
             default -> throw new IncompatibleClassChangeError();
         };
+    }
+
+    @Nullable
+    @Override
+    public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        return ImmutableList.of(holder -> new CatwalkPart(CatwalkPart.DEFINITION, holder, state.get(NORTH), state.get(WEST), state.get(SOUTH), state.get(EAST)));
+
     }
 }

@@ -18,7 +18,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 @SuppressWarnings("deprecation")
-public class WallDecorationBlock extends WaterloggableBlock {
+public class WallDecorationBlock extends CatwalksIncBlock {
     public static final EnumProperty<Direction> FACING = Properties.FACING;
 
     public WallDecorationBlock(Settings settings) {

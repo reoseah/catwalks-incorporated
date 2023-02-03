@@ -5,17 +5,19 @@ import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.event.NeighbourStateUpdateEvent;
+import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import juuxel.blockstoparts.api.category.CategorySet;
+import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import juuxel.blockstoparts.api.part.BasePart;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
-public abstract class CatwalksPart extends BasePart {
+public abstract class CatwalksIncPart extends BasePart {
     private final CategorySet categories;
 
-    public CatwalksPart(PartDefinition definition, MultipartHolder holder) {
+    public CatwalksIncPart(PartDefinition definition, MultipartHolder holder) {
         super(definition, holder);
         CategorySet.Builder builder = CategorySet.builder();
         this.addCategories(builder);
@@ -57,5 +59,10 @@ public abstract class CatwalksPart extends BasePart {
     @Override
     public final CategorySet getCategories() {
         return this.categories;
+    }
+
+    @Override
+    public PartModelKey getModelKey() {
+        return new StaticVanillaModelKey(this.getBlockState());
     }
 }

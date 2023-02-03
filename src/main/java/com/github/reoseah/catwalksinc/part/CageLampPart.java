@@ -5,13 +5,11 @@ import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
-import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.github.reoseah.catwalksinc.block.CageLampBlock;
 import juuxel.blockstoparts.api.category.CategorySet;
-import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -21,7 +19,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class CageLampPart extends CatwalksPart {
+public class CageLampPart extends CatwalksIncPart {
     public static final PartDefinition DEFINITION = new PartDefinition(new Identifier("catwalksinc:cage_lamp"), CageLampPart::readFromNbt, CageLampPart::loadFromBuffer);
 
     private final Direction facing;
@@ -47,11 +45,6 @@ public class CageLampPart extends CatwalksPart {
     @Override
     public ItemStack getPickStack(@Nullable BlockHitResult hitResult) {
         return new ItemStack(CageLampBlock.ITEM);
-    }
-
-    @Override
-    public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(this.getBlockState());
     }
 
     @Override

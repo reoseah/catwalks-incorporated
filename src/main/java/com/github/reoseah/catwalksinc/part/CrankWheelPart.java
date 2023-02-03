@@ -26,7 +26,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class CrankWheelPart extends CatwalksPart {
+public class CrankWheelPart extends CatwalksIncPart {
     public static final PartDefinition DEFINITION = new PartDefinition(new Identifier("catwalksinc:crank_wheel"), CrankWheelPart::readFromNbt, CrankWheelPart::loadFromBuffer);
 
     private final Direction facing;

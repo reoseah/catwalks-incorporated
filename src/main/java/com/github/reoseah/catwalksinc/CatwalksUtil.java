@@ -29,4 +29,25 @@ public class CatwalksUtil {
                 ? Side.LEFT : Side.RIGHT;
         return side;
     }
+
+    public static Direction compare(BlockPos origin, BlockPos target) {
+        int dx = target.getX() - origin.getX();
+        int dy = target.getY() - origin.getY();
+        int dz = target.getZ() - origin.getZ();
+        
+        if (dx == -1) {
+            return Direction.WEST;
+        } else if (dx == 1) {
+            return Direction.EAST;
+        } else if (dz == -1) {
+            return Direction.NORTH;
+        } else if (dz == 1) {
+            return Direction.SOUTH;
+        } else if (dy == -1) {
+            return Direction.DOWN;
+        } else if (dy == 1) {
+            return Direction.UP;
+        }
+        return null;
+    }
 }
