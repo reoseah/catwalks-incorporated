@@ -6,9 +6,7 @@ import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
 import alexiil.mc.lib.multipart.api.event.PartRemovedEvent;
-import alexiil.mc.lib.net.IMsgReadCtx;
-import alexiil.mc.lib.net.IMsgWriteCtx;
-import alexiil.mc.lib.net.NetByteBuf;
+import alexiil.mc.lib.net.*;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
 import com.github.reoseah.catwalksinc.block.CatwalkBlock;
 import com.github.reoseah.catwalksinc.item.WrenchItem;
@@ -36,6 +34,8 @@ import java.util.Map;
 
 public class CatwalkPart extends CatwalksIncPart {
     public static final PartDefinition DEFINITION = new PartDefinition(new Identifier("catwalksinc:catwalk"), CatwalkPart::readFromNbt, CatwalkPart::loadFromBuffer);
+    public static final ParentNetIdSingle<CatwalkPart> CATWALK_NET_ID = NET_ID.subType(CatwalkPart.class, "catwalksinc:catwalk_update");
+    public static final NetIdDataK<CatwalkPart> CATWALK_DATA = CATWALK_NET_ID.idData("catwalk_update").setReceiver(CatwalkPart::updateConnections);
 
     protected Map<Direction, ConnectionOverride> overrides = new EnumMap<>(Direction.class);
     protected boolean north, west, south, east;
@@ -161,6 +161,9 @@ public class CatwalkPart extends CatwalksIncPart {
                 for (Direction side : Direction.Type.HORIZONTAL) {
                     this.updateSide(side);
                 }
+                this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
+                    writeUpdatePacket(buf);
+                });
             }
         });
         bus.addListener(this, PartRemovedEvent.class, event -> {
@@ -168,7 +171,22 @@ public class CatwalkPart extends CatwalksIncPart {
             for (Direction side : Direction.Type.HORIZONTAL) {
                 this.updateSide(side);
             }
+            this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
+                writeUpdatePacket(buf);
+            });
         });
+    }
+
+    private void writeUpdatePacket(NetByteBuf buffer) {
+        buffer.writeByte(this.overrides.size());
+        for (Map.Entry<Direction, ConnectionOverride> entry : this.overrides.entrySet()) {
+            buffer.writeByte(entry.getKey().getHorizontal());
+            buffer.writeByte(entry.getValue().ordinal());
+        }
+        buffer.writeBoolean(this.north);
+        buffer.writeBoolean(this.east);
+        buffer.writeBoolean(this.south);
+        buffer.writeBoolean(this.west);
     }
 
     private void updateSide(Direction side) {
@@ -184,6 +202,9 @@ public class CatwalkPart extends CatwalksIncPart {
         this.container.recalculateShape();
         if (!this.getWorld().isClient) {
             this.updateListeners();
+            this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
+                writeUpdatePacket(buf);
+            });
         }
     }
 
@@ -196,7 +217,8 @@ public class CatwalkPart extends CatwalksIncPart {
     }
 
     public boolean isBlocked(Direction direction) {
-        VoxelShape shape = getHandrailShape(direction);
+        BlockPos pos = this.getPos();
+        VoxelShape shape = getHandrailShape(direction).offset(pos.getX(), pos.getY(), pos.getZ());
         for (AbstractPart part : this.holder.getContainer().getAllParts()) {
             if (part == this || part.canOverlapWith(this)) {
                 continue;
@@ -225,32 +247,53 @@ public class CatwalkPart extends CatwalksIncPart {
             case SOUTH -> this.south = hasHandrail;
             case EAST -> this.east = hasHandrail;
         }
+        this.container.recalculateShape();
     }
 
     @Override
     public ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack stack = player.getStackInHand(hand);
         if (stack.isIn(WrenchItem.COMPATIBILITY_TAG)) {
-            Direction side = CatwalksUtil.getTargetedQuarter(this.getPos(), hit.getPos());
-            if (this.isBlocked(side)) {
-                player.sendMessage(Text.translatable("misc.catwalksinc.blocked_by_another_multipart"), true);
-                return ActionResult.FAIL;
-            }
-            ConnectionOverride override = ConnectionOverride.cycle(this.overrides.get(side));
-            if (override == null) {
-                this.overrides.remove(side);
-                player.sendMessage(ConnectionOverride.DEFAULT_TEXT, true);
-            } else {
-                this.overrides.put(side, override);
-                player.sendMessage(override.text, true);
-            }
+            if (!this.getWorld().isClient) {
+                Direction side = CatwalksUtil.getTargetedQuarter(this.getPos(), hit.getPos());
+                if (this.isBlocked(side)) {
+                    player.sendMessage(Text.translatable("misc.catwalksinc.blocked_by_another_multipart"), true);
+                    return ActionResult.FAIL;
+                }
+                ConnectionOverride override = ConnectionOverride.cycle(this.overrides.get(side));
+                if (override == null) {
+                    this.overrides.remove(side);
+                    player.sendMessage(ConnectionOverride.DEFAULT_TEXT, true);
+                } else {
+                    this.overrides.put(side, override);
+                    player.sendMessage(override.text, true);
+                }
 
-            if (stack.isDamageable()) {
-                stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+                if (stack.isDamageable()) {
+                    stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+                }
+                this.updateSide(side);
+                this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
+                    writeUpdatePacket(buf);
+                });
             }
-            this.updateSide(side);
             return ActionResult.SUCCESS;
         }
         return ActionResult.PASS;
+    }
+
+    private void updateConnections(NetByteBuf buffer, IMsgReadCtx ctx) {
+        int overridesCount = buffer.readByte();
+        for (int i = 0; i < overridesCount; i++) {
+            Direction direction = Direction.fromHorizontal(buffer.readByte());
+            ConnectionOverride value = ConnectionOverride.values()[MathHelper.clamp(buffer.readByte(), 0, ConnectionOverride.values().length)];
+            this.overrides.put(direction, value);
+        }
+        this.north = buffer.readBoolean();
+        this.east = buffer.readBoolean();
+        this.south = buffer.readBoolean();
+        this.west = buffer.readBoolean();
+        this.holder.getContainer().recalculateShape();
+        this.holder.getContainer().redrawIfChanged();
     }
 }
