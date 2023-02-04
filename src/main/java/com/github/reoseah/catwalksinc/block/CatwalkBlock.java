@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
@@ -35,6 +36,7 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("deprecation")
 public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
@@ -113,11 +115,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return context.isHolding(this.asItem()) && !context.isDescending() ? VoxelShapes.fullCube() : OUTLINE_SHAPES[getShapeIndex(state)];
-    }
-
-    protected static int getShapeIndex(BlockState state) {
-        return getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST));
+        return context.isHolding(this.asItem()) && !context.isDescending() ? VoxelShapes.fullCube() : OUTLINE_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
     }
 
     public static int getShapeIndex(boolean south, boolean west, boolean north, boolean east) {
@@ -139,12 +137,12 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return COLLISION_SHAPES[getShapeIndex(state)];
+        return COLLISION_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
     }
 
     @Override
     public VoxelShape getSidesShape(BlockState state, BlockView world, BlockPos pos) {
-        return OUTLINE_SHAPES[getShapeIndex(state)];
+        return OUTLINE_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
     }
 
     @Override
@@ -152,11 +150,33 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         World world = ctx.getWorld();
         BlockPos pos = ctx.getBlockPos();
 
+        if (world.getBlockState(pos).canReplace(ctx) //
+                && world.getBlockState(pos.up()).canReplace(ItemPlacementContext.offset(ctx, pos.up(), Direction.DOWN))) {
+            Optional<Direction> stairsUpFacing = checkForStairsPlacementAbove(world, pos);
+            if (stairsUpFacing.isPresent()) {
+                return CatwalkStairsBlock.INSTANCE.getDefaultState() //
+                        .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
+                        .with(CatwalkStairsBlock.FACING, stairsUpFacing.get().getOpposite());
+            }
+        }
+
         return super.getPlacementState(ctx) //
                 .with(SOUTH, shouldHaveHandrail(world, pos, Direction.SOUTH)) //
                 .with(WEST, shouldHaveHandrail(world, pos, Direction.WEST)) //
                 .with(NORTH, shouldHaveHandrail(world, pos, Direction.NORTH)) //
                 .with(EAST, shouldHaveHandrail(world, pos, Direction.EAST));
+    }
+
+    protected static Optional<Direction> checkForStairsPlacementAbove(WorldAccess world, BlockPos pos) {
+        for (Direction facing : Direction.Type.HORIZONTAL) {
+            BlockPos exitPos = pos.up().offset(facing);
+            BlockState exitState = world.getBlockState(exitPos);
+            if (needsCatwalkConnection(exitState, world, exitPos, facing.getOpposite())) {
+                return Optional.of(facing);
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -173,18 +193,29 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         BlockPos neighborPos = pos.offset(side);
         BlockState neighbor = world.getBlockState(neighborPos);
 
-        if (neighbor.isOf(INSTANCE)) {
-            return false;
+        return !needsCatwalkConnection(neighbor, world, neighborPos, side.getOpposite()) && !needsCatwalkAccess(neighbor, world, neighborPos, side.getOpposite());
+    }
+
+    public static boolean needsCatwalkConnection(BlockState state, WorldAccess world, BlockPos pos, Direction side) {
+        if (state.isOf(INSTANCE)) {
+            return true;
         }
-        MultipartContainer container = MultipartUtil.get(world, neighborPos);
+        if (state.isOf(CatwalkStairsBlock.INSTANCE)) {
+            if (state.get(CatwalkStairsBlock.HALF) == DoubleBlockHalf.LOWER) {
+                return side == state.get(CatwalkStairsBlock.FACING);
+            } else {
+                return side.getOpposite() == state.get(CatwalkStairsBlock.FACING);
+            }
+        }
+        MultipartContainer container = MultipartUtil.get(world, pos);
         if (container != null) {
             for (AbstractPart part : container.getAllParts()) {
-                if (part instanceof CatwalkPart) {
-                    return false;
+                if (part instanceof CatwalkPart catwalk) {
+                    return !catwalk.isHandrailForced(side.getOpposite());
                 }
             }
         }
-        return !needsCatwalkAccess(neighbor, world, neighborPos, side.getOpposite());
+        return false;
     }
 
     public static boolean needsCatwalkAccess(BlockState state, WorldAccess world, BlockPos pos, Direction side) {

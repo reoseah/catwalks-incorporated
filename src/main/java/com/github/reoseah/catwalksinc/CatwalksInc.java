@@ -4,10 +4,7 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import alexiil.mc.lib.multipart.impl.LibMultiPart;
-import com.github.reoseah.catwalksinc.block.CageLampBlock;
-import com.github.reoseah.catwalksinc.block.CatwalkBlock;
-import com.github.reoseah.catwalksinc.block.CatwalksIncBlock;
-import com.github.reoseah.catwalksinc.block.CrankWheelBlock;
+import com.github.reoseah.catwalksinc.block.*;
 import com.github.reoseah.catwalksinc.item.WrenchItem;
 import com.github.reoseah.catwalksinc.part.CageLampPart;
 import com.github.reoseah.catwalksinc.part.CatwalkPart;
@@ -47,6 +44,8 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         Registry.register(Registry.ITEM, "catwalksinc:catwalk", CatwalkBlock.ITEM);
         CatwalkPart.DEFINITION.register();
 
+        Registry.register(Registry.BLOCK, "catwalksinc:catwalk_stairs", CatwalkStairsBlock.INSTANCE);
+
         Registry.register(Registry.BLOCK, "catwalksinc:cage_lamp", CageLampBlock.INSTANCE);
         Registry.register(Registry.ITEM, "catwalksinc:cage_lamp", CageLampBlock.ITEM);
         CageLampPart.DEFINITION.register();
@@ -64,6 +63,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalkBlock.INSTANCE, RenderLayer.getCutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(CatwalkStairsBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CageLampBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CrankWheelBlock.INSTANCE, RenderLayer.getCutoutMipped());
     }

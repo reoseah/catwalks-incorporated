@@ -296,4 +296,8 @@ public class CatwalkPart extends CatwalksIncPart {
         this.holder.getContainer().recalculateShape();
         this.holder.getContainer().redrawIfChanged();
     }
+
+    public boolean isHandrailForced(Direction side) {
+        return this.overrides.get(side) == ConnectionOverride.FORCED;
+    }
 }
