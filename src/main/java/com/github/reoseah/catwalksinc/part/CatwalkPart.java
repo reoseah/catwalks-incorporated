@@ -11,11 +11,16 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
 import com.github.reoseah.catwalksinc.block.CatwalkBlock;
+import com.github.reoseah.catwalksinc.item.WrenchItem;
 import juuxel.blockstoparts.api.category.CategorySet;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
@@ -154,35 +159,39 @@ public class CatwalkPart extends CatwalksIncPart {
         bus.addListener(this, PartAddedEvent.class, event -> {
             if (event.part != this) {
                 for (Direction side : Direction.Type.HORIZONTAL) {
-                    if (this.isBlocked(side)) {
-                        this.setHandrail(side, false);
-                        this.updateListeners();
-                    }
+                    this.updateSide(side);
                 }
             }
         });
         bus.addListener(this, PartRemovedEvent.class, event -> {
-            holder.getContainer().recalculateShape();
+            this.holder.getContainer().recalculateShape();
             for (Direction side : Direction.Type.HORIZONTAL) {
-                if (this.isBlocked(side)) {
-                    this.setHandrail(side, false);
-                    this.updateListeners();
-                }
+                this.updateSide(side);
             }
         });
+    }
+
+    private void updateSide(Direction side) {
+        if (this.isBlocked(side)) {
+            this.setHandrail(side, false);
+            this.overrides.remove(side);
+            this.updateListeners();
+        } else if (this.overrides.containsKey(side)) {
+            this.setHandrail(side, this.overrides.get(side) == ConnectionOverride.FORCED);
+        } else {
+            this.setHandrail(side, CatwalkBlock.shouldHaveHandrail(this.getWorld(), this.getPos(), side));
+        }
+        this.container.recalculateShape();
+        if (!this.getWorld().isClient) {
+            this.updateListeners();
+        }
     }
 
     @Override
     protected void onNeighborUpdate(BlockPos neighborPos) {
         Direction side = CatwalksUtil.compare(this.getPos(), neighborPos);
         if (side.getAxis().isHorizontal()) {
-            if (this.isBlocked(side)) {
-                this.setHandrail(side, false);
-                this.updateListeners();
-            } else {
-                this.setHandrail(side, CatwalkBlock.shouldHaveHandrail(this.getWorld(), this.getPos(), side));
-            }
-            this.container.recalculateShape();
+            this.updateSide(side);
         }
     }
 
@@ -216,5 +225,32 @@ public class CatwalkPart extends CatwalksIncPart {
             case SOUTH -> this.south = hasHandrail;
             case EAST -> this.east = hasHandrail;
         }
+    }
+
+    @Override
+    public ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isIn(WrenchItem.COMPATIBILITY_TAG)) {
+            Direction side = CatwalksUtil.getTargetedQuarter(this.getPos(), hit.getPos());
+            if (this.isBlocked(side)) {
+                player.sendMessage(Text.translatable("misc.catwalksinc.blocked_by_another_multipart"), true);
+                return ActionResult.FAIL;
+            }
+            ConnectionOverride override = ConnectionOverride.cycle(this.overrides.get(side));
+            if (override == null) {
+                this.overrides.remove(side);
+                player.sendMessage(ConnectionOverride.DEFAULT_TEXT, true);
+            } else {
+                this.overrides.put(side, override);
+                player.sendMessage(override.text, true);
+            }
+
+            if (stack.isDamageable()) {
+                stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+            }
+            this.updateSide(side);
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.PASS;
     }
 }

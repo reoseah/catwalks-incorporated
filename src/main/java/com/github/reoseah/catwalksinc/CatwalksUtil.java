@@ -50,4 +50,23 @@ public class CatwalksUtil {
         }
         return null;
     }
+
+    public static Direction getTargetedQuarter(BlockPos pos, Vec3d point) {
+        double dx = point.getX() - pos.getX();
+        double dz = point.getZ() - pos.getZ();
+
+        if (Math.abs(dx - 0.5) > Math.abs(dz - 0.5)) {
+            if (dx > 0.5) {
+                return Direction.EAST;
+            } else {
+                return Direction.WEST;
+            }
+        } else {
+            if (dz > 0.5) {
+                return Direction.SOUTH;
+            } else {
+                return Direction.NORTH;
+            }
+        }
+    }
 }

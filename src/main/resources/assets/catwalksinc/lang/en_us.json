@@ -3,5 +3,9 @@
   "block.catwalksinc.catwalk": "Catwalk",
   "block.catwalksinc.cage_lamp": "Cage Lamp",
   "block.catwalksinc.crank_wheel": "Crank Wheel",
-  "item.catwalksinc.wrench": "Wrench"
+  "item.catwalksinc.wrench": "Wrench",
+  "misc.catwalksinc.blocked_by_another_multipart": "Blocked by another multipart!",
+  "misc.catwalksinc.default_handrail": "Default",
+  "misc.catwalksinc.forced_handrail": "Forced",
+  "misc.catwalksinc.forced_no_handrail": "Disabled"
 }

@@ -5,20 +5,26 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import com.github.reoseah.catwalksinc.CatwalksInc;
+import com.github.reoseah.catwalksinc.item.WrenchItem;
 import com.github.reoseah.catwalksinc.part.CatwalkPart;
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -214,6 +220,24 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         return ImmutableList.of(holder -> new CatwalkPart(CatwalkPart.DEFINITION, holder, state.get(NORTH), state.get(WEST), state.get(SOUTH), state.get(EAST)));
+    }
 
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isIn(WrenchItem.COMPATIBILITY_TAG)) {
+            if (world.isClient) {
+                return ActionResult.SUCCESS;
+            }
+            MultipartContainer container = MultipartUtil.turnIntoMultipart(world, pos);
+            if (container != null) {
+                for (AbstractPart part : container.getAllParts()) {
+                    if (part instanceof CatwalkPart catwalk) {
+                        return catwalk.onUse(player, hand, hit);
+                    }
+                }
+            }
+        }
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 }

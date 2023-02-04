@@ -103,25 +103,27 @@ public class CrankWheelPart extends CatwalksIncPart {
 
     @Override
     public ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
-        Direction facing = this.facing;
-        if (facing.getAxis() == Direction.Axis.Y) {
-            facing = player.getHorizontalFacing().getOpposite();
-        }
-        CatwalksUtil.Side side = CatwalksUtil.getTargettedSide(this.getPos(), hit.getPos(), facing);
-        int rotation = this.rotation;
-        int newRotation = side == CatwalksUtil.Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
-
-        if (this.getWorld().isClient) {
-            if (newRotation != 0 && newRotation != rotation) {
-                CrankWheelBlock.spawnParticles(this.facing.getOpposite(), this.getWorld(), this.getPos());
-            }
-        }
-
-        this.rotation = newRotation;
         if (!this.getWorld().isClient) {
-            this.updateRedstoneLevels();
+            Direction facing = this.facing;
+            if (facing.getAxis() == Direction.Axis.Y) {
+                facing = player.getHorizontalFacing().getOpposite();
+            }
+            CatwalksUtil.Side side = CatwalksUtil.getTargettedSide(this.getPos(), hit.getPos(), facing);
+            int rotation = this.rotation;
+            int newRotation = side == CatwalksUtil.Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
+
+            if (this.getWorld().isClient) {
+                if (newRotation != 0 && newRotation != rotation) {
+                    CrankWheelBlock.spawnParticles(this.facing.getOpposite(), this.getWorld(), this.getPos());
+                }
+            }
+
+            this.rotation = newRotation;
+            if (!this.getWorld().isClient) {
+                this.updateRedstoneLevels();
+            }
+            this.updateListeners();
         }
-        this.updateListeners();
 
         return ActionResult.SUCCESS;
     }

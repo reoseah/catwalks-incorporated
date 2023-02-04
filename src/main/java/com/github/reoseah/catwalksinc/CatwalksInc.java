@@ -57,7 +57,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
 
         Registry.register(Registry.ITEM, "catwalksinc:wrench", WrenchItem.INSTANCE);
 
-        UseBlockCallback.EVENT.register(CatwalksInc::handleMultipartPlacement);
+        UseBlockCallback.EVENT.register(CatwalksInc::interact);
     }
 
     @Override
@@ -68,7 +68,10 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(CrankWheelBlock.INSTANCE, RenderLayer.getCutoutMipped());
     }
 
-    private static ActionResult handleMultipartPlacement(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+    private static ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
+        if (!player.canModifyBlocks()) {
+            return ActionResult.PASS;
+        }
         ItemStack stack = player.getStackInHand(hand);
         Item item = stack.getItem();
         if (item instanceof BlockItem blockItem) {
@@ -101,7 +104,6 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
                 }
             }
         }
-
         return ActionResult.PASS;
     }
 }
