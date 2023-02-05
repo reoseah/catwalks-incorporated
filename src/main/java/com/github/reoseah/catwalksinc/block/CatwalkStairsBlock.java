@@ -1,6 +1,8 @@
 package com.github.reoseah.catwalksinc.block;
 
 import com.github.reoseah.catwalksinc.CatwalksUtil;
+import com.github.reoseah.catwalksinc.item.WrenchItem;
+import com.github.reoseah.catwalksinc.part.ConnectionOverride;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -17,8 +19,12 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -27,8 +33,10 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 @SuppressWarnings("deprecation")
-public class CatwalkStairsBlock extends CatwalksIncBlock {
+public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityProvider {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
@@ -185,22 +193,27 @@ public class CatwalkStairsBlock extends CatwalksIncBlock {
         Direction left = state.get(FACING).rotateYClockwise();
 //		if (direction == left)
         {
-            state = state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, CatwalksUtil.Side.LEFT));
+            state = state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT));
         }
         Direction right = state.get(FACING).rotateYCounterclockwise();
 //		if (direction == right)
         {
-            state = state.with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, CatwalksUtil.Side.RIGHT));
+            state = state.with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
         }
         return state;
     }
 
-    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, CatwalksUtil.Side side) {
+    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, Side side) {
         if (state.get(HALF) == DoubleBlockHalf.UPPER) {
             pos = pos.down();
             state = state.with(HALF, DoubleBlockHalf.LOWER);
         }
-
+        if (world.getBlockEntity(pos) instanceof CatwalkStairsBlockEntity catwalk) {
+            Optional<ConnectionOverride> handrail = catwalk.getHandrailState(side);
+            if (handrail.isPresent()) {
+                return handrail.get() == ConnectionOverride.FORCED;
+            }
+        }
         BlockState neighbor = world.getBlockState(pos.offset(direction));
         BlockState above = world.getBlockState(pos.offset(direction).up());
 
@@ -208,8 +221,12 @@ public class CatwalkStairsBlock extends CatwalksIncBlock {
             return false;
         }
         if (neighbor.getBlock() instanceof CatwalkStairsBlock) {
-            // stairs not matching
-            return neighbor.get(FACING) != state.get(FACING) || neighbor.get(HALF) != state.get(HALF);
+            if (neighbor.get(FACING) != state.get(FACING) || neighbor.get(HALF) != state.get(HALF)) {
+                // stairs not matching
+                return true;
+            }
+            return world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk && otherCatwalk.isHandrailForced(side.getOpposite());
+
         }
         return true;
     }
@@ -221,5 +238,71 @@ public class CatwalkStairsBlock extends CatwalksIncBlock {
                 || super.isSideInvisible(state, state2, direction);
     }
 
+    public static Direction getSideDirection(Direction facing, Side side) {
+        return side == Side.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
+    }
 
+    protected static BlockPos getLowerHalfPos(BlockState state, BlockPos pos) {
+        if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+            return pos.down();
+        }
+        return pos;
+    }
+
+    public static BooleanProperty getHandrailProperty(Side side) {
+        return side == Side.LEFT ? LEFT : RIGHT;
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isIn(WrenchItem.COMPATIBILITY_TAG)) {
+            if (!world.isClient && this.useWrench(state, world, pos, hit.getSide(), player, hand, hit.getPos())) {
+                if (stack.isDamageable()) {
+                    stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+                }
+            }
+            return ActionResult.SUCCESS;
+        }
+        return super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    public boolean useWrench(BlockState state, World world, BlockPos pos, Direction direction, PlayerEntity player, Hand hand, Vec3d hitPos) {
+        if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+            pos = pos.down();
+            state = world.getBlockState(pos);
+        }
+
+        if (player != null && player.isSneaking()) {
+            world.setBlockState(pos, state.cycle(FACING));
+            world.setBlockState(pos.up(), state.cycle(FACING).with(HALF, DoubleBlockHalf.UPPER));
+            return true;
+        }
+
+        CatwalkStairsBlockEntity be = (CatwalkStairsBlockEntity) world.getBlockEntity(pos);
+        if (be == null) {
+            be = new CatwalkStairsBlockEntity(pos, state);
+            world.addBlockEntity(be);
+        }
+
+        Side side = CatwalksUtil.getTargettedSide(pos, hitPos, state.get(FACING));
+
+        be.useWrench(side, state, player);
+
+        BlockState newState = state.with(getHandrailProperty(side), be.getHandrailState(side).map(override -> override == ConnectionOverride.FORCED).orElse(this.shouldHaveHandrail(state, world, pos, direction, side)));
+        world.setBlockState(pos, newState);
+        world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
+
+        if (be.canBeRemoved()) {
+            world.removeBlockEntity(pos);
+        }
+
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return null;
+    }
 }

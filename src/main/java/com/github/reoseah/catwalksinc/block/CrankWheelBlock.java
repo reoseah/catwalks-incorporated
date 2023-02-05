@@ -103,10 +103,10 @@ public class CrankWheelBlock extends WallDecorationBlock implements NativeMultip
         if (facing.getAxis() == Direction.Axis.Y) {
             facing = player.getHorizontalFacing().getOpposite();
         }
-        CatwalksUtil.Side side = CatwalksUtil.getTargettedSide(pos, hit.getPos(), facing);
+        Side side = CatwalksUtil.getTargettedSide(pos, hit.getPos(), facing);
 
         int rotation = state.get(ROTATION);
-        int newRotation = side == CatwalksUtil.Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
+        int newRotation = side == Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
 
         if (world.isClient) {
             if (newRotation != 0 && newRotation != rotation) {

@@ -45,6 +45,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         CatwalkPart.DEFINITION.register();
 
         Registry.register(Registry.BLOCK, "catwalksinc:catwalk_stairs", CatwalkStairsBlock.INSTANCE);
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, "catwalksinc:catwalk_stairs", CatwalkStairsBlockEntity.TYPE);
 
         Registry.register(Registry.BLOCK, "catwalksinc:cage_lamp", CageLampBlock.INSTANCE);
         Registry.register(Registry.ITEM, "catwalksinc:cage_lamp", CageLampBlock.ITEM);

@@ -10,9 +10,8 @@ import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
+import com.github.reoseah.catwalksinc.block.Side;
 import com.github.reoseah.catwalksinc.block.CrankWheelBlock;
-import juuxel.blockstoparts.api.category.Category;
-import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -102,9 +101,9 @@ public class CrankWheelPart extends CatwalksIncPart {
         if (facing.getAxis() == Direction.Axis.Y) {
             facing = player.getHorizontalFacing().getOpposite();
         }
-        CatwalksUtil.Side side = CatwalksUtil.getTargettedSide(this.getPos(), hit.getPos(), facing);
+        Side side = CatwalksUtil.getTargettedSide(this.getPos(), hit.getPos(), facing);
         int rotation = this.rotation;
-        int newRotation = side == CatwalksUtil.Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
+        int newRotation = side == Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
 
         if (this.getWorld().isClient) {
             if (newRotation != 0 && newRotation != rotation) {

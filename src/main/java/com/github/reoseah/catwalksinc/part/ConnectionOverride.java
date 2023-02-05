@@ -1,5 +1,7 @@
 package com.github.reoseah.catwalksinc.part;
 
+import net.minecraft.nbt.NbtByte;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,5 +25,13 @@ public enum ConnectionOverride {
         } else {
             return null;
         }
+    }
+
+    public NbtElement toTag() {
+        return this == FORCED ? NbtByte.ONE : NbtByte.ZERO;
+    }
+
+    public static ConnectionOverride from(NbtElement nbt) {
+        return NbtByte.ONE.equals(nbt) ? FORCED : DISABLED;
     }
 }
