@@ -53,35 +53,35 @@ public class CatwalkPart extends CatwalksIncPart {
     }
 
     private static CatwalkPart readFromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
-        CatwalkPart catwalk = new CatwalkPart(definition, holder);
+        CatwalkPart part = new CatwalkPart(definition, holder);
         if (nbt.contains("Overrides", NbtElement.COMPOUND_TYPE)) {
             NbtCompound overrides = nbt.getCompound("Overrides");
             for (Direction direction : Direction.Type.HORIZONTAL) {
                 if (overrides.contains(direction.asString(), NbtElement.STRING_TYPE)) {
-                    catwalk.overrides.put(direction, ConnectionOverride.valueOf(overrides.getString(direction.asString())));
+                    part.overrides.put(direction, ConnectionOverride.valueOf(overrides.getString(direction.asString())));
                 }
             }
         }
-        catwalk.north = nbt.getBoolean("HandrailNorth");
-        catwalk.west = nbt.getBoolean("HandrailWest");
-        catwalk.south = nbt.getBoolean("HandrailSouth");
-        catwalk.east = nbt.getBoolean("HandrailEast");
-        return catwalk;
+        part.north = nbt.getBoolean("HandrailNorth");
+        part.west = nbt.getBoolean("HandrailWest");
+        part.south = nbt.getBoolean("HandrailSouth");
+        part.east = nbt.getBoolean("HandrailEast");
+        return part;
     }
 
     private static CatwalkPart loadFromBuffer(PartDefinition definition, MultipartHolder holder, NetByteBuf buf, IMsgReadCtx ctx) {
-        CatwalkPart catwalk = new CatwalkPart(definition, holder);
+        CatwalkPart part = new CatwalkPart(definition, holder);
         int overridesCount = buf.readByte();
         for (int i = 0; i < overridesCount; i++) {
             Direction direction = Direction.fromHorizontal(buf.readByte());
             ConnectionOverride value = ConnectionOverride.values()[MathHelper.clamp(buf.readByte(), 0, ConnectionOverride.values().length)];
-            catwalk.overrides.put(direction, value);
+            part.overrides.put(direction, value);
         }
-        catwalk.north = buf.readBoolean();
-        catwalk.west = buf.readBoolean();
-        catwalk.south = buf.readBoolean();
-        catwalk.east = buf.readBoolean();
-        return catwalk;
+        part.north = buf.readBoolean();
+        part.west = buf.readBoolean();
+        part.south = buf.readBoolean();
+        part.east = buf.readBoolean();
+        return part;
     }
 
     @Override
@@ -112,11 +112,6 @@ public class CatwalkPart extends CatwalksIncPart {
         buffer.writeBoolean(this.west);
         buffer.writeBoolean(this.south);
         buffer.writeBoolean(this.east);
-    }
-
-    @Override
-    protected void addCategories(CategorySet.Builder builder) {
-
     }
 
     @Override

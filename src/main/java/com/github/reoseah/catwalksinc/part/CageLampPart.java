@@ -71,9 +71,4 @@ public class CageLampPart extends CatwalksIncPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         buffer.writeByte(this.facing.getId());
     }
-
-    @Override
-    protected void addCategories(CategorySet.Builder builder) {
-
-    }
 }

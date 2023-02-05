@@ -15,16 +15,10 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
 public abstract class CatwalksIncPart extends BasePart {
-    private final CategorySet categories;
 
     public CatwalksIncPart(PartDefinition definition, MultipartHolder holder) {
         super(definition, holder);
-        CategorySet.Builder builder = CategorySet.builder();
-        this.addCategories(builder);
-        this.categories = builder.build();
     }
-
-    protected abstract void addCategories(CategorySet.Builder builder);
 
     protected final void updateListeners() {
         BlockPos pos = this.getPos();
@@ -58,7 +52,7 @@ public abstract class CatwalksIncPart extends BasePart {
 
     @Override
     public final CategorySet getCategories() {
-        return this.categories;
+        return CategorySet.EMPTY;
     }
 
     @Override

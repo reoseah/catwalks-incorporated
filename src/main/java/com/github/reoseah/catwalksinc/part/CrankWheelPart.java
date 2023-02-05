@@ -81,11 +81,6 @@ public class CrankWheelPart extends CatwalksIncPart {
     }
 
     @Override
-    protected void addCategories(CategorySet.Builder builder) {
-        builder.add(Category.getOrRegister(new Identifier("catwalksinc:redstone_components")));
-    }
-
-    @Override
     public void onAdded(MultipartEventBus bus) {
         super.onAdded(bus);
         this.updateRedstoneLevels();
