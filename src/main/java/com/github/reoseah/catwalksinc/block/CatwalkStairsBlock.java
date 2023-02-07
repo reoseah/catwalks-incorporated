@@ -94,12 +94,7 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
 
     public CatwalkStairsBlock(Settings settings) {
         super(settings);
-
-        this.setDefaultState(this.getDefaultState() //
-                .with(FACING, Direction.NORTH) //
-                .with(HALF, DoubleBlockHalf.LOWER) //
-                .with(RIGHT, true) //
-                .with(LEFT, true));
+        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER).with(RIGHT, true).with(LEFT, true));
     }
 
     @Override
@@ -176,7 +171,7 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
-        state = super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
+        super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
 
         DoubleBlockHalf half = state.get(HALF);
         if (half == DoubleBlockHalf.LOWER && direction == Direction.UP) {
@@ -190,17 +185,10 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
             }
         }
 
-        Direction left = state.get(FACING).rotateYClockwise();
-//		if (direction == left)
-        {
-            state = state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT));
-        }
-        Direction right = state.get(FACING).rotateYCounterclockwise();
-//		if (direction == right)
-        {
-            state = state.with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
-        }
-        return state;
+        Direction facing = state.get(FACING);
+        Direction left = facing.rotateYClockwise();
+        Direction right = facing.rotateYCounterclockwise();
+        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT)).with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
     }
 
     public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, Side side) {

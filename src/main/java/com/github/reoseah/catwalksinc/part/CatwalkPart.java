@@ -10,7 +10,6 @@ import alexiil.mc.lib.net.*;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
 import com.github.reoseah.catwalksinc.block.CatwalkBlock;
 import com.github.reoseah.catwalksinc.item.WrenchItem;
-import juuxel.blockstoparts.api.category.CategorySet;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -156,9 +155,7 @@ public class CatwalkPart extends CatwalksIncPart {
                 for (Direction side : Direction.Type.HORIZONTAL) {
                     this.updateSide(side);
                 }
-                this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
-                    writeUpdatePacket(buf);
-                });
+                this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> this.writeUpdatePacket(buf));
             }
         });
         bus.addListener(this, PartRemovedEvent.class, event -> {
@@ -166,9 +163,7 @@ public class CatwalkPart extends CatwalksIncPart {
             for (Direction side : Direction.Type.HORIZONTAL) {
                 this.updateSide(side);
             }
-            this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
-                writeUpdatePacket(buf);
-            });
+            this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> this.writeUpdatePacket(buf));
         });
     }
 

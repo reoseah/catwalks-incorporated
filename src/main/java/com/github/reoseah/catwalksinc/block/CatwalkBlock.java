@@ -12,6 +12,8 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
@@ -22,6 +24,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
@@ -62,36 +65,31 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         OUTLINE_SHAPES = new VoxelShape[16];
         COLLISION_SHAPES = new VoxelShape[16];
 
-        VoxelShape south = SOUTH_HANDRAIL_SHAPE;
-        VoxelShape west = WEST_HANDRAIL_SHAPE;
-        VoxelShape north = NORTH_HANDRAIL_SHAPE;
-        VoxelShape east = EAST_HANDRAIL_SHAPE;
-
         // collision shapes are only half-pixel thick
         // otherwise you bump into edges of handrails too much
-        VoxelShape floorCollision = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 1, 15.5);
-        VoxelShape southCollision = Block.createCuboidShape(0.5, 0, 15, 15.5, 16, 15.5);
-        VoxelShape westCollision = Block.createCuboidShape(0.5, 0, 0.5, 1, 16, 15.5);
-        VoxelShape northColl = Block.createCuboidShape(0.5, 0, 0.5, 15.5, 16, 1);
-        VoxelShape eastColl = Block.createCuboidShape(15, 0, 0.5, 15.5, 16, 15.5);
+        VoxelShape floorCollision = Block.createCuboidShape(0, 0, 0, 16, 1, 16);
+        VoxelShape southCollision = Block.createCuboidShape(0, 0, 15.5, 16, 16, 16);
+        VoxelShape westCollision = Block.createCuboidShape(0, 0, 0, 0.5, 16, 16);
+        VoxelShape northColl = Block.createCuboidShape(0, 0, 0, 16, 16, 0.5);
+        VoxelShape eastColl = Block.createCuboidShape(15.5, 0, 0, 16, 16, 16);
 
         for (int i = 0; i < 16; i++) {
             VoxelShape outline = FLOOR_SHAPE;
             VoxelShape collision = floorCollision;
             if ((i & 1) != 0) {
-                outline = VoxelShapes.union(outline, south);
+                outline = VoxelShapes.union(outline, SOUTH_HANDRAIL_SHAPE);
                 collision = VoxelShapes.union(collision, southCollision);
             }
             if ((i & 2) != 0) {
-                outline = VoxelShapes.union(outline, west);
+                outline = VoxelShapes.union(outline, WEST_HANDRAIL_SHAPE);
                 collision = VoxelShapes.union(collision, westCollision);
             }
             if ((i & 4) != 0) {
-                outline = VoxelShapes.union(outline, north);
+                outline = VoxelShapes.union(outline, NORTH_HANDRAIL_SHAPE);
                 collision = VoxelShapes.union(collision, northColl);
             }
             if ((i & 8) != 0) {
-                outline = VoxelShapes.union(outline, east);
+                outline = VoxelShapes.union(outline, EAST_HANDRAIL_SHAPE);
                 collision = VoxelShapes.union(collision, eastColl);
             }
             OUTLINE_SHAPES[i] = VoxelShapes.combineAndSimplify(outline, CUTOUT_SHAPE, BooleanBiFunction.ONLY_FIRST);
@@ -270,5 +268,37 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
             }
         }
         return super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack);
+
+        if (!world.getBlockState(pos.down()).isOf(CatwalkBlock.INSTANCE)) {
+            for (Direction direction : Direction.Type.HORIZONTAL) {
+                BlockPos checkEmptyPos = pos.offset(direction);
+                BlockPos checkCatwalkPos = checkEmptyPos.down();
+
+                BlockState checkEmptyState = world.getBlockState(checkEmptyPos);
+                if (!checkEmptyState.getMaterial().isReplaceable()) {
+                    // there's a block that prevents catwalk from turning to stairs to connect to us
+                    continue;
+                }
+                BlockState checkCatwalkState = world.getBlockState(checkCatwalkPos);
+                if (!checkCatwalkState.isOf(CatwalkBlock.INSTANCE)) {
+                    continue;
+                }
+                BlockState catwalkState = CatwalkStairsBlock.INSTANCE.getDefaultState() //
+                        .with(CatwalkStairsBlock.FACING, direction).with(CatwalkStairsBlock.HALF, DoubleBlockHalf.LOWER);
+                world.setBlockState(checkCatwalkPos, catwalkState);
+                world.setBlockState(checkEmptyPos, catwalkState.with(CatwalkStairsBlock.HALF, DoubleBlockHalf.UPPER));
+            }
+        }
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
+        super.appendTooltip(stack, world, tooltip, options);
+        tooltip.add(Text.translatable("block.catwalksinc.catwalk.desc.0"));
     }
 }
