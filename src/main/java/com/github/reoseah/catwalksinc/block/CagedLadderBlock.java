@@ -114,6 +114,9 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        if (context.isHolding(this.asItem()) && !context.isDescending()) {
+            return VoxelShapes.fullCube();
+        }
         Direction facing = state.get(FACING);
         int idx = facing.getHorizontal();
         return switch (state.get(CAGE)) {
@@ -125,16 +128,16 @@ public class CagedLadderBlock extends CatwalksIncBlock {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         BlockState state = super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
-        return state.with(CAGE, this.getCageState(state, ctx.getWorld(), ctx.getBlockPos()));
+        return state.with(CAGE, this.getCageState(ctx.getWorld(), ctx.getBlockPos()));
     }
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
         super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
-        return state.with(CAGE, this.getCageState(state, world, pos));
+        return state.with(CAGE, this.getCageState(world, pos));
     }
 
-    public CageState getCageState(BlockState state, WorldAccess world, BlockPos pos) {
+    public static CageState getCageState(WorldAccess world, BlockPos pos) {
 //        BlockPos behindLadder = pos.offset(state.get(FACING).getOpposite());
 //        BlockState stateBehindLadder = world.getBlockState(behindLadder);
 //        if (CatwalkBlock.needsCatwalkConnection(stateBehindLadder, world, behindLadder, state.get(FACING).getOpposite())) {
