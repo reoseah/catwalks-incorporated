@@ -148,6 +148,11 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         World world = ctx.getWorld();
         BlockPos pos = ctx.getBlockPos();
 
+        if (world.getBlockState(pos.down()).isOf(INSTANCE) || world.getBlockState(pos.down()).isOf(INSTANCE)) {
+            return CagedLadderBlock.INSTANCE.getDefaultState() //
+                    .with(CagedLadderBlock.FACING, ctx.getPlayerFacing().getOpposite());
+        }
+
         if (world.getBlockState(pos).canReplace(ctx) //
                 && world.getBlockState(pos.up()).canReplace(ItemPlacementContext.offset(ctx, pos.up(), Direction.DOWN))) {
             Optional<Direction> stairsUpFacing = checkForStairsPlacementAbove(world, pos);
@@ -276,22 +281,22 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
         if (!world.getBlockState(pos.down()).isOf(CatwalkBlock.INSTANCE)) {
             for (Direction direction : Direction.Type.HORIZONTAL) {
-                BlockPos checkEmptyPos = pos.offset(direction);
-                BlockPos checkCatwalkPos = checkEmptyPos.down();
+                BlockPos upperPos = pos.offset(direction);
+                BlockPos lowerPos = upperPos.down();
 
-                BlockState checkEmptyState = world.getBlockState(checkEmptyPos);
+                BlockState checkEmptyState = world.getBlockState(upperPos);
                 if (!checkEmptyState.getMaterial().isReplaceable()) {
                     // there's a block that prevents catwalk from turning to stairs to connect to us
                     continue;
                 }
-                BlockState checkCatwalkState = world.getBlockState(checkCatwalkPos);
+                BlockState checkCatwalkState = world.getBlockState(lowerPos);
                 if (!checkCatwalkState.isOf(CatwalkBlock.INSTANCE)) {
                     continue;
                 }
                 BlockState catwalkState = CatwalkStairsBlock.INSTANCE.getDefaultState() //
                         .with(CatwalkStairsBlock.FACING, direction).with(CatwalkStairsBlock.HALF, DoubleBlockHalf.LOWER);
-                world.setBlockState(checkCatwalkPos, catwalkState);
-                world.setBlockState(checkEmptyPos, catwalkState.with(CatwalkStairsBlock.HALF, DoubleBlockHalf.UPPER));
+                world.setBlockState(lowerPos, catwalkState);
+                world.setBlockState(upperPos, catwalkState.with(CatwalkStairsBlock.HALF, DoubleBlockHalf.UPPER));
             }
         }
     }

@@ -1,0 +1,52 @@
+{
+  "multipart": [
+    {
+      "when": { "facing": "north" },
+      "apply": { "model": "catwalksinc:block/iron_ladder" }
+    },
+    {
+      "when": { "facing": "south" },
+      "apply": { "model": "catwalksinc:block/iron_ladder", "y": 180 }
+    },
+    {
+      "when": { "facing": "west" },
+      "apply": { "model": "catwalksinc:block/iron_ladder", "y": 270 }
+    },
+    {
+      "when": { "facing": "east" },
+      "apply": { "model": "catwalksinc:block/iron_ladder", "y": 90 }
+    },
+    {
+      "when": { "facing": "north", "cage": "normal" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_side" }
+    },
+    {
+      "when": { "facing": "south", "cage": "normal" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_side", "y": 180 }
+    },
+    {
+      "when": { "facing": "west", "cage": "normal" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_side", "y": 270 }
+    },
+    {
+      "when": { "facing": "east", "cage": "normal" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_side", "y": 90 }
+    },
+    {
+      "when": { "facing": "north", "cage": "handrails" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_handrail" }
+    },
+    {
+      "when": { "facing": "south", "cage": "handrails" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_handrail", "y": 180 }
+    },
+    {
+      "when": { "facing": "west", "cage": "handrails" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_handrail", "y": 270 }
+    },
+    {
+      "when": { "facing": "east", "cage": "handrails" },
+      "apply": { "model": "catwalksinc:block/caged_ladder_handrail", "y": 90 }
+    }
+  ]
+}

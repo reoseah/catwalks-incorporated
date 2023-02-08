@@ -47,6 +47,8 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         Registry.register(Registry.BLOCK, "catwalksinc:catwalk_stairs", CatwalkStairsBlock.INSTANCE);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, "catwalksinc:catwalk_stairs", CatwalkStairsBlockEntity.TYPE);
 
+        Registry.register(Registry.BLOCK, "catwalksinc:caged_ladder", CagedLadderBlock.INSTANCE);
+
         Registry.register(Registry.BLOCK, "catwalksinc:cage_lamp", CageLampBlock.INSTANCE);
         Registry.register(Registry.ITEM, "catwalksinc:cage_lamp", CageLampBlock.ITEM);
         CageLampPart.DEFINITION.register();
@@ -65,6 +67,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalkBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalkStairsBlock.INSTANCE, RenderLayer.getCutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(CagedLadderBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CageLampBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CrankWheelBlock.INSTANCE, RenderLayer.getCutoutMipped());
     }
