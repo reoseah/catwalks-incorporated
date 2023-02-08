@@ -113,7 +113,10 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return context.isHolding(this.asItem()) && !context.isDescending() ? VoxelShapes.fullCube() : OUTLINE_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
+        if (context.isHolding(this.asItem()) && !context.isDescending()) {
+            return VoxelShapes.fullCube();
+        }
+        return OUTLINE_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
     }
 
     public static int getShapeIndex(boolean south, boolean west, boolean north, boolean east) {
@@ -148,9 +151,12 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         World world = ctx.getWorld();
         BlockPos pos = ctx.getBlockPos();
 
-        if (world.getBlockState(pos.down()).isOf(INSTANCE) || world.getBlockState(pos.down()).isOf(CagedLadderBlock.INSTANCE)) {
+        if (world.getBlockState(pos.down()).isOf(INSTANCE) //
+                || world.getBlockState(pos.down()).isOf(CagedLadderBlock.INSTANCE)) {
             return CagedLadderBlock.INSTANCE.getDefaultState() //
-                    .with(CagedLadderBlock.FACING, ctx.getPlayerFacing().getOpposite());
+                    .with(CagedLadderBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
+                    .with(CagedLadderBlock.FACING, ctx.getPlayerFacing().getOpposite()) //
+                    .with(CagedLadderBlock.CAGE, CagedLadderBlock.getCageState(world, pos));
         }
 
         if (world.getBlockState(pos).canReplace(ctx) //
@@ -158,7 +164,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
             Optional<Direction> stairsUpFacing = checkForStairsPlacementAbove(world, pos);
             if (stairsUpFacing.isPresent()) {
                 return CatwalkStairsBlock.INSTANCE.getDefaultState() //
-                        .with(WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
+                        .with(CatwalkStairsBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
                         .with(CatwalkStairsBlock.FACING, stairsUpFacing.get().getOpposite());
             }
         }
@@ -279,7 +285,15 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
 
-        if (!world.getBlockState(pos.down()).isOf(CatwalkBlock.INSTANCE)) {
+        if (world.getBlockState(pos.up()).isOf(INSTANCE) && placer != null) {
+            BlockState ladder = CagedLadderBlock.INSTANCE.getDefaultState()//
+                    .with(CagedLadderBlock.WATERLOGGED, state.get(WATERLOGGED)) //
+                    .with(CagedLadderBlock.FACING, placer.getHorizontalFacing()) //
+                    .with(CagedLadderBlock.CAGE, CagedLadderBlock.getCageState(world, pos));
+            world.setBlockState(pos.up(), ladder);
+        }
+
+        if (!world.getBlockState(pos.down()).isOf(INSTANCE)) {
             for (Direction direction : Direction.Type.HORIZONTAL) {
                 BlockPos upperPos = pos.offset(direction);
                 BlockPos lowerPos = upperPos.down();
@@ -290,7 +304,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
                     continue;
                 }
                 BlockState checkCatwalkState = world.getBlockState(lowerPos);
-                if (!checkCatwalkState.isOf(CatwalkBlock.INSTANCE)) {
+                if (!checkCatwalkState.isOf(INSTANCE)) {
                     continue;
                 }
                 BlockState catwalkState = CatwalkStairsBlock.INSTANCE.getDefaultState() //
