@@ -12,7 +12,7 @@ public class BlockModelKey extends PartModelKey {
         this.state = state;
     }
 
-    public BlockState getState() {
+    public BlockState getBlockState() {
         return state;
     }
 

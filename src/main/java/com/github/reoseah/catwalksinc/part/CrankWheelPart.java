@@ -5,17 +5,14 @@ import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
-import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
 import com.github.reoseah.catwalksinc.block.CrankWheelBlock;
 import com.github.reoseah.catwalksinc.block.Side;
-import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -23,7 +20,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 
 public class CrankWheelPart extends CatwalksIncPart {
     public static final PartDefinition DEFINITION = new PartDefinition(new Identifier("catwalksinc:crank_wheel"), CrankWheelPart::readFromNbt, CrankWheelPart::loadFromBuffer);
@@ -51,17 +47,7 @@ public class CrankWheelPart extends CatwalksIncPart {
     }
 
     @Override
-    public ItemStack getPickStack(@Nullable BlockHitResult hitResult) {
-        return new ItemStack(CrankWheelBlock.ITEM);
-    }
-
-    @Override
-    public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(this.getBlockState());
-    }
-
-    @Override
-    public BlockState getBlockState() {
+    public BlockState getClosestBlockState() {
         return CrankWheelBlock.INSTANCE.getDefaultState().with(CrankWheelBlock.FACING, this.facing).with(CrankWheelBlock.ROTATION, this.rotation);
     }
 

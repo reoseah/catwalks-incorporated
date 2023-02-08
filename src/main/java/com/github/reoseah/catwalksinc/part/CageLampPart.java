@@ -50,12 +50,12 @@ public class CageLampPart extends CatwalksIncPart {
     public void onAdded(MultipartEventBus bus) {
         super.onAdded(bus);
 
-        this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, this.getBlockState().getLuminance());
-        bus.addListener(this, PartAddedEvent.class, event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, this.getBlockState().getLuminance()));
+        this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, this.getClosestBlockState().getLuminance());
+        bus.addListener(this, PartAddedEvent.class, event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, this.getClosestBlockState().getLuminance()));
     }
 
     @Override
-    public BlockState getBlockState() {
+    public BlockState getClosestBlockState() {
         return CageLampBlock.INSTANCE.getDefaultState().with(CageLampBlock.FACING, this.facing);
     }
 

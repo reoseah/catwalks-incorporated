@@ -159,6 +159,17 @@ public class CagedLadderBlock extends CatwalksIncBlock {
             return CageState.NONE;
         }
 
+        if (stateBelowLadder.isSideSolidFullSquare(world, belowLadder, Direction.UP)) {
+            return CageState.NONE;
+        }
+        if (stateBelowLadder.isOf(INSTANCE) && stateBelowLadder.get(CAGE) == CageState.NONE) {
+            BlockPos belowBelowLadder = belowLadder.down();
+            BlockState stateBelowBelowLadder = world.getBlockState(belowLadder);
+            if (stateBelowBelowLadder.isSideSolidFullSquare(world, belowBelowLadder, Direction.UP)) {
+                return CageState.NONE;
+            }
+        }
+
         BlockPos aboveLadder = pos.up();
         BlockState stateAboveLadder = world.getBlockState(aboveLadder);
         if (!stateAboveLadder.isOf(INSTANCE) && !stateAboveLadder.isSideSolidFullSquare(world, aboveLadder, Direction.DOWN)) {
@@ -167,7 +178,6 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
         return CageState.NORMAL;
     }
-
 
     public static boolean getLadderState(Direction facing, CageState cage, WorldAccess world, BlockPos pos) {
         if (cage == CageState.NONE) {

@@ -228,19 +228,14 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         if (block instanceof DoorBlock) {
             return state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
         }
+        if (block instanceof FenceGateBlock) {
+            return true;
+        }
         if (block == CagedLadderBlock.INSTANCE) {
             return true;
         }
         if (block instanceof LadderBlock) {
             return state.get(LadderBlock.FACING) == side;
-        }
-        if (block instanceof InventoryProvider provider) {
-            return provider.getInventory(state, world, pos) != null;
-        }
-        if (block instanceof AbstractCauldronBlock //
-                || block instanceof HopperBlock //
-                || block instanceof AbstractChestBlock<?>) {
-            return true;
         }
         return state.isSideSolidFullSquare(world, pos, side) && !Block.cannotConnect(state);
     }
@@ -322,5 +317,6 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         super.appendTooltip(stack, world, tooltip, options);
         tooltip.add(Text.translatable("block.catwalksinc.catwalk.desc.0"));
         tooltip.add(Text.translatable("block.catwalksinc.catwalk.desc.1"));
+        tooltip.add(Text.translatable("block.catwalksinc.catwalk.desc.2"));
     }
 }

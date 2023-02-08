@@ -115,7 +115,7 @@ public class CatwalkPart extends CatwalksIncPart {
     }
 
     @Override
-    public BlockState getBlockState() {
+    public BlockState getClosestBlockState() {
         return CatwalkBlock.INSTANCE.getDefaultState() //
                 .with(CatwalkBlock.NORTH, this.north) //
                 .with(CatwalkBlock.WEST, this.west) //
