@@ -153,7 +153,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
         BlockPos aboveLadder = pos.up();
         BlockState stateAboveLadder = world.getBlockState(aboveLadder);
-        if (!stateAboveLadder.isSideSolidFullSquare(world, aboveLadder, Direction.DOWN)) {
+        if (!stateAboveLadder.isOf(INSTANCE) && !stateAboveLadder.isSideSolidFullSquare(world, aboveLadder, Direction.DOWN)) {
             return CageState.HANDRAILS;
         }
 
