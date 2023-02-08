@@ -13,6 +13,7 @@ import net.fabricmc.api.*;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
@@ -33,6 +34,8 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     public static final String ID = "catwalksinc";
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(id("main"), () -> new ItemStack(CatwalkBlock.ITEM));
+
+    public static final Item IRON_ROD = new Item(new FabricItemSettings().group(ITEM_GROUP));
 
     public static Identifier id(String name) {
         return new Identifier(ID, name);
@@ -58,6 +61,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         CrankWheelPart.DEFINITION.register();
 
         Registry.register(Registry.ITEM, "catwalksinc:wrench", WrenchItem.INSTANCE);
+        Registry.register(Registry.ITEM, "catwalksinc:iron_rod", IRON_ROD);
 
         UseBlockCallback.EVENT.register(CatwalksInc::interact);
     }
@@ -91,20 +95,24 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
             BlockState placementState = block.getPlacementState(placementCtx);
             if (placementState != null && placementState.canPlaceAt(world, pos)) {
                 if (block instanceof NativeMultipart nativeMultipart && block instanceof CatwalksIncBlock) {
+                    boolean success = false;
                     for (MultipartContainer.MultipartCreator creator : nativeMultipart.getMultipartConversion(world, pos, placementState)) {
                         MultipartContainer.PartOffer offer = MultipartUtil.offerNewPart(world, pos, creator);
                         if (offer != null) {
                             if (!world.isClient) {
                                 offer.apply();
                             }
+                            success = true;
                         }
                     }
-                    if (!player.getAbilities().creativeMode) {
-                        stack.decrement(1);
+                    if (success) {
+                        if (!player.getAbilities().creativeMode) {
+                            stack.decrement(1);
+                        }
+                        BlockSoundGroup sounds = block.getDefaultState().getSoundGroup();
+                        world.playSound(player, pos, sounds.getPlaceSound(), SoundCategory.BLOCKS, (sounds.getVolume() + 1f) / 2f, sounds.getPitch() * 0.8f);
+                        return ActionResult.SUCCESS;
                     }
-                    BlockSoundGroup sounds = block.getDefaultState().getSoundGroup();
-                    world.playSound(player, pos, sounds.getPlaceSound(), SoundCategory.BLOCKS, (sounds.getVolume() + 1f) / 2f, sounds.getPitch() * 0.8f);
-                    return ActionResult.SUCCESS;
                 }
             }
         }

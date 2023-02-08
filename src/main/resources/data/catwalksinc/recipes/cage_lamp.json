@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NPN",
+    "NGN"
+  ],
+  "key": {
+    "N": {
+      "tag": "c:iron_nuggets"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "P": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "result": {
+    "item": "catwalksinc:cage_lamp"
+  }
+}

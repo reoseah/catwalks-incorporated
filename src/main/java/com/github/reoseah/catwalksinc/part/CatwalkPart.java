@@ -263,9 +263,7 @@ public class CatwalkPart extends CatwalksIncPart {
                     stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
                 }
                 this.updateSide(side);
-                this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> {
-                    writeUpdatePacket(buf);
-                });
+                this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> this.writeUpdatePacket(buf));
             }
             return ActionResult.SUCCESS;
         }
