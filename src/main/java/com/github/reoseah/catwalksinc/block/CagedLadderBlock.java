@@ -1,8 +1,12 @@
 package com.github.reoseah.catwalksinc.block;
 
+import alexiil.mc.lib.multipart.api.MultipartUtil;
+import alexiil.mc.lib.multipart.impl.LibMultiPart;
+import com.github.reoseah.catwalksinc.part.CatwalkPart;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
@@ -103,6 +107,11 @@ public class CagedLadderBlock extends CatwalksIncBlock {
     }
 
     @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        return new ItemStack(CatwalkBlock.ITEM);
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         Direction facing = state.get(FACING);
         int idx = facing.getHorizontal();
@@ -147,7 +156,8 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
         BlockPos belowLadder = pos.down();
         BlockState stateBelowLadder = world.getBlockState(belowLadder);
-        if (stateBelowLadder.isOf(CatwalkBlock.INSTANCE)) {
+        if (stateBelowLadder.isOf(CatwalkBlock.INSTANCE) //
+                || stateBelowLadder.isOf(LibMultiPart.BLOCK) && MultipartUtil.get(world, belowLadder).getAllParts().stream().anyMatch(part -> part instanceof CatwalkPart)) {
             return CageState.NONE;
         }
 

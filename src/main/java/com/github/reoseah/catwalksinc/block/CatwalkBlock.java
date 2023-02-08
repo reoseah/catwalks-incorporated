@@ -232,6 +232,9 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         if (block instanceof DoorBlock) {
             return state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
         }
+        if (block == CagedLadderBlock.INSTANCE) {
+            return true;
+        }
         if (block instanceof LadderBlock) {
             return state.get(LadderBlock.FACING) == side;
         }
@@ -287,7 +290,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
         if (world.getBlockState(pos.up()).isOf(INSTANCE) && placer != null) {
             BlockState ladder = CagedLadderBlock.INSTANCE.getDefaultState()//
-                    .with(CagedLadderBlock.WATERLOGGED, state.get(WATERLOGGED)) //
+                    .with(CagedLadderBlock.WATERLOGGED, world.getFluidState(pos.up()).isOf(Fluids.WATER)) //
                     .with(CagedLadderBlock.FACING, placer.getHorizontalFacing().getOpposite()) //
                     .with(CagedLadderBlock.CAGE, CagedLadderBlock.getCageState(world, pos));
             world.setBlockState(pos.up(), ladder);
@@ -319,5 +322,6 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
     public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
         super.appendTooltip(stack, world, tooltip, options);
         tooltip.add(Text.translatable("block.catwalksinc.catwalk.desc.0"));
+        tooltip.add(Text.translatable("block.catwalksinc.catwalk.desc.1"));
     }
 }
