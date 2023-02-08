@@ -9,7 +9,6 @@ import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.github.reoseah.catwalksinc.block.CageLampBlock;
-import juuxel.blockstoparts.api.category.CategorySet;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;

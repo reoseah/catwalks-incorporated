@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "catwalksinc:catwalk",
+    "catwalksinc:catwalk_stairs",
+    "catwalksinc:caged_ladder",
+    "catwalksinc:cage_lamp",
+    "catwalksinc:crank_wheel"
+  ]
+}

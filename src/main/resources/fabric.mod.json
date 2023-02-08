@@ -25,12 +25,10 @@
   "mixins": [
     "catwalksinc.mixins.json"
   ],
-
   "depends": {
     "fabric": "*",
     "minecraft": ">=1.18"
   },
   "suggests": {
-    
   }
 }

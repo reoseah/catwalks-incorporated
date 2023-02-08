@@ -1,5 +1,6 @@
 package com.github.reoseah.catwalksinc.block;
 
+import com.github.reoseah.catwalksinc.item.WrenchItem;
 import com.github.reoseah.catwalksinc.part.ConnectionOverride;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.BlockState;
@@ -7,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.EnumMap;
@@ -54,6 +56,7 @@ public class CatwalkStairsBlockEntity extends BlockEntity {
             this.overrides.put(side, next);
             player.sendMessage(next.text, true);
         }
+        this.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), WrenchItem.USE_SOUND, SoundCategory.PLAYERS, 1.0f, 1.0f / (this.getWorld().getRandom().nextFloat() * 0.4f + 1.2f));
         this.markDirty();
     }
 

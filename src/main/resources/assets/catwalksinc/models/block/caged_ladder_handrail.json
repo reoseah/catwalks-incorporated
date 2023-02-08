@@ -30,13 +30,12 @@
         "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#cage" }
       }
     },
-
     {
       "from": [ 0, 16, 0 ],
       "to": [ 16, 16, 2 ],
       "faces": {
         "up": { "texture": "#top" },
-        "down": {  "texture": "#top" }
+        "down": { "texture": "#top" }
       }
     },
     {
@@ -44,7 +43,7 @@
       "to": [ 2, 16, 16 ],
       "faces": {
         "up": { "texture": "#top" },
-        "down": {  "texture": "#top" }
+        "down": { "texture": "#top" }
       }
     },
     {
@@ -52,7 +51,7 @@
       "to": [ 16, 16, 16 ],
       "faces": {
         "up": { "texture": "#top" },
-        "down": {  "texture": "#top" }
+        "down": { "texture": "#top" }
       }
     }
   ]

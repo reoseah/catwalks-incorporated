@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -263,6 +264,7 @@ public class CatwalkPart extends CatwalksIncPart {
                     stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
                 }
                 this.updateSide(side);
+                this.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), WrenchItem.USE_SOUND, SoundCategory.PLAYERS, 1.0f, 1.0f / (this.getWorld().getRandom().nextFloat() * 0.4f + 1.2f));
                 this.holder.getContainer().sendNetworkUpdate(this, CATWALK_DATA, (obj, buf, ctx) -> this.writeUpdatePacket(buf));
             }
             return ActionResult.SUCCESS;

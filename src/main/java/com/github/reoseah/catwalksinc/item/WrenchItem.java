@@ -13,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -20,6 +21,8 @@ import net.minecraft.util.registry.Registry;
 public class WrenchItem extends ToolItem {
     public static final Item INSTANCE = new WrenchItem(new FabricItemSettings().group(CatwalksInc.ITEM_GROUP).maxDamage(255));
     public static final TagKey<Item> COMPATIBILITY_TAG = TagKey.of(Registry.ITEM_KEY, new Identifier("c:wrenches"));
+
+    public static final SoundEvent USE_SOUND = new SoundEvent(new Identifier("catwalksinc:wrench_use"));
 
     private final Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers;
 
