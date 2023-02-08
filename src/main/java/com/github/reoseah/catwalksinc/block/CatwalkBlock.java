@@ -288,7 +288,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         if (world.getBlockState(pos.up()).isOf(INSTANCE) && placer != null) {
             BlockState ladder = CagedLadderBlock.INSTANCE.getDefaultState()//
                     .with(CagedLadderBlock.WATERLOGGED, state.get(WATERLOGGED)) //
-                    .with(CagedLadderBlock.FACING, placer.getHorizontalFacing()) //
+                    .with(CagedLadderBlock.FACING, placer.getHorizontalFacing().getOpposite()) //
                     .with(CagedLadderBlock.CAGE, CagedLadderBlock.getCageState(world, pos));
             world.setBlockState(pos.up(), ladder);
         }
