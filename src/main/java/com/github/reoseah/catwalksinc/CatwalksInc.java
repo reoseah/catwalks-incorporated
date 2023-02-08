@@ -3,19 +3,19 @@ package com.github.reoseah.catwalksinc;
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
+import alexiil.mc.lib.multipart.api.render.PartStaticModelRegisterEvent;
 import alexiil.mc.lib.multipart.impl.LibMultiPart;
 import com.github.reoseah.catwalksinc.block.*;
 import com.github.reoseah.catwalksinc.item.WrenchItem;
-import com.github.reoseah.catwalksinc.part.CageLampPart;
-import com.github.reoseah.catwalksinc.part.CatwalkPart;
-import com.github.reoseah.catwalksinc.part.CrankWheelPart;
+import com.github.reoseah.catwalksinc.part.*;
 import net.fabricmc.api.*;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -25,6 +25,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
@@ -34,17 +36,16 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 @EnvironmentInterface(value = EnvType.CLIENT, itf = ClientModInitializer.class)
 public class CatwalksInc implements ModInitializer, ClientModInitializer {
     public static final String ID = "catwalksinc";
 
-    public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(id("main"), () -> new ItemStack(CatwalkBlock.ITEM));
+    public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder(id("main")).icon(() -> new ItemStack(CatwalkBlock.ITEM)).build();
 
-    public static final Item IRON_ROD = new Item(new FabricItemSettings().group(ITEM_GROUP));
+    public static final Item IRON_ROD = new Item(new FabricItemSettings());
 
     public static Identifier id(String name) {
         return new Identifier(ID, name);
@@ -52,30 +53,37 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registry.BLOCK, "catwalksinc:catwalk", CatwalkBlock.INSTANCE);
-        Registry.register(Registry.ITEM, "catwalksinc:catwalk", CatwalkBlock.ITEM);
+        Registry.register(Registries.BLOCK, "catwalksinc:catwalk", CatwalkBlock.INSTANCE);
+        Registry.register(Registries.ITEM, "catwalksinc:catwalk", CatwalkBlock.ITEM);
         CatwalkPart.DEFINITION.register();
 
-        Registry.register(Registry.BLOCK, "catwalksinc:catwalk_stairs", CatwalkStairsBlock.INSTANCE);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, "catwalksinc:catwalk_stairs", CatwalkStairsBlockEntity.TYPE);
+        Registry.register(Registries.BLOCK, "catwalksinc:catwalk_stairs", CatwalkStairsBlock.INSTANCE);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, "catwalksinc:catwalk_stairs", CatwalkStairsBlockEntity.TYPE);
 
-        Registry.register(Registry.BLOCK, "catwalksinc:caged_ladder", CagedLadderBlock.INSTANCE);
+        Registry.register(Registries.BLOCK, "catwalksinc:caged_ladder", CagedLadderBlock.INSTANCE);
 
-        Registry.register(Registry.BLOCK, "catwalksinc:cage_lamp", CageLampBlock.INSTANCE);
-        Registry.register(Registry.ITEM, "catwalksinc:cage_lamp", CageLampBlock.ITEM);
+        Registry.register(Registries.BLOCK, "catwalksinc:cage_lamp", CageLampBlock.INSTANCE);
+        Registry.register(Registries.ITEM, "catwalksinc:cage_lamp", CageLampBlock.ITEM);
         CageLampPart.DEFINITION.register();
 
-        Registry.register(Registry.BLOCK, "catwalksinc:crank_wheel", CrankWheelBlock.INSTANCE);
-        Registry.register(Registry.ITEM, "catwalksinc:crank_wheel", CrankWheelBlock.ITEM);
+        Registry.register(Registries.BLOCK, "catwalksinc:crank_wheel", CrankWheelBlock.INSTANCE);
+        Registry.register(Registries.ITEM, "catwalksinc:crank_wheel", CrankWheelBlock.ITEM);
         CrankWheelPart.DEFINITION.register();
 
-        Registry.register(Registry.ITEM, "catwalksinc:wrench", WrenchItem.INSTANCE);
-        Registry.register(Registry.SOUND_EVENT, "catwalksinc:wrench_use", WrenchItem.USE_SOUND);
+        Registry.register(Registries.ITEM, "catwalksinc:wrench", WrenchItem.INSTANCE);
+        Registry.register(Registries.SOUND_EVENT, "catwalksinc:wrench_use", WrenchItem.USE_SOUND);
 
-        Registry.register(Registry.ITEM, "catwalksinc:iron_rod", IRON_ROD);
-
+        Registry.register(Registries.ITEM, "catwalksinc:iron_rod", IRON_ROD);
 
         UseBlockCallback.EVENT.register(CatwalksInc::interact);
+
+        ItemGroupEvents.modifyEntriesEvent(ITEM_GROUP).register(entries -> {
+            entries.add(CatwalkBlock.ITEM);
+            entries.add(CageLampBlock.ITEM);
+            entries.add(CrankWheelBlock.ITEM);
+            entries.add(WrenchItem.INSTANCE);
+            entries.add(IRON_ROD);
+        });
     }
 
     @Override
@@ -86,6 +94,8 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(CagedLadderBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CageLampBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CrankWheelBlock.INSTANCE, RenderLayer.getCutoutMipped());
+
+        PartStaticModelRegisterEvent.EVENT.register(renderer -> renderer.register(BlockModelKey.class, new BlockPartModel()));
 
         WorldRenderEvents.BLOCK_OUTLINE.register(CatwalksInc::onBlockOutline);
     }
@@ -156,7 +166,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
                 Direction facing = state.get(CatwalkStairsBlock.FACING);
 
                 wrc.matrixStack().translate(0.5F, 0, 0.5F);
-                wrc.matrixStack().multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(180 + facing.asRotation()));
+                wrc.matrixStack().multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(180 + facing.asRotation()));
                 wrc.matrixStack().translate(-0.5F, 0, -0.5F);
 
                 if (state.get(CatwalkStairsBlock.HALF) == DoubleBlockHalf.UPPER) {

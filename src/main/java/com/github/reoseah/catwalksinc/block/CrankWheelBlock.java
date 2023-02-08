@@ -2,7 +2,6 @@ package com.github.reoseah.catwalksinc.block;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
-import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
 import com.github.reoseah.catwalksinc.part.CrankWheelPart;
 import com.google.common.collect.ImmutableList;
@@ -36,7 +35,7 @@ public class CrankWheelBlock extends WallDecorationBlock implements NativeMultip
     public static final IntProperty ROTATION = Properties.ROTATION;
 
     public static final Block INSTANCE = new CrankWheelBlock(FabricBlockSettings.of(Material.METAL, MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
-    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings().group(CatwalksInc.ITEM_GROUP));
+    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings());
 
     public static final VoxelShape[] SHAPES = { //
             Block.createCuboidShape(3, 11, 3, 13, 16, 13), //

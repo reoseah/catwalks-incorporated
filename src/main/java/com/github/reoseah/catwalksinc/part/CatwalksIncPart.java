@@ -15,7 +15,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
 public abstract class CatwalksIncPart extends BasePart {
-
     public CatwalksIncPart(PartDefinition definition, MultipartHolder holder) {
         super(definition, holder);
     }

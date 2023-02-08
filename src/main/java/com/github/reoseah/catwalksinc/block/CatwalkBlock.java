@@ -4,7 +4,6 @@ import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
-import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.item.WrenchItem;
 import com.github.reoseah.catwalksinc.part.CatwalkPart;
 import com.google.common.collect.ImmutableList;
@@ -98,7 +97,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
     }
 
     public static final Block INSTANCE = new CatwalkBlock(FabricBlockSettings.of(Material.METAL, MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
-    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings().group(CatwalksInc.ITEM_GROUP));
+    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings());
 
     public CatwalkBlock(Settings settings) {
         super(settings);

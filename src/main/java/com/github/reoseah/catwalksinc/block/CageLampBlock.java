@@ -2,7 +2,6 @@ package com.github.reoseah.catwalksinc.block;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
-import com.github.reoseah.catwalksinc.CatwalksInc;
 import com.github.reoseah.catwalksinc.part.CageLampPart;
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -30,7 +29,7 @@ public class CageLampBlock extends WallDecorationBlock implements NativeMultipar
     };
 
     public static final Block INSTANCE = new CageLampBlock(FabricBlockSettings.of(Material.METAL, MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque().luminance(14));
-    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings().group(CatwalksInc.ITEM_GROUP));
+    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings());
 
     public CageLampBlock(Settings settings) {
         super(settings);
