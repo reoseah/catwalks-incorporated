@@ -153,10 +153,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
         if (world.getBlockState(pos.down()).isOf(INSTANCE) //
                 || world.getBlockState(pos.down()).isOf(CagedLadderBlock.INSTANCE)) {
-            return CagedLadderBlock.INSTANCE.getDefaultState() //
-                    .with(CagedLadderBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
-                    .with(CagedLadderBlock.FACING, ctx.getPlayerFacing().getOpposite()) //
-                    .with(CagedLadderBlock.CAGE, CagedLadderBlock.getCageState(world, pos));
+            return CagedLadderBlock.INSTANCE.getPlacementState(ctx);
         }
 
         if (world.getBlockState(pos).canReplace(ctx) //
@@ -289,10 +286,13 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         super.onPlaced(world, pos, state, placer, itemStack);
 
         if (world.getBlockState(pos.up()).isOf(INSTANCE) && placer != null) {
+            CagedLadderBlock.CageState cageState = CagedLadderBlock.getCageState(world, pos);
+            Direction facing = placer.getHorizontalFacing().getOpposite();
             BlockState ladder = CagedLadderBlock.INSTANCE.getDefaultState()//
                     .with(CagedLadderBlock.WATERLOGGED, world.getFluidState(pos.up()).isOf(Fluids.WATER)) //
-                    .with(CagedLadderBlock.FACING, placer.getHorizontalFacing().getOpposite()) //
-                    .with(CagedLadderBlock.CAGE, CagedLadderBlock.getCageState(world, pos));
+                    .with(CagedLadderBlock.FACING, facing) //
+                    .with(CagedLadderBlock.CAGE, cageState) //
+                    .with(CagedLadderBlock.LADDER, CagedLadderBlock.getLadderState(facing, cageState, world, pos));
             world.setBlockState(pos.up(), ladder);
         }
 

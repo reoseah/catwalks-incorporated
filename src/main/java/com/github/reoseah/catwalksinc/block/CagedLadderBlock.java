@@ -9,6 +9,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.StringIdentifiable;
@@ -23,6 +24,7 @@ import net.minecraft.world.WorldAccess;
 public class CagedLadderBlock extends CatwalksIncBlock {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<CageState> CAGE = EnumProperty.of("cage", CageState.class);
+    public static final BooleanProperty LADDER = BooleanProperty.of("ladder");
 
     public enum CageState implements StringIdentifiable {
         NORMAL("normal"), NONE("none"), HANDRAILS("handrails");
@@ -97,13 +99,13 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
     protected CagedLadderBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(CAGE, CageState.NORMAL));
+        this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(CAGE, CageState.NORMAL).with(LADDER, true));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
-        builder.add(FACING, CAGE);
+        builder.add(FACING, CAGE, LADDER);
     }
 
     @Override
@@ -116,7 +118,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
         Direction facing = state.get(FACING);
         int idx = facing.getHorizontal();
         return switch (state.get(CAGE)) {
-            case NORMAL, HANDRAILS -> COLLISION_SHAPES[idx];
+            case NORMAL, HANDRAILS -> state.get(LADDER) ? COLLISION_SHAPES[idx] : CAGE_ONLY_COLLISION_SHAPES[idx];
             case NONE -> LADDER_ONLY_COLLISION_SHAPES[facing.getHorizontal()];
         };
     }
@@ -129,31 +131,27 @@ public class CagedLadderBlock extends CatwalksIncBlock {
         Direction facing = state.get(FACING);
         int idx = facing.getHorizontal();
         return switch (state.get(CAGE)) {
-            case NORMAL, HANDRAILS -> OUTLINE_SHAPES[idx];
+            case NORMAL, HANDRAILS -> state.get(LADDER) ? OUTLINE_SHAPES[idx] : CAGE_ONLY_OUTLINE_SHAPES[idx];
             case NONE -> LADDER_ONLY_OUTLINE_SHAPES[facing.getHorizontal()];
         };
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState state = super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
-        return state.with(CAGE, this.getCageState(ctx.getWorld(), ctx.getBlockPos()));
+        Direction facing = ctx.getPlayerFacing().getOpposite();
+        CageState cage = getCageState(ctx.getWorld(), ctx.getBlockPos());
+        return super.getPlacementState(ctx).with(FACING, facing).with(CAGE, cage).with(LADDER, getLadderState(facing, cage, ctx.getWorld(), ctx.getBlockPos()));
     }
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
-        super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos);
-        return state.with(CAGE, this.getCageState(world, pos));
+        Direction facing = state.get(FACING);
+        CageState cage = getCageState(world, pos);
+        return super.getStateForNeighborUpdate(state, direction, newState, world, posFrom, pos).with(CAGE, cage).with(LADDER, getLadderState(facing, cage, world, pos));
+
     }
 
     public static CageState getCageState(WorldAccess world, BlockPos pos) {
-//        BlockPos behindLadder = pos.offset(state.get(FACING).getOpposite());
-//        BlockState stateBehindLadder = world.getBlockState(behindLadder);
-//        if (CatwalkBlock.needsCatwalkConnection(stateBehindLadder, world, behindLadder, state.get(FACING).getOpposite())) {
-//            return CageState.HANDRAILS;
-        // TODO separate ladder state from cage state, disable cage when here
-//        }
-
         BlockPos belowLadder = pos.down();
         BlockState stateBelowLadder = world.getBlockState(belowLadder);
         if (stateBelowLadder.isOf(CatwalkBlock.INSTANCE) //
@@ -168,5 +166,18 @@ public class CagedLadderBlock extends CatwalksIncBlock {
         }
 
         return CageState.NORMAL;
+    }
+
+
+    public static boolean getLadderState(Direction facing, CageState cage, WorldAccess world, BlockPos pos) {
+        if (cage == CageState.NONE) {
+            return true;
+        }
+        BlockPos behindLadder = pos.offset(facing.getOpposite());
+        BlockState stateBehindLadder = world.getBlockState(behindLadder);
+        if (CatwalkBlock.needsCatwalkConnection(stateBehindLadder, world, behindLadder, facing)) {
+            return false;
+        }
+        return true;
     }
 }

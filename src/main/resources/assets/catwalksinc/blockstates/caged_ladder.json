@@ -1,19 +1,19 @@
 {
   "multipart": [
     {
-      "when": { "facing": "north" },
+      "when": { "facing": "north", "ladder": true },
       "apply": { "model": "catwalksinc:block/iron_ladder" }
     },
     {
-      "when": { "facing": "south" },
+      "when": { "facing": "south", "ladder": true },
       "apply": { "model": "catwalksinc:block/iron_ladder", "y": 180 }
     },
     {
-      "when": { "facing": "west" },
+      "when": { "facing": "west", "ladder": true },
       "apply": { "model": "catwalksinc:block/iron_ladder", "y": 270 }
     },
     {
-      "when": { "facing": "east" },
+      "when": { "facing": "east", "ladder": true },
       "apply": { "model": "catwalksinc:block/iron_ladder", "y": 90 }
     },
     {
