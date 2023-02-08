@@ -113,7 +113,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (context.isHolding(this.asItem()) && !context.isDescending()) {
+        if (context.isHolding(CatwalkBlock.ITEM) && !context.isDescending()) {
             return VoxelShapes.fullCube();
         }
         return OUTLINE_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
