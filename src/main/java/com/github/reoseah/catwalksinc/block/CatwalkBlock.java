@@ -148,7 +148,7 @@ public class CatwalkBlock extends CatwalksIncBlock implements NativeMultipart {
         World world = ctx.getWorld();
         BlockPos pos = ctx.getBlockPos();
 
-        if (world.getBlockState(pos.down()).isOf(INSTANCE) || world.getBlockState(pos.down()).isOf(INSTANCE)) {
+        if (world.getBlockState(pos.down()).isOf(INSTANCE) || world.getBlockState(pos.down()).isOf(CagedLadderBlock.INSTANCE)) {
             return CagedLadderBlock.INSTANCE.getDefaultState() //
                     .with(CagedLadderBlock.FACING, ctx.getPlayerFacing().getOpposite());
         }
