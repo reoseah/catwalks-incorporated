@@ -10,7 +10,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.github.reoseah.catwalksinc.CatwalksUtil;
 import com.github.reoseah.catwalksinc.block.CrankWheelBlock;
-import com.github.reoseah.catwalksinc.block.Side;
+import com.github.reoseah.catwalksinc.block.HorizontalHalf;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -87,9 +87,9 @@ public class CrankWheelPart extends CatwalksIncPart {
         if (facing.getAxis() == Direction.Axis.Y) {
             facing = player.getHorizontalFacing().getOpposite();
         }
-        Side side = CatwalksUtil.getTargettedSide(this.getPos(), hit.getPos(), facing);
+        HorizontalHalf half = CatwalksUtil.getTargettedSide(this.getPos(), hit.getPos(), facing);
         int rotation = this.rotation;
-        int newRotation = side == Side.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
+        int newRotation = half == HorizontalHalf.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
 
         if (this.getWorld().isClient) {
             if (newRotation != 0 && newRotation != rotation) {

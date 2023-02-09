@@ -17,18 +17,18 @@ public abstract class CatwalksIncPart extends AbstractPart {
         super(definition, holder);
     }
 
-    protected final void updateListeners() {
-        BlockPos pos = this.getPos();
-        BlockState multipartState = this.getWorld().getBlockState(pos);
-        this.getWorld().updateListeners(this.getPos(), multipartState, multipartState, 3);
-    }
-
     protected World getWorld() {
         return this.holder.getContainer().getMultipartWorld();
     }
 
     protected BlockPos getPos() {
         return this.holder.getContainer().getMultipartPos();
+    }
+
+    protected void updateListeners() {
+        BlockPos pos = this.getPos();
+        BlockState multipartState = this.getWorld().getBlockState(pos);
+        this.getWorld().updateListeners(this.getPos(), multipartState, multipartState, 3);
     }
 
     @Override

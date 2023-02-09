@@ -1,0 +1,18 @@
+{
+  "itemGroup.catwalksinc.main": "캣워크 주식회사",
+  "block.catwalksinc.catwalk": "캣워크",
+  "block.catwalksinc.catwalk.desc.0": "§7Converts to stairs when placed diagonally.",
+  "block.catwalksinc.catwalk.desc.1": "§7Converts to ladder when placed vertically.",
+  "block.catwalksinc.catwalk.desc.2": "§7Use Wrench to configure sides.",
+  "block.catwalksinc.catwalk_stairs": "캣워크 계단",
+  "block.catwalksinc.caged_ladder": "케이지 사다리",
+  "block.catwalksinc.cage_lamp": "케이지 램프",
+  "block.catwalksinc.crank_wheel": "크랭크휠",
+  "item.catwalksinc.wrench": "렌치",
+  "item.catwalksinc.iron_rod": "각철장",
+  "subtitles.catwalksinc.wrench_use": "렌치 사용함",
+  "misc.catwalksinc.blocked_by_another_multipart": "Blocked by another multipart!",
+  "misc.catwalksinc.default_handrail": "Default",
+  "misc.catwalksinc.forced_handrail": "Forced",
+  "misc.catwalksinc.forced_no_handrail": "Disabled"
+}

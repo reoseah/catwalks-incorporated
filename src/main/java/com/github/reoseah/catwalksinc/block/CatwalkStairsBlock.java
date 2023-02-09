@@ -188,16 +188,16 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
         Direction facing = state.get(FACING);
         Direction left = facing.rotateYClockwise();
         Direction right = facing.rotateYCounterclockwise();
-        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, Side.LEFT)).with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, Side.RIGHT));
+        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, HorizontalHalf.LEFT)).with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, HorizontalHalf.RIGHT));
     }
 
-    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, Side side) {
+    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, HorizontalHalf half) {
         if (state.get(HALF) == DoubleBlockHalf.UPPER) {
             pos = pos.down();
             state = state.with(HALF, DoubleBlockHalf.LOWER);
         }
         if (world.getBlockEntity(pos) instanceof CatwalkStairsBlockEntity catwalk) {
-            Optional<ConnectionOverride> handrail = catwalk.getHandrailState(side);
+            Optional<ConnectionOverride> handrail = catwalk.getHandrailState(half);
             if (handrail.isPresent()) {
                 return handrail.get() == ConnectionOverride.FORCED;
             }
@@ -213,7 +213,7 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
                 // stairs not matching
                 return true;
             }
-            return world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk && otherCatwalk.isHandrailForced(side.getOpposite());
+            return world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk && otherCatwalk.isHandrailForced(half.getOpposite());
 
         }
         return true;
@@ -226,8 +226,8 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
                 || super.isSideInvisible(state, state2, direction);
     }
 
-    public static Direction getSideDirection(Direction facing, Side side) {
-        return side == Side.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
+    public static Direction getSideDirection(Direction facing, HorizontalHalf half) {
+        return half == HorizontalHalf.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
     }
 
     protected static BlockPos getLowerHalfPos(BlockState state, BlockPos pos) {
@@ -237,8 +237,8 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
         return pos;
     }
 
-    public static BooleanProperty getHandrailProperty(Side side) {
-        return side == Side.LEFT ? LEFT : RIGHT;
+    public static BooleanProperty getHandrailProperty(HorizontalHalf half) {
+        return half == HorizontalHalf.LEFT ? LEFT : RIGHT;
     }
 
     @Override
@@ -273,11 +273,11 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
             world.addBlockEntity(be);
         }
 
-        Side side = CatwalksUtil.getTargettedSide(pos, hitPos, state.get(FACING));
+        HorizontalHalf half = CatwalksUtil.getTargettedSide(pos, hitPos, state.get(FACING));
 
-        be.useWrench(side, state, player);
+        be.useWrench(half, state, player);
 
-        BlockState newState = state.with(getHandrailProperty(side), be.getHandrailState(side).map(override -> override == ConnectionOverride.FORCED).orElse(this.shouldHaveHandrail(state, world, pos, direction, side)));
+        BlockState newState = state.with(getHandrailProperty(half), be.getHandrailState(half).map(override -> override == ConnectionOverride.FORCED).orElse(this.shouldHaveHandrail(state, world, pos, direction, half)));
         world.setBlockState(pos, newState);
         world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
 

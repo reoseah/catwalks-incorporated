@@ -12,7 +12,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -25,25 +24,6 @@ public class CagedLadderBlock extends CatwalksIncBlock {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<CageState> CAGE = EnumProperty.of("cage", CageState.class);
     public static final BooleanProperty LADDER = BooleanProperty.of("ladder");
-
-    public enum CageState implements StringIdentifiable {
-        NORMAL("normal"), NONE("none"), HANDRAILS("handrails");
-
-        private final String name;
-
-        CageState(String name) {
-            this.name = name;
-        }
-
-        public String toString() {
-            return this.name;
-        }
-
-        @Override
-        public String asString() {
-            return this.name;
-        }
-    }
 
     public static final VoxelShape[] LADDER_ONLY_OUTLINE_SHAPES = { //
             Block.createCuboidShape(0, 0, 0, 16, 16, 4), //
@@ -181,6 +161,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
     public static boolean getLadderState(Direction facing, CageState cage, WorldAccess world, BlockPos pos) {
         if (cage == CageState.NONE) {
+            // cannot not have ladder if there's no cage, that would result in empty block
             return true;
         }
         BlockPos behindLadder = pos.offset(facing.getOpposite());

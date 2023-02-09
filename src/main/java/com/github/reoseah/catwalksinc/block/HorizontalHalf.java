@@ -2,7 +2,7 @@ package com.github.reoseah.catwalksinc.block;
 
 import java.util.Locale;
 
-public enum Side {
+public enum HorizontalHalf {
     LEFT, RIGHT;
 
     @Override
@@ -10,7 +10,7 @@ public enum Side {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public Side getOpposite() {
+    public HorizontalHalf getOpposite() {
         return this == LEFT ? RIGHT : LEFT;
     }
 }

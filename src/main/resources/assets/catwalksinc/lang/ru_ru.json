@@ -1,0 +1,18 @@
+{
+  "itemGroup.catwalksinc.main": "Catwalks, Inc.",
+  "block.catwalksinc.catwalk": "Пешеходная платформа",
+  "block.catwalksinc.catwalk.desc.0": "§7Образует ступеньки при размещении по диагонали.",
+  "block.catwalksinc.catwalk.desc.1": "§7Образует лестницу при размещении вертикально.",
+  "block.catwalksinc.catwalk.desc.2": "§7Гаечный ключ позволяет настраивать поручни.",
+  "block.catwalksinc.catwalk_stairs": "Ступеньки пешеходной платформы",
+  "block.catwalksinc.caged_ladder": "Промышленная лестница",
+  "block.catwalksinc.cage_lamp": "Промышленная лампа",
+  "block.catwalksinc.crank_wheel": "Задвижной кран",
+  "item.catwalksinc.wrench": "Гаечный ключ",
+  "item.catwalksinc.iron_rod": "Железный стержень",
+  "subtitles.catwalksinc.wrench_use": "Использован гаечный ключ",
+  "misc.catwalksinc.blocked_by_another_multipart": "Заблокировано другой multipart частью!",
+  "misc.catwalksinc.default_handrail": "По умолчанию",
+  "misc.catwalksinc.forced_handrail": "Поручень вынужден",
+  "misc.catwalksinc.forced_no_handrail": "Поручень запрещен"
+}
