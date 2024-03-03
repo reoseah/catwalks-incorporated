@@ -1,4 +1,4 @@
-package io.github.reoseah.catwalksinc;
+package io.github.reoseah.catwalksinc.item;
 
 
 import com.google.common.collect.ImmutableMultimap;

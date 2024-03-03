@@ -1,5 +1,8 @@
 package io.github.reoseah.catwalksinc;
 
+import io.github.reoseah.catwalksinc.block.CatwalkBlock;
+import io.github.reoseah.catwalksinc.block.CatwalkStairsBlock;
+import io.github.reoseah.catwalksinc.item.WrenchItem;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
@@ -10,7 +13,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class CatwalksInc {

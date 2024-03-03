@@ -1,5 +1,6 @@
-package io.github.reoseah.catwalksinc;
+package io.github.reoseah.catwalksinc.block;
 
+import io.github.reoseah.catwalksinc.CatwalksInc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -25,8 +26,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Locale;
 
 @SuppressWarnings("deprecation")
 public class CatwalkStairsBlock extends WaterloggableBlock {

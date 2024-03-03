@@ -1,5 +1,6 @@
-package io.github.reoseah.catwalksinc;
+package io.github.reoseah.catwalksinc.block;
 
+import io.github.reoseah.catwalksinc.CatwalksInc;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.fluid.Fluids;

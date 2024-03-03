@@ -1,5 +1,7 @@
 package io.github.reoseah.catwalksinc;
 
+import io.github.reoseah.catwalksinc.block.CatwalkBlock;
+import io.github.reoseah.catwalksinc.block.CatwalkStairsBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
