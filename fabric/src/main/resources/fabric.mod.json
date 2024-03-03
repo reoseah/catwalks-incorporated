@@ -4,9 +4,7 @@
   "version": "${version}",
   "name": "Catwalks, Inc.",
   "description": "Leading industrial provider of personnel foot-traffic solutions for the construction, manufacturing and mining industries.",
-  "authors": [
-    "Reoseah"
-  ],
+  "authors": [ "Reoseah" ],
   "contact": {
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/reoseah/catwalks-incorporated"
@@ -15,9 +13,8 @@
   "icon": "assets/catwalksinc/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "io.github.reoseah.catwalksinc.fabric.CatwalksIncFabric"
-    ]
+    "main": [ "io.github.reoseah.catwalksinc.fabric.CatwalksIncFabric" ],
+    "client": [ "io.github.reoseah.catwalksinc.fabric.CatwalksIncFabric" ]
   },
   "mixins": [
     "catwalksinc.mixins.json",
