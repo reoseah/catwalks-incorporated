@@ -1,35 +1,28 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/reoseah/catwalks-incorporated/issues"
+license = "MIT"
 
 [[mods]]
-modId = "examplemod"
+modId = "catwalksinc"
 version = "${version}"
 displayName = "Example Mod"
-authors = "Me!"
+authors = "Reoseah"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Leading industrial provider of personnel foot-traffic solutions for the construction, manufacturing and mining industries.
 '''
 #logoFile = ""
 
-[[dependencies.examplemod]]
+[[dependencies.catwalksinc]]
 modId = "forge"
 mandatory = true
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.catwalksinc]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.20.1,)"
 ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.examplemod]]
-modId = "architectury"
-mandatory = true
-versionRange = "[9.1.12,)"
-ordering = "AFTER"
 side = "BOTH"

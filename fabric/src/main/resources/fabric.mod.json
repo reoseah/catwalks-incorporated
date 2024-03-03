@@ -1,31 +1,30 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "catwalksinc",
   "version": "${version}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Catwalks, Inc.",
+  "description": "Leading industrial provider of personnel foot-traffic solutions for the construction, manufacturing and mining industries.",
   "authors": [
-    "Me!"
+    "Reoseah"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/reoseah/catwalks-incorporated"
   },
-  "license": "Insert License Here",
-  "icon": "assets/examplemod/icon.png",
+  "license": "MIT",
+  "icon": "assets/catwalksinc/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.examplemod.fabric.ExampleModFabric"
+      "io.github.reoseah.catwalksinc.fabric.CatwalksIncFabric"
     ]
   },
   "mixins": [
-    "examplemod.mixins.json",
-    "examplemod-common.mixins.json"
+    "catwalksinc.mixins.json",
+    "catwalksinc-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.20.1",
-    "architectury": ">=9.1.12"
+    "minecraft": ">=1.20.1"
   }
 }

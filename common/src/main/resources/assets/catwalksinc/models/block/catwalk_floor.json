@@ -1,0 +1,17 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "catwalksinc:block/catwalk_floor",
+    "texture": "catwalksinc:block/catwalk_floor"
+  },
+  "elements": [
+    {
+      "from": [ 0, 1, 0 ],
+      "to": [ 16, 1, 16 ],
+      "faces": {
+        "up": { "texture": "#texture" },
+        "down": { "texture": "#texture" }
+      }
+    }
+  ]
+}
