@@ -4,16 +4,22 @@ import io.github.reoseah.catwalksinc.CatwalksInc;
 import io.github.reoseah.catwalksinc.CatwalksIncClient;
 import net.fabricmc.api.*;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 @EnvironmentInterface(value = EnvType.CLIENT, itf = ClientModInitializer.class)
 public class CatwalksIncFabric implements ModInitializer, ClientModInitializer {
@@ -43,6 +49,23 @@ public class CatwalksIncFabric implements ModInitializer, ClientModInitializer {
             @Override
             public void registerRenderLayer(RenderLayer layer, Block... blocks) {
                 BlockRenderLayerMap.INSTANCE.putBlocks(layer, blocks);
+            }
+
+            @Override
+            public void registerBlockOutlineHandler(OutlineHandler handler) {
+                WorldRenderEvents.BLOCK_OUTLINE.register((worldCtx, blockCtx) -> {
+                    BlockState state = blockCtx.blockState();
+                    BlockPos pos = blockCtx.blockPos();
+                    MatrixStack matrices = worldCtx.matrixStack();
+                    VertexConsumerProvider vertexConsumers = worldCtx.consumers();
+                    double cameraX = blockCtx.cameraX();
+                    double cameraY = blockCtx.cameraY();
+                    double cameraZ = blockCtx.cameraZ();
+
+                    handler.renderOutline(state, pos, matrices, vertexConsumers, cameraX, cameraY, cameraZ);
+
+                    return true;
+                });
             }
         });
     }

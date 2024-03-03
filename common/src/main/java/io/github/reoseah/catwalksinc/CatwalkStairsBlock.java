@@ -10,6 +10,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 
 @SuppressWarnings("deprecation")
-public class CatwalkStairsBlock extends Block {
+public class CatwalkStairsBlock extends WaterloggableBlock {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
@@ -105,10 +106,13 @@ public class CatwalkStairsBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-        // place upper part
-        world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER)
-//                .with(WATERLOGGED, world.getFluidState(pos.up()).getFluid() == Fluids.WATER)
-                , 3);
+        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+            world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER)
+                    .with(WATERLOGGED, world.getFluidState(pos.up()).getFluid() == Fluids.WATER));
+        } else {
+            world.setBlockState(pos.down(), state.with(HALF, DoubleBlockHalf.LOWER)
+                    .with(WATERLOGGED, world.getFluidState(pos.down()).getFluid() == Fluids.WATER));
+        }
     }
 
     @Override

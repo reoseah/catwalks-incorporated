@@ -2,6 +2,7 @@ package io.github.reoseah.catwalksinc;
 
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -18,7 +19,7 @@ import net.minecraft.world.WorldAccess;
 import java.util.Optional;
 
 @SuppressWarnings("deprecation")
-public class CatwalkBlock extends Block {
+public class CatwalkBlock extends WaterloggableBlock {
     public static final BooleanProperty SOUTH = Properties.SOUTH;
     public static final BooleanProperty WEST = Properties.WEST;
     public static final BooleanProperty NORTH = Properties.NORTH;
@@ -110,12 +111,22 @@ public class CatwalkBlock extends Block {
         BlockPos pos = ctx.getBlockPos();
 
         if (world.getBlockState(pos.up()).canReplace(ItemPlacementContext.offset(ctx, pos.up(), Direction.DOWN))) {
-            Optional<Direction> stairsUpFacing = findNeighborCatwalk(world, pos.up());
+            Optional<Direction> stairsUpFacing = findNeighborCatwalk(world, pos.up(), ctx.getPlacementDirections());
 
             if (stairsUpFacing.isPresent()) {
                 return CatwalksInc.CATWALK_STAIRS.getDefaultState() //
-//                        .with(CatwalkStairsBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
+                        .with(CatwalkStairsBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
                         .with(CatwalkStairsBlock.FACING, stairsUpFacing.get().getOpposite());
+            }
+        }
+        if (world.getBlockState(pos.down()).canReplace(ItemPlacementContext.offset(ctx, pos.down(), Direction.UP))) {
+            Optional<Direction> stairsDownFacing = findNeighborCatwalk(world, pos.down(), ctx.getPlacementDirections());
+
+            if (stairsDownFacing.isPresent()) {
+                return CatwalksInc.CATWALK_STAIRS.getDefaultState() //
+                        .with(CatwalkStairsBlock.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER) //
+                        .with(CatwalkStairsBlock.HALF, DoubleBlockHalf.UPPER) //
+                        .with(CatwalkStairsBlock.FACING, stairsDownFacing.get());
             }
         }
 
@@ -126,8 +137,11 @@ public class CatwalkBlock extends Block {
                 .with(EAST, shouldHaveHandrail(world, pos, Direction.EAST));
     }
 
-    protected static Optional<Direction> findNeighborCatwalk(WorldAccess world, BlockPos pos) {
-        for (Direction facing : Direction.Type.HORIZONTAL) {
+    protected static Optional<Direction> findNeighborCatwalk(WorldAccess world, BlockPos pos, Direction[] placementDirections) {
+        for (Direction facing : placementDirections) {
+            if (!facing.getAxis().isHorizontal()) {
+                continue;
+            }
             BlockPos neighborPos = pos.offset(facing);
             BlockState neighborState = world.getBlockState(neighborPos);
             if (getConnectivity(neighborState, world, neighborPos, facing.getOpposite()) == Connectivity.ADAPT_SHAPE) {
