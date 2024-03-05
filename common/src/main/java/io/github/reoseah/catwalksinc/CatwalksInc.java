@@ -1,9 +1,6 @@
 package io.github.reoseah.catwalksinc;
 
-import io.github.reoseah.catwalksinc.block.CatwalkBlock;
-import io.github.reoseah.catwalksinc.block.CatwalkBlockEntity;
-import io.github.reoseah.catwalksinc.block.CatwalkStairsBlock;
-import io.github.reoseah.catwalksinc.block.CatwalkStairsBlockEntity;
+import io.github.reoseah.catwalksinc.block.*;
 import io.github.reoseah.catwalksinc.item.WrenchItem;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -27,6 +24,8 @@ public class CatwalksInc {
     public static final AbstractBlock.Settings CATWALK_SETTINGS = AbstractBlock.Settings.create().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque();
     public static final Block CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
     public static final Block CATWALK_STAIRS = new CatwalkStairsBlock(CATWALK_SETTINGS);
+
+    public static final Block CRANK_WHEEL = new CrankWheelBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
     public static final BlockEntityType<?> CATWALK_BE = BlockEntityType.Builder.create(CatwalkBlockEntity::new, CATWALK).build(null);
     public static final BlockEntityType<?> CATWALK_STAIRS_BE = BlockEntityType.Builder.create(CatwalkStairsBlockEntity::new, CATWALK_STAIRS).build(null);
 
@@ -39,11 +38,13 @@ public class CatwalksInc {
     public static void initialize(Registrar registrar) {
         registrar.register(Registries.BLOCK, "catwalk", CATWALK);
         registrar.register(Registries.BLOCK, "catwalk_stairs", CATWALK_STAIRS);
+        registrar.register(Registries.BLOCK, "crank_wheel", CRANK_WHEEL);
 
         registrar.register(Registries.BLOCK_ENTITY_TYPE, "catwalk", CATWALK_BE);
         registrar.register(Registries.BLOCK_ENTITY_TYPE, "catwalk_stairs", CATWALK_STAIRS_BE);
 
         registrar.register(Registries.ITEM, "catwalk", new BlockItem(CATWALK, new Item.Settings()));
+        registrar.register(Registries.ITEM, "crank_wheel", new BlockItem(CRANK_WHEEL, new Item.Settings()));
 
         registrar.register(Registries.ITEM, "wrench", WRENCH);
 

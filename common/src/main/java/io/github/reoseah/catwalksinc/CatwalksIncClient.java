@@ -18,7 +18,10 @@ import net.minecraft.util.math.RotationAxis;
 
 public class CatwalksIncClient {
     public static void initialize(Platform platform) {
-        platform.registerRenderLayer(RenderLayer.getCutout(), CatwalksInc.CATWALK, CatwalksInc.CATWALK_STAIRS);
+        platform.registerRenderLayer(RenderLayer.getCutout(),
+                CatwalksInc.CATWALK,
+                CatwalksInc.CATWALK_STAIRS,
+                CatwalksInc.CRANK_WHEEL);
 
         platform.registerBlockOutlineHandler(CatwalksIncClient::renderWrenchHelpers);
     }

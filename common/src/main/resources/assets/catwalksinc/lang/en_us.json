@@ -2,6 +2,7 @@
   "itemGroup.catwalksinc": "Catwalks, Inc.",
   "block.catwalksinc.catwalk": "Catwalk",
   "block.catwalksinc.catwalk_stairs": "Catwalk (Stairs)",
+  "block.catwalksinc.crank_wheel": "Crank Wheel",
   "item.catwalksinc.wrench": "Wrench",
   "catwalksinc.catwalk_side_state.default": "Default",
   "catwalksinc.catwalk_side_state.disable_handrail": "Disabled",
