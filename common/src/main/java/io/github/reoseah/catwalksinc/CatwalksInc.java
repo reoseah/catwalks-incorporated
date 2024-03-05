@@ -2,10 +2,12 @@ package io.github.reoseah.catwalksinc;
 
 import io.github.reoseah.catwalksinc.block.CatwalkBlock;
 import io.github.reoseah.catwalksinc.block.CatwalkStairsBlock;
+import io.github.reoseah.catwalksinc.block.CatwalkStairsBlockEntity;
 import io.github.reoseah.catwalksinc.item.WrenchItem;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -21,6 +23,7 @@ public class CatwalksInc {
     public static final AbstractBlock.Settings CATWALK_SETTINGS = AbstractBlock.Settings.create().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque();
     public static final Block CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
     public static final Block CATWALK_STAIRS = new CatwalkStairsBlock(CATWALK_SETTINGS);
+    public static final BlockEntityType<?> CATWALK_STAIRS_BE = BlockEntityType.Builder.create(CatwalkStairsBlockEntity::new, CATWALK_STAIRS).build(null);
 
     public static final Item WRENCH = new WrenchItem(new Item.Settings().maxDamage(255));
 
@@ -31,6 +34,8 @@ public class CatwalksInc {
     public static void initialize(Registrar registrar) {
         registrar.register(Registries.BLOCK, "catwalk", CATWALK);
         registrar.register(Registries.BLOCK, "catwalk_stairs", CATWALK_STAIRS);
+
+        registrar.register(Registries.BLOCK_ENTITY_TYPE, "catwalk_stairs", CATWALK_STAIRS_BE);
 
         registrar.register(Registries.ITEM, "catwalk", new BlockItem(CATWALK, new Item.Settings()));
 

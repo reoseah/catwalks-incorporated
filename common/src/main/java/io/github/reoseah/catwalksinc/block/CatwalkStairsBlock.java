@@ -3,22 +3,25 @@ package io.github.reoseah.catwalksinc.block;
 import io.github.reoseah.catwalksinc.CatwalksInc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -28,7 +31,7 @@ import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class CatwalkStairsBlock extends WaterloggableBlock {
+public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntityProvider {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
@@ -156,40 +159,47 @@ public class CatwalkStairsBlock extends WaterloggableBlock {
             }
         }
 
+        if (world.isClient()) {
+            return state;
+        }
+
         Direction facing = state.get(FACING);
         Direction left = facing.rotateYClockwise();
         Direction right = facing.rotateYCounterclockwise();
-        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, HorizontalHalf.LEFT)) //
-                .with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, HorizontalHalf.RIGHT));
+        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, StairSide.LEFT)) //
+                .with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, StairSide.RIGHT));
     }
 
-    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, HorizontalHalf half) {
+    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, StairSide side) {
         if (state.get(HALF) == DoubleBlockHalf.UPPER) {
             pos = pos.down();
             state = state.with(HALF, DoubleBlockHalf.LOWER);
         }
-//        if (world.getBlockEntity(pos) instanceof CatwalkStairsBlockEntity catwalk) {
-//            Optional<ConnectionOverride> handrail = catwalk.getHandrailState(half);
-//            if (handrail.isPresent()) {
-//                return handrail.get() == ConnectionOverride.FORCED;
-//            }
-//        }
+
+        if (world.getBlockEntity(pos) instanceof CatwalkStairsBlockEntity catwalk) {
+            CatwalkStairsBlockEntity.Connectivity connectivity = catwalk.getConnectivity(side);
+            if (connectivity != CatwalkStairsBlockEntity.Connectivity.DEFAULT) {
+                return connectivity == CatwalkStairsBlockEntity.Connectivity.FORCE_HANDRAIL;
+            }
+        }
+
         BlockState neighbor = world.getBlockState(pos.offset(direction));
         BlockState above = world.getBlockState(pos.offset(direction).up());
 
-        if (neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite()) //
-                && above.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite())) {
-            return false;
-        }
         if (neighbor.getBlock() instanceof CatwalkStairsBlock) {
             if (neighbor.get(FACING) != state.get(FACING) || neighbor.get(HALF) != state.get(HALF)) {
                 // stairs not matching
                 return true;
             }
-//            return world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk && otherCatwalk.isHandrailForced(half.getOpposite());
+
+            if (world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk) {
+                return otherCatwalk.getConnectivity(side.getOpposite()) == CatwalkStairsBlockEntity.Connectivity.FORCE_HANDRAIL;
+            }
+
             return false;
         }
-        return true;
+        return !neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite()) //
+                || !above.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite());
     }
 
     @Environment(EnvType.CLIENT)
@@ -199,25 +209,80 @@ public class CatwalkStairsBlock extends WaterloggableBlock {
                 || super.isSideInvisible(state, state2, direction);
     }
 
-    public static Direction getSideDirection(Direction facing, HorizontalHalf half) {
-        return half == HorizontalHalf.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
+    public static BooleanProperty getHandrailProperty(StairSide half) {
+        return half == StairSide.LEFT ? LEFT : RIGHT;
     }
 
-    protected static BlockPos getLowerHalfPos(BlockState state, BlockPos pos) {
-        if (state.get(HALF) == DoubleBlockHalf.UPPER) {
-            return pos.down();
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isIn(CatwalksInc.WRENCHES)) {
+            if (!world.isClient && this.tryWrench(state, world, pos, player, hit.getPos())) {
+                stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+            }
+            return ActionResult.SUCCESS;
         }
-        return pos;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
-    public static BooleanProperty getHandrailProperty(HorizontalHalf half) {
-        return half == HorizontalHalf.LEFT ? LEFT : RIGHT;
+    public boolean tryWrench(BlockState state, World world, BlockPos pos, PlayerEntity player, Vec3d hitPos) {
+        if (state.get(HALF) == DoubleBlockHalf.UPPER) {
+            pos = pos.down();
+            state = world.getBlockState(pos);
+        }
+
+        if (player != null && player.isSneaking()) {
+            world.removeBlockEntity(pos);
+            world.setBlockState(pos, state.cycle(FACING));
+            world.setBlockState(pos.up(), state.cycle(FACING).with(HALF, DoubleBlockHalf.UPPER));
+            return true;
+        }
+
+        StairSide side = getTargetedSide(pos, hitPos, state.get(FACING));
+
+        CatwalkStairsBlockEntity be = (CatwalkStairsBlockEntity) world.getBlockEntity(pos);
+        if (be == null) {
+            be = new CatwalkStairsBlockEntity(pos, state);
+            world.addBlockEntity(be);
+        }
+
+        CatwalkStairsBlockEntity.Connectivity connectivity = be.getConnectivity(side);
+
+        CatwalkStairsBlockEntity.Connectivity newConnectivity = connectivity.cycle();
+        be.setConnectivity(side, newConnectivity);
+        if (!be.isBlockEntityNecessary()) {
+            world.removeBlockEntity(pos);
+        }
+
+        BlockState newState = state.with(getHandrailProperty(side), newConnectivity == CatwalkStairsBlockEntity.Connectivity.FORCE_HANDRAIL);
+        world.setBlockState(pos, newState);
+        world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
+
+        if (player != null) {
+            player.sendMessage(Text.translatable(newConnectivity.translationKey), true);
+        }
+        return true;
     }
 
-    public enum HorizontalHalf {
+    public static StairSide getTargetedSide(BlockPos pos, Vec3d hitPos, Direction facing) {
+        Direction.Axis perpendicular = facing.rotateYClockwise().getAxis();
+        double posAlongPerpendicular = hitPos.getComponentAlongAxis(perpendicular) - pos.getComponentAlongAxis(perpendicular);
+        boolean isLeft = facing.rotateYClockwise().getDirection() == Direction.AxisDirection.POSITIVE ? posAlongPerpendicular > 0.5 : posAlongPerpendicular < 0.5;
+
+        return isLeft ? StairSide.LEFT : StairSide.RIGHT;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        // no block entity by default, we use world.setBlockEntity
+        return null;
+    }
+
+    public enum StairSide {
         LEFT, RIGHT;
 
-        public HorizontalHalf getOpposite() {
+        public StairSide getOpposite() {
             return this == LEFT ? RIGHT : LEFT;
         }
     }

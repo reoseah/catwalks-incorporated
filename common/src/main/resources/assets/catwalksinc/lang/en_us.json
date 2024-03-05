@@ -2,5 +2,8 @@
   "itemGroup.catwalksinc": "Catwalks, Inc.",
   "block.catwalksinc.catwalk": "Catwalk",
   "block.catwalksinc.catwalk_stairs": "Catwalk (Stairs)",
-  "item.catwalksinc.wrench": "Wrench"
+  "item.catwalksinc.wrench": "Wrench",
+  "catwalksinc.connectivity.default": "Default",
+  "catwalksinc.connectivity.disable_handrail": "Disabled",
+  "catwalksinc.connectivity.force_handrail": "Forced"
 }
