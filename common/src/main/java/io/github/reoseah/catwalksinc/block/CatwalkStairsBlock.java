@@ -9,7 +9,6 @@ import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -177,9 +176,9 @@ public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntit
         }
 
         if (world.getBlockEntity(pos) instanceof CatwalkStairsBlockEntity catwalk) {
-            CatwalkStairsBlockEntity.Connectivity connectivity = catwalk.getConnectivity(side);
-            if (connectivity != CatwalkStairsBlockEntity.Connectivity.DEFAULT) {
-                return connectivity == CatwalkStairsBlockEntity.Connectivity.FORCE_HANDRAIL;
+            CatwalkSideState connectivity = catwalk.getSideState(side);
+            if (connectivity != CatwalkSideState.DEFAULT) {
+                return connectivity == CatwalkSideState.FORCE_HANDRAIL;
             }
         }
 
@@ -193,7 +192,7 @@ public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntit
             }
 
             if (world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk) {
-                return otherCatwalk.getConnectivity(side.getOpposite()) == CatwalkStairsBlockEntity.Connectivity.FORCE_HANDRAIL;
+                return otherCatwalk.getSideState(side.getOpposite()) == CatwalkSideState.FORCE_HANDRAIL;
             }
 
             return false;
@@ -246,15 +245,15 @@ public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntit
             world.addBlockEntity(be);
         }
 
-        CatwalkStairsBlockEntity.Connectivity connectivity = be.getConnectivity(side);
+        CatwalkSideState connectivity = be.getSideState(side);
 
-        CatwalkStairsBlockEntity.Connectivity newConnectivity = connectivity.cycle();
-        be.setConnectivity(side, newConnectivity);
+        CatwalkSideState newConnectivity = connectivity.cycle();
+        be.setSideState(side, newConnectivity);
         if (!be.isBlockEntityNecessary()) {
             world.removeBlockEntity(pos);
         }
 
-        BlockState newState = state.with(getHandrailProperty(side), newConnectivity == CatwalkStairsBlockEntity.Connectivity.FORCE_HANDRAIL);
+        BlockState newState = state.with(getHandrailProperty(side), newConnectivity == CatwalkSideState.FORCE_HANDRAIL);
         world.setBlockState(pos, newState);
         world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
 

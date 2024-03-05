@@ -2,25 +2,34 @@ package io.github.reoseah.catwalksinc.block;
 
 import io.github.reoseah.catwalksinc.CatwalksInc;
 import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 @SuppressWarnings("deprecation")
-public class CatwalkBlock extends WaterloggableBlock {
+public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvider {
     public static final BooleanProperty SOUTH = Properties.SOUTH;
     public static final BooleanProperty WEST = Properties.WEST;
     public static final BooleanProperty NORTH = Properties.NORTH;
@@ -164,6 +173,13 @@ public class CatwalkBlock extends WaterloggableBlock {
     }
 
     public static boolean shouldHaveHandrail(WorldAccess world, BlockPos pos, Direction side) {
+        if (world.getBlockEntity(pos) instanceof CatwalkBlockEntity be) {
+            CatwalkSideState state = be.getSideState(side);
+            if (state != CatwalkSideState.DEFAULT) {
+                return state == CatwalkSideState.FORCE_HANDRAIL;
+            }
+        }
+
         BlockPos neighborPos = pos.offset(side);
         BlockState neighbor = world.getBlockState(neighborPos);
 
@@ -174,6 +190,10 @@ public class CatwalkBlock extends WaterloggableBlock {
         Block block = state.getBlock();
 
         if (block instanceof CatwalkBlock) {
+            if (world.getBlockEntity(pos) instanceof CatwalkBlockEntity be) {
+                return be.canBeConnected(side) ? Connectivity.ADAPT_SHAPE : Connectivity.NONE;
+            }
+
             return Connectivity.ADAPT_SHAPE;
         }
         if (block instanceof CatwalkStairsBlock) {
@@ -195,6 +215,71 @@ public class CatwalkBlock extends WaterloggableBlock {
         }
 
         return !state.isSideSolidFullSquare(world, pos, side) || Block.cannotConnect(state) ? Connectivity.NONE : Connectivity.NO_HANDRAIL;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return null;
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack stack = player.getStackInHand(hand);
+        if (stack.isIn(CatwalksInc.WRENCHES)) {
+            if (!world.isClient && this.tryWrench(state, world, pos, player, hit.getPos())) {
+                stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
+            }
+            return ActionResult.SUCCESS;
+        }
+        return super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    public boolean tryWrench(BlockState state, World world, BlockPos pos, PlayerEntity player, Vec3d hitPos) {
+        Direction side = getTargetedDirection(pos, hitPos);
+
+        CatwalkBlockEntity be = (CatwalkBlockEntity) world.getBlockEntity(pos);
+        if (be == null) {
+            be = new CatwalkBlockEntity(pos, state);
+            world.addBlockEntity(be);
+        }
+        CatwalkSideState connectivity = be.getSideState(side);
+
+        CatwalkSideState newConnectivity = connectivity.cycle();
+        be.setSideState(side, newConnectivity);
+        if (!be.isBlockEntityNecessary()) {
+            world.removeBlockEntity(pos);
+        }
+
+        boolean handrail = newConnectivity == CatwalkSideState.FORCE_HANDRAIL || newConnectivity == CatwalkSideState.DEFAULT && shouldHaveHandrail(world, pos, side);
+
+        BlockState newState = state.with(getHandrailProperty(side), handrail);
+        world.setBlockState(pos, newState);
+
+        if (player != null) {
+            player.sendMessage(Text.translatable(newConnectivity.translationKey), true);
+        }
+
+        return true;
+    }
+
+    public static Direction getTargetedDirection(BlockPos pos, Vec3d point) {
+        double dx = point.getX() - pos.getX();
+        double dz = point.getZ() - pos.getZ();
+
+        if (Math.abs(dx - 0.5) > Math.abs(dz - 0.5)) {
+            if (dx > 0.5) {
+                return Direction.EAST;
+            } else {
+                return Direction.WEST;
+            }
+        } else {
+            if (dz > 0.5) {
+                return Direction.SOUTH;
+            } else {
+                return Direction.NORTH;
+            }
+        }
     }
 
     public enum Connectivity {

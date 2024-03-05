@@ -7,8 +7,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class CatwalkStairsBlockEntity extends BlockEntity {
-    protected Connectivity left = Connectivity.DEFAULT;
-    protected Connectivity right = Connectivity.DEFAULT;
+    protected CatwalkSideState left = CatwalkSideState.DEFAULT;
+    protected CatwalkSideState right = CatwalkSideState.DEFAULT;
 
     public CatwalkStairsBlockEntity(BlockPos pos, BlockState state) {
         super(CatwalksInc.CATWALK_STAIRS_BE, pos, state);
@@ -24,29 +24,29 @@ public class CatwalkStairsBlockEntity extends BlockEntity {
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        this.left = Connectivity.valueOrDefault(nbt.getString("left"));
-        this.right = Connectivity.valueOrDefault(nbt.getString("right"));
+        this.left = CatwalkSideState.valueOrDefault(nbt.getString("left"));
+        this.right = CatwalkSideState.valueOrDefault(nbt.getString("right"));
     }
 
     public boolean isBlockEntityNecessary() {
-        return this.left != Connectivity.DEFAULT || this.right != Connectivity.DEFAULT;
+        return this.left != CatwalkSideState.DEFAULT || this.right != CatwalkSideState.DEFAULT;
     }
 
     public boolean canBeConnected(CatwalkStairsBlock.StairSide side) {
         return switch (side) {
-            case LEFT -> this.left != Connectivity.DISABLE_HANDRAIL;
-            case RIGHT -> this.right != Connectivity.DISABLE_HANDRAIL;
+            case LEFT -> this.left != CatwalkSideState.DISABLE_HANDRAIL;
+            case RIGHT -> this.right != CatwalkSideState.DISABLE_HANDRAIL;
         };
     }
 
-    public Connectivity getConnectivity(CatwalkStairsBlock.StairSide side) {
+    public CatwalkSideState getSideState(CatwalkStairsBlock.StairSide side) {
         return switch (side) {
             case LEFT -> this.left;
             case RIGHT -> this.right;
         };
     }
 
-    public void setConnectivity(CatwalkStairsBlock.StairSide side, Connectivity connectivity) {
+    public void setSideState(CatwalkStairsBlock.StairSide side, CatwalkSideState connectivity) {
         switch (side) {
             case LEFT -> this.left = connectivity;
             case RIGHT -> this.right = connectivity;
@@ -54,27 +54,4 @@ public class CatwalkStairsBlockEntity extends BlockEntity {
         this.markDirty();
     }
 
-    public enum Connectivity {
-        DEFAULT,
-        DISABLE_HANDRAIL,
-        FORCE_HANDRAIL;
-
-        public final String translationKey = "catwalksinc.connectivity." + this.name().toLowerCase();
-
-        public Connectivity cycle() {
-            return switch (this) {
-                case DEFAULT -> DISABLE_HANDRAIL;
-                case DISABLE_HANDRAIL -> FORCE_HANDRAIL;
-                case FORCE_HANDRAIL -> DEFAULT;
-            };
-        }
-
-        public static Connectivity valueOrDefault(String name) {
-            return switch (name) {
-                case "DISABLE_HANDRAIL" -> DISABLE_HANDRAIL;
-                case "FORCE_HANDRAIL" -> FORCE_HANDRAIL;
-                default -> DEFAULT;
-            };
-        }
-    }
 }
