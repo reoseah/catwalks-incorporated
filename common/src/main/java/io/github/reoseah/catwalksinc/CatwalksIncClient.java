@@ -21,7 +21,8 @@ public class CatwalksIncClient {
         platform.registerRenderLayer(RenderLayer.getCutout(),
                 CatwalksInc.CATWALK,
                 CatwalksInc.CATWALK_STAIRS,
-                CatwalksInc.CRANK_WHEEL);
+                CatwalksInc.CRANK_WHEEL,
+                CatwalksInc.CAGE_LAMP);
 
         platform.registerBlockOutlineHandler(CatwalksIncClient::renderWrenchHelpers);
     }

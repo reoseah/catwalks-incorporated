@@ -24,8 +24,9 @@ public class CatwalksInc {
     public static final AbstractBlock.Settings CATWALK_SETTINGS = AbstractBlock.Settings.create().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque();
     public static final Block CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
     public static final Block CATWALK_STAIRS = new CatwalkStairsBlock(CATWALK_SETTINGS);
-
     public static final Block CRANK_WHEEL = new CrankWheelBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
+    public static final Block CAGE_LAMP = new CageLampBlock(AbstractBlock.Settings.create().luminance(state -> 14).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
+
     public static final BlockEntityType<?> CATWALK_BE = BlockEntityType.Builder.create(CatwalkBlockEntity::new, CATWALK).build(null);
     public static final BlockEntityType<?> CATWALK_STAIRS_BE = BlockEntityType.Builder.create(CatwalkStairsBlockEntity::new, CATWALK_STAIRS).build(null);
 
@@ -39,16 +40,21 @@ public class CatwalksInc {
         registrar.register(Registries.BLOCK, "catwalk", CATWALK);
         registrar.register(Registries.BLOCK, "catwalk_stairs", CATWALK_STAIRS);
         registrar.register(Registries.BLOCK, "crank_wheel", CRANK_WHEEL);
+        registrar.register(Registries.BLOCK, "cage_lamp", CAGE_LAMP);
 
         registrar.register(Registries.BLOCK_ENTITY_TYPE, "catwalk", CATWALK_BE);
         registrar.register(Registries.BLOCK_ENTITY_TYPE, "catwalk_stairs", CATWALK_STAIRS_BE);
 
         registrar.register(Registries.ITEM, "catwalk", new BlockItem(CATWALK, new Item.Settings()));
         registrar.register(Registries.ITEM, "crank_wheel", new BlockItem(CRANK_WHEEL, new Item.Settings()));
+        registrar.register(Registries.ITEM, "cage_lamp", new BlockItem(CAGE_LAMP, new Item.Settings()));
 
         registrar.register(Registries.ITEM, "wrench", WRENCH);
 
         registrar.appendToGroup("building_blocks", CATWALK);
+        registrar.appendToGroup("building_blocks", CRANK_WHEEL);
+        registrar.appendToGroup("building_blocks", CAGE_LAMP);
+        registrar.appendToGroup("redstone_blocks", CRANK_WHEEL);
         registrar.appendToGroup("tools_and_utilities", WRENCH);
     }
 

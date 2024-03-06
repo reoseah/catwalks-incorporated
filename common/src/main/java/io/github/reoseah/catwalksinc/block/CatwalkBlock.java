@@ -285,6 +285,6 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
     public enum Connectivity {
         ADAPT_SHAPE,
         NO_HANDRAIL,
-        NONE;
+        NONE
     }
 }
