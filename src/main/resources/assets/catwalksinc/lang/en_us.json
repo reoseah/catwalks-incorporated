@@ -1,18 +1,11 @@
 {
-  "itemGroup.catwalksinc.main": "Catwalks, Inc.",
+  "itemGroup.catwalksinc": "Catwalks, Inc.",
   "block.catwalksinc.catwalk": "Catwalk",
-  "block.catwalksinc.catwalk.desc.0": "§7Converts to stairs when placed diagonally.",
-  "block.catwalksinc.catwalk.desc.1": "§7Converts to ladder when placed vertically.",
-  "block.catwalksinc.catwalk.desc.2": "§7Use Wrench to configure sides.",
-  "block.catwalksinc.catwalk_stairs": "Catwalk Stairs",
-  "block.catwalksinc.caged_ladder": "Caged Ladder",
-  "block.catwalksinc.cage_lamp": "Cage Lamp",
+  "block.catwalksinc.catwalk_stairs": "Catwalk (Stairs)",
   "block.catwalksinc.crank_wheel": "Crank Wheel",
+  "block.catwalksinc.cage_lamp": "Cage Lamp",
   "item.catwalksinc.wrench": "Wrench",
-  "item.catwalksinc.iron_rod": "Iron Rod",
-  "subtitles.catwalksinc.wrench_use": "Wrench used",
-  "misc.catwalksinc.blocked_by_another_multipart": "Blocked by another multipart!",
-  "misc.catwalksinc.default_handrail": "Default",
-  "misc.catwalksinc.forced_handrail": "Forced",
-  "misc.catwalksinc.forced_no_handrail": "Disabled"
+  "catwalksinc.catwalk_side_state.default": "Default",
+  "catwalksinc.catwalk_side_state.disable_handrail": "Disabled",
+  "catwalksinc.catwalk_side_state.force_handrail": "Forced"
 }

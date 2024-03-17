@@ -18,11 +18,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public class WrenchItem extends ToolItem {
-    public static final Item INSTANCE = new WrenchItem(new FabricItemSettings().maxDamage(255));
-    public static final TagKey<Item> COMPATIBILITY_TAG = TagKey.of(RegistryKeys.ITEM, new Identifier("c:wrenches"));
-
-    public static final SoundEvent USE_SOUND = SoundEvent.of(new Identifier("catwalksinc:wrench_use"));
-
     private final Multimap<EntityAttribute, EntityAttributeModifier> attributeModifiers;
 
     public WrenchItem(Item.Settings settings) {
@@ -44,7 +39,7 @@ public class WrenchItem extends ToolItem {
 
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damage(2, attacker, e -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
+        stack.damage(2, attacker, entity -> entity.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
         return true;
     }
 }

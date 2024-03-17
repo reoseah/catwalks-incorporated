@@ -1,18 +1,18 @@
 package com.github.reoseah.catwalksinc;
 
-import com.github.reoseah.catwalksinc.block.HorizontalHalf;
+import com.github.reoseah.catwalksinc.block.CatwalkStairsBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class CatwalksUtil {
-    public static HorizontalHalf getTargettedSide(BlockPos pos, Vec3d hitPos, Direction facing) {
+    public static CatwalkStairsBlock.StairSide getTargettedSide(BlockPos pos, Vec3d hitPos, Direction facing) {
         Direction.Axis perpendicular = facing.rotateYClockwise().getAxis();
         double relative = hitPos.getComponentAlongAxis(perpendicular) - pos.getComponentAlongAxis(perpendicular);
 
-        HorizontalHalf half = facing.rotateYClockwise().getDirection() == Direction.AxisDirection.POSITIVE && relative > 0.5 //
+        CatwalkStairsBlock.StairSide half = facing.rotateYClockwise().getDirection() == Direction.AxisDirection.POSITIVE && relative > 0.5 //
                 || facing.rotateYClockwise().getDirection() == Direction.AxisDirection.NEGATIVE && relative < 0.5 //
-                ? HorizontalHalf.LEFT : HorizontalHalf.RIGHT;
+                ? CatwalkStairsBlock.StairSide.LEFT : CatwalkStairsBlock.StairSide.RIGHT;
         return half;
     }
 

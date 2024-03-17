@@ -1,24 +1,21 @@
 package com.github.reoseah.catwalksinc.block;
 
-import com.github.reoseah.catwalksinc.CatwalksUtil;
-import com.github.reoseah.catwalksinc.item.WrenchItem;
-import com.github.reoseah.catwalksinc.part.ConnectionOverride;
+import com.github.reoseah.catwalksinc.CatwalksInc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,70 +24,51 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldEvents;
+import net.minecraft.world.*;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 @SuppressWarnings("deprecation")
-public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityProvider {
+public class CatwalkStairsBlock extends WaterloggableBlock implements BlockEntityProvider {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
     public static final BooleanProperty RIGHT = BooleanProperty.of("right");
     public static final BooleanProperty LEFT = BooleanProperty.of("left");
 
-    private static final VoxelShape[][] OUTLINE_SHAPES;
-    private static final VoxelShape[][] COLLISION_SHAPES;
+    private static final VoxelShape[] OUTLINE_SHAPES = createShapes(2);
+    private static final VoxelShape[] COLLISION_SHAPES = createShapes(0.5);
 
-    static {
-        OUTLINE_SHAPES = new VoxelShape[4][4];
-        COLLISION_SHAPES = new VoxelShape[4][4];
-
-        VoxelShape[] floorShapes = { //
+    public static VoxelShape[] createShapes(double handrailThickness) {
+        VoxelShape[] floors = { //
                 VoxelShapes.union(Block.createCuboidShape(0, 8, 8, 16, 9, 16), Block.createCuboidShape(0, 16, 0, 16, 17, 8)), //
                 VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 9, 16), Block.createCuboidShape(8, 16, 0, 16, 17, 16)), //
                 VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 16, 9, 8), Block.createCuboidShape(0, 16, 8, 16, 17, 16)), //
                 VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 9, 16), Block.createCuboidShape(0, 16, 0, 8, 17, 16))};
 
-        VoxelShape[] leftOutlines = { //
-                VoxelShapes.union(Block.createCuboidShape(0, 8, 8, 2, 24, 16), Block.createCuboidShape(0, 16, 0, 2, 32, 8)), //
-                VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 24, 2), Block.createCuboidShape(8, 16, 0, 16, 32, 2)), //
-                VoxelShapes.union(Block.createCuboidShape(14, 8, 0, 16, 24, 8), Block.createCuboidShape(14, 16, 8, 16, 32, 16)), //
-                VoxelShapes.union(Block.createCuboidShape(8, 8, 14, 16, 24, 16), Block.createCuboidShape(0, 16, 14, 8, 32, 16))};
-        VoxelShape[] rightOutlines = { //
-                VoxelShapes.union(Block.createCuboidShape(14, 8, 8, 16, 24, 16), Block.createCuboidShape(14, 16, 0, 16, 32, 8)), //
-                VoxelShapes.union(Block.createCuboidShape(0, 8, 14, 8, 24, 16), Block.createCuboidShape(8, 16, 14, 16, 32, 16)), //
-                VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 2, 24, 8), Block.createCuboidShape(0, 16, 8, 2, 32, 16)), //
-                VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 24, 2), Block.createCuboidShape(0, 16, 0, 8, 32, 2))};
+        VoxelShape[] leftHandrails = { //
+                VoxelShapes.union(Block.createCuboidShape(0, 8, 8, handrailThickness, 24, 16), Block.createCuboidShape(0, 16, 0, handrailThickness, 32, 8)), //
+                VoxelShapes.union(Block.createCuboidShape(0, 8, 0, 8, 24, handrailThickness), Block.createCuboidShape(8, 16, 0, 16, 32, handrailThickness)), //
+                VoxelShapes.union(Block.createCuboidShape(16 - handrailThickness, 8, 0, 16, 24, 8), Block.createCuboidShape(16 - handrailThickness, 16, 8, 16, 32, 16)), //
+                VoxelShapes.union(Block.createCuboidShape(8, 8, 16 - handrailThickness, 16, 24, 16), Block.createCuboidShape(0, 16, 16 - handrailThickness, 8, 32, 16))};
+        VoxelShape[] rightHandrails = { //
+                VoxelShapes.union(Block.createCuboidShape(16 - handrailThickness, 8, 8, 16, 24, 16), Block.createCuboidShape(16 - handrailThickness, 16, 0, 16, 32, 8)), //
+                VoxelShapes.union(Block.createCuboidShape(0, 8, 16 - handrailThickness, 8, 24, 16), Block.createCuboidShape(8, 16, 16 - handrailThickness, 16, 32, 16)), //
+                VoxelShapes.union(Block.createCuboidShape(0, 8, 0, handrailThickness, 24, 8), Block.createCuboidShape(0, 16, 8, handrailThickness, 32, 16)), //
+                VoxelShapes.union(Block.createCuboidShape(8, 8, 0, 16, 24, handrailThickness), Block.createCuboidShape(0, 16, 0, 8, 32, handrailThickness))};
 
-        VoxelShape[] leftCollisions = { //
-                VoxelShapes.union(Block.createCuboidShape(0.5, 8, 8, 1, 24, 16), Block.createCuboidShape(0.5, 16, 0, 1, 32, 8)), //
-                VoxelShapes.union(Block.createCuboidShape(0, 8, 0.5, 8, 24, 1), Block.createCuboidShape(8, 16, 0.5, 16, 32, 1)), //
-                VoxelShapes.union(Block.createCuboidShape(15, 8, 0, 15.5, 24, 8), Block.createCuboidShape(15, 16, 8, 15.5, 32, 16)), //
-                VoxelShapes.union(Block.createCuboidShape(8, 8, 15, 16, 24, 15.5), Block.createCuboidShape(0, 16, 15, 8, 32, 15.5))};
-        VoxelShape[] rightCollisions = { //
-                VoxelShapes.union(Block.createCuboidShape(15, 8, 8, 15.5, 24, 16), Block.createCuboidShape(15, 16, 0, 15.5, 32, 8)), //
-                VoxelShapes.union(Block.createCuboidShape(0, 8, 15, 8, 24, 15.5), Block.createCuboidShape(8, 16, 15, 16, 32, 15.5)), //
-                VoxelShapes.union(Block.createCuboidShape(0.5, 8, 0, 1, 24, 8), Block.createCuboidShape(0.5, 16, 8, 1, 32, 16)), //
-                VoxelShapes.union(Block.createCuboidShape(8, 8, 0.5, 16, 24, 1), Block.createCuboidShape(0, 16, 0.5, 8, 32, 1))};
-
-        for (int i = 0; i < 4; i++) {
-            COLLISION_SHAPES[i][0] = OUTLINE_SHAPES[i][0] = floorShapes[i];
-            OUTLINE_SHAPES[i][1] = VoxelShapes.union(floorShapes[i], leftOutlines[i]);
-            OUTLINE_SHAPES[i][2] = VoxelShapes.union(floorShapes[i], rightOutlines[i]);
-            OUTLINE_SHAPES[i][3] = VoxelShapes.union(floorShapes[i], leftOutlines[i], rightOutlines[i]);
-
-            COLLISION_SHAPES[i][1] = VoxelShapes.union(floorShapes[i], leftCollisions[i]);
-            COLLISION_SHAPES[i][2] = VoxelShapes.union(floorShapes[i], rightCollisions[i]);
-            COLLISION_SHAPES[i][3] = VoxelShapes.union(floorShapes[i], leftCollisions[i], rightCollisions[i]);
+        VoxelShape[] shapes = new VoxelShape[16];
+        for (int facing = 0; facing < 4; facing++) {
+            shapes[facing] = floors[facing];
+            shapes[0b0100 | facing] = VoxelShapes.union(floors[facing], leftHandrails[facing]);
+            shapes[0b1000 | facing] = VoxelShapes.union(floors[facing], rightHandrails[facing]);
+            shapes[0b1100 | facing] = VoxelShapes.union(floors[facing], leftHandrails[facing], rightHandrails[facing]);
         }
+        return shapes;
     }
 
-    public static final Block INSTANCE = new CatwalkStairsBlock(FabricBlockSettings.of(Material.METAL, MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
+    public static int getShapeIndex(Direction facing, boolean left, boolean right) {
+        return (facing.getHorizontal()) | (left ? 0b0100 : 0) | (right ? 0b1000 : 0);
+    }
 
     public CatwalkStairsBlock(Settings settings) {
         super(settings);
@@ -105,18 +83,14 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        int idx = (state.get(LEFT) ? 1 : 0) | (state.get(RIGHT) ? 2 : 0);
-        VoxelShape voxelShape = OUTLINE_SHAPES[state.get(FACING).getHorizontal()][idx];
-
-        return state.get(HALF) == DoubleBlockHalf.UPPER ? voxelShape.offset(0, -1, 0) : voxelShape;
+        VoxelShape shape = OUTLINE_SHAPES[getShapeIndex(state.get(FACING), state.get(LEFT), state.get(RIGHT))];
+        return state.get(HALF) == DoubleBlockHalf.UPPER ? shape.offset(0, -1, 0) : shape;
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        int i = (state.get(LEFT) ? 1 : 0) | (state.get(RIGHT) ? 2 : 0);
-        VoxelShape voxelShape = COLLISION_SHAPES[state.get(FACING).getHorizontal()][i];
-
-        return state.get(HALF) == DoubleBlockHalf.UPPER ? voxelShape.offset(0, -1, 0) : voxelShape;
+        VoxelShape shape = COLLISION_SHAPES[getShapeIndex(state.get(FACING), state.get(LEFT), state.get(RIGHT))];
+        return state.get(HALF) == DoubleBlockHalf.UPPER ? shape.offset(0, -1, 0) : shape;
     }
 
     @Override
@@ -125,43 +99,40 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return new ItemStack(CatwalkBlock.ITEM);
-    }
-
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return super.getPlacementState(ctx).with(FACING, ctx.getPlayerFacing().getOpposite());
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
+        return new ItemStack(CatwalksInc.CATWALK);
     }
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-        world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER).with(WATERLOGGED, world.getFluidState(pos.up()).getFluid() == Fluids.WATER), 3);
+        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+            world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER)
+                    .with(WATERLOGGED, world.getFluidState(pos.up()).getFluid() == Fluids.WATER));
+        } else {
+            world.setBlockState(pos.down(), state.with(HALF, DoubleBlockHalf.LOWER)
+                    .with(WATERLOGGED, world.getFluidState(pos.down()).getFluid() == Fluids.WATER));
+        }
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient) {
             if (player.isCreative()) {
-                onBreakInCreative(world, pos, state, player);
+                DoubleBlockHalf half = state.get(HALF);
+                if (half == DoubleBlockHalf.UPPER) {
+                    BlockPos below = pos.down();
+                    BlockState stateBelow = world.getBlockState(below);
+                    if (stateBelow.getBlock() == state.getBlock() && stateBelow.get(HALF) == DoubleBlockHalf.LOWER) {
+                        world.setBlockState(below, Blocks.AIR.getDefaultState(), 35);
+                        world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, below, Block.getRawIdFromState(stateBelow));
+                    }
+                }
             } else {
                 dropStacks(state, world, pos, null, player, player.getMainHandStack());
             }
         }
 
-        super.onBreak(world, pos, state, player);
-    }
-
-    protected static void onBreakInCreative(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-        DoubleBlockHalf half = state.get(HALF);
-        if (half == DoubleBlockHalf.UPPER) {
-            BlockPos below = pos.down();
-            BlockState stateBelow = world.getBlockState(below);
-            if (stateBelow.getBlock() == state.getBlock() && stateBelow.get(HALF) == DoubleBlockHalf.LOWER) {
-                world.setBlockState(below, Blocks.AIR.getDefaultState(), 35);
-                world.syncWorldEvent(player, WorldEvents.BLOCK_BROKEN, below, Block.getRawIdFromState(stateBelow));
-            }
-        }
+        return super.onBreak(world, pos, state, player);
     }
 
     @Override
@@ -185,38 +156,47 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
             }
         }
 
+        if (world.isClient()) {
+            return state;
+        }
+
         Direction facing = state.get(FACING);
         Direction left = facing.rotateYClockwise();
         Direction right = facing.rotateYCounterclockwise();
-        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, HorizontalHalf.LEFT)).with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, HorizontalHalf.RIGHT));
+        return state.with(LEFT, this.shouldHaveHandrail(state, world, pos, left, StairSide.LEFT)) //
+                .with(RIGHT, this.shouldHaveHandrail(state, world, pos, right, StairSide.RIGHT));
     }
 
-    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, HorizontalHalf half) {
+    public boolean shouldHaveHandrail(BlockState state, WorldAccess world, BlockPos pos, Direction direction, StairSide side) {
         if (state.get(HALF) == DoubleBlockHalf.UPPER) {
             pos = pos.down();
             state = state.with(HALF, DoubleBlockHalf.LOWER);
         }
+
         if (world.getBlockEntity(pos) instanceof CatwalkStairsBlockEntity catwalk) {
-            Optional<ConnectionOverride> handrail = catwalk.getHandrailState(half);
-            if (handrail.isPresent()) {
-                return handrail.get() == ConnectionOverride.FORCED;
+            CatwalkSideState connectivity = catwalk.getSideState(side);
+            if (connectivity != CatwalkSideState.DEFAULT) {
+                return connectivity == CatwalkSideState.FORCE_HANDRAIL;
             }
         }
+
         BlockState neighbor = world.getBlockState(pos.offset(direction));
         BlockState above = world.getBlockState(pos.offset(direction).up());
 
-        if (neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite()) && neighbor.getMaterial() != Material.AGGREGATE && above.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite()) && above.getMaterial() != Material.AGGREGATE) {
-            return false;
-        }
         if (neighbor.getBlock() instanceof CatwalkStairsBlock) {
             if (neighbor.get(FACING) != state.get(FACING) || neighbor.get(HALF) != state.get(HALF)) {
                 // stairs not matching
                 return true;
             }
-            return world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk && otherCatwalk.isHandrailForced(half.getOpposite());
 
+            if (world.getBlockEntity(pos.offset(direction)) instanceof CatwalkStairsBlockEntity otherCatwalk) {
+                return otherCatwalk.getSideState(side.getOpposite()) == CatwalkSideState.FORCE_HANDRAIL;
+            }
+
+            return false;
         }
-        return true;
+        return !neighbor.isSideSolidFullSquare(world, pos.offset(direction), direction.getOpposite()) //
+                || !above.isSideSolidFullSquare(world, pos.offset(direction).up(), direction.getOpposite());
     }
 
     @Environment(EnvType.CLIENT)
@@ -226,46 +206,38 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
                 || super.isSideInvisible(state, state2, direction);
     }
 
-    public static Direction getSideDirection(Direction facing, HorizontalHalf half) {
-        return half == HorizontalHalf.LEFT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
-    }
-
-    protected static BlockPos getLowerHalfPos(BlockState state, BlockPos pos) {
-        if (state.get(HALF) == DoubleBlockHalf.UPPER) {
-            return pos.down();
-        }
-        return pos;
-    }
-
-    public static BooleanProperty getHandrailProperty(HorizontalHalf half) {
-        return half == HorizontalHalf.LEFT ? LEFT : RIGHT;
+    public static BooleanProperty getHandrailProperty(StairSide half) {
+        return half == StairSide.LEFT ? LEFT : RIGHT;
     }
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack stack = player.getStackInHand(hand);
-        if (stack.isIn(WrenchItem.COMPATIBILITY_TAG)) {
-            if (!world.isClient && this.useWrench(state, world, pos, hit.getSide(), player, hand, hit.getPos())) {
-                if (stack.isDamageable()) {
-                    stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
-                }
+        if (stack.isIn(CatwalksInc.WRENCHES)) {
+            if (!world.isClient && this.tryWrench(state, world, pos, player, hit.getPos())) {
+                stack.damage(1, player, p -> p.sendToolBreakStatus(hand));
             }
+            world.playSound(player, player.getX(), player.getY(), player.getZ(), CatwalksInc.WRENCH_USE, SoundCategory.PLAYERS, 1.0f, 1.0f / (world.getRandom().nextFloat() * 0.4f + 1.2f));
+
             return ActionResult.SUCCESS;
         }
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
-    public boolean useWrench(BlockState state, World world, BlockPos pos, Direction direction, PlayerEntity player, Hand hand, Vec3d hitPos) {
+    public boolean tryWrench(BlockState state, World world, BlockPos pos, PlayerEntity player, Vec3d hitPos) {
         if (state.get(HALF) == DoubleBlockHalf.UPPER) {
             pos = pos.down();
             state = world.getBlockState(pos);
         }
 
         if (player != null && player.isSneaking()) {
+            world.removeBlockEntity(pos);
             world.setBlockState(pos, state.cycle(FACING));
             world.setBlockState(pos.up(), state.cycle(FACING).with(HALF, DoubleBlockHalf.UPPER));
             return true;
         }
+
+        StairSide side = getTargetedSide(pos, hitPos, state.get(FACING));
 
         CatwalkStairsBlockEntity be = (CatwalkStairsBlockEntity) world.getBlockEntity(pos);
         if (be == null) {
@@ -273,24 +245,44 @@ public class CatwalkStairsBlock extends CatwalksIncBlock implements BlockEntityP
             world.addBlockEntity(be);
         }
 
-        HorizontalHalf half = CatwalksUtil.getTargettedSide(pos, hitPos, state.get(FACING));
+        CatwalkSideState connectivity = be.getSideState(side);
 
-        be.useWrench(half, state, player);
-
-        BlockState newState = state.with(getHandrailProperty(half), be.getHandrailState(half).map(override -> override == ConnectionOverride.FORCED).orElse(this.shouldHaveHandrail(state, world, pos, direction, half)));
-        world.setBlockState(pos, newState);
-        world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
-
-        if (be.canBeRemoved()) {
+        CatwalkSideState newConnectivity = connectivity.cycle();
+        be.setSideState(side, newConnectivity);
+        if (!be.isBlockEntityNecessary()) {
             world.removeBlockEntity(pos);
         }
 
+        BlockState newState = state.with(getHandrailProperty(side), newConnectivity == CatwalkSideState.FORCE_HANDRAIL);
+        world.setBlockState(pos, newState);
+        world.setBlockState(pos.up(), newState.with(HALF, DoubleBlockHalf.UPPER));
+
+        if (player != null) {
+            player.sendMessage(Text.translatable(newConnectivity.translationKey), true);
+        }
         return true;
+    }
+
+    public static StairSide getTargetedSide(BlockPos pos, Vec3d hitPos, Direction facing) {
+        Direction.Axis perpendicular = facing.rotateYClockwise().getAxis();
+        double posAlongPerpendicular = hitPos.getComponentAlongAxis(perpendicular) - pos.getComponentAlongAxis(perpendicular);
+        boolean isLeft = facing.rotateYClockwise().getDirection() == Direction.AxisDirection.POSITIVE ? posAlongPerpendicular > 0.5 : posAlongPerpendicular < 0.5;
+
+        return isLeft ? StairSide.LEFT : StairSide.RIGHT;
     }
 
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        // no block entity by default, we use world.setBlockEntity
         return null;
+    }
+
+    public enum StairSide {
+        LEFT, RIGHT;
+
+        public StairSide getOpposite() {
+            return this == LEFT ? RIGHT : LEFT;
+        }
     }
 }

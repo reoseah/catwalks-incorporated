@@ -15,10 +15,10 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 @SuppressWarnings("deprecation")
-public abstract class CatwalksIncBlock extends Block implements Waterloggable {
+public abstract class WaterloggableBlock extends Block implements Waterloggable {
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
-    public CatwalksIncBlock(Block.Settings settings) {
+    public WaterloggableBlock(Block.Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(WATERLOGGED, false));
     }

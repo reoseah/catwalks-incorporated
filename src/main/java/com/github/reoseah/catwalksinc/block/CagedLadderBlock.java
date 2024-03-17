@@ -1,10 +1,11 @@
 package com.github.reoseah.catwalksinc.block;
 
-import alexiil.mc.lib.multipart.api.MultipartUtil;
-import alexiil.mc.lib.multipart.impl.LibMultiPart;
-import com.github.reoseah.catwalksinc.part.CatwalkPart;
+import com.github.reoseah.catwalksinc.CatwalksInc;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
@@ -18,9 +19,10 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 
 @SuppressWarnings("deprecation")
-public class CagedLadderBlock extends CatwalksIncBlock {
+public class CagedLadderBlock extends WaterloggableBlock {
     public static final EnumProperty<Direction> FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<CageState> CAGE = EnumProperty.of("cage", CageState.class);
     public static final BooleanProperty LADDER = BooleanProperty.of("ladder");
@@ -75,7 +77,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
             VoxelShapes.union(LADDER_ONLY_COLLISION_SHAPES[3], CAGE_ONLY_COLLISION_SHAPES[3]) //
     };
 
-    public static final Block INSTANCE = new CagedLadderBlock(FabricBlockSettings.of(Material.METAL, MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
+    public static final Block INSTANCE = new CagedLadderBlock(FabricBlockSettings.of().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
 
     protected CagedLadderBlock(Settings settings) {
         super(settings);
@@ -89,8 +91,8 @@ public class CagedLadderBlock extends CatwalksIncBlock {
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        return new ItemStack(CatwalkBlock.ITEM);
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
+        return new ItemStack(CatwalksInc.CATWALK);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (context.isHolding(CatwalkBlock.ITEM) && !context.isDescending()) {
+        if (context.isHolding(CatwalksInc.CATWALK.asItem()) && !context.isDescending()) {
             return VoxelShapes.fullCube();
         }
         Direction facing = state.get(FACING);
@@ -118,7 +120,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        Direction facing = ctx.getPlayerFacing().getOpposite();
+        Direction facing = ctx.getHorizontalPlayerFacing().getOpposite();
         CageState cage = getCageState(ctx.getWorld(), ctx.getBlockPos());
         return super.getPlacementState(ctx).with(FACING, facing).with(CAGE, cage).with(LADDER, getLadderState(facing, cage, ctx.getWorld(), ctx.getBlockPos()));
     }
@@ -134,8 +136,7 @@ public class CagedLadderBlock extends CatwalksIncBlock {
     public static CageState getCageState(WorldAccess world, BlockPos pos) {
         BlockPos belowLadder = pos.down();
         BlockState stateBelowLadder = world.getBlockState(belowLadder);
-        if (stateBelowLadder.isOf(CatwalkBlock.INSTANCE) //
-                || stateBelowLadder.isOf(LibMultiPart.BLOCK) && MultipartUtil.get(world, belowLadder).getAllParts().stream().anyMatch(part -> part instanceof CatwalkPart)) {
+        if (stateBelowLadder.isOf(CatwalksInc.CATWALK)) {
             return CageState.NONE;
         }
 
@@ -166,9 +167,6 @@ public class CagedLadderBlock extends CatwalksIncBlock {
         }
         BlockPos behindLadder = pos.offset(facing.getOpposite());
         BlockState stateBehindLadder = world.getBlockState(behindLadder);
-        if (CatwalkBlock.needsCatwalkConnection(stateBehindLadder, world, behindLadder, facing)) {
-            return false;
-        }
-        return true;
+        return CatwalkBlock.getConnectivity(stateBehindLadder, world, behindLadder, facing) != CatwalkBlock.Connectivity.NO_HANDRAIL;
     }
 }

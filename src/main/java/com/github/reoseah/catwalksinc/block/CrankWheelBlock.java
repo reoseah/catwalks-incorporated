@@ -1,18 +1,10 @@
 package com.github.reoseah.catwalksinc.block;
 
-import alexiil.mc.lib.multipart.api.MultipartContainer;
-import alexiil.mc.lib.multipart.api.NativeMultipart;
-import com.github.reoseah.catwalksinc.CatwalksUtil;
-import com.github.reoseah.catwalksinc.part.CrankWheelPart;
-import com.google.common.collect.ImmutableList;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
@@ -26,16 +18,10 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.event.GameEvent;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class CrankWheelBlock extends WallDecorationBlock implements NativeMultipart {
+public class CrankWheelBlock extends WallDecorationBlock {
     public static final IntProperty ROTATION = Properties.ROTATION;
-
-    public static final Block INSTANCE = new CrankWheelBlock(FabricBlockSettings.of(Material.METAL, MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
-    public static final Item ITEM = new BlockItem(INSTANCE, new FabricItemSettings());
 
     public static final VoxelShape[] SHAPES = { //
             Block.createCuboidShape(3, 11, 3, 13, 16, 13), //
@@ -102,10 +88,10 @@ public class CrankWheelBlock extends WallDecorationBlock implements NativeMultip
         if (facing.getAxis() == Direction.Axis.Y) {
             facing = player.getHorizontalFacing().getOpposite();
         }
-        HorizontalHalf half = CatwalksUtil.getTargettedSide(pos, hit.getPos(), facing);
+        CatwalkStairsBlock.StairSide half = CatwalkStairsBlock.getTargetedSide(pos, hit.getPos(), facing);
 
         int rotation = state.get(ROTATION);
-        int newRotation = half == HorizontalHalf.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
+        int newRotation = half == CatwalkStairsBlock.StairSide.RIGHT ? Math.min(15, rotation + 1) : Math.max(0, rotation - 1);
 
         if (world.isClient) {
             if (newRotation != 0 && newRotation != rotation) {
@@ -130,11 +116,5 @@ public class CrankWheelBlock extends WallDecorationBlock implements NativeMultip
         double y = pos.getY() + 0.5 + 0.3 * direction.getOffsetY();
         double z = pos.getZ() + 0.5 + 0.3 * direction.getOffsetZ();
         world.addParticle(new DustParticleEffect(DustParticleEffect.RED, 1.0F), x, y, z, 0.0, 0.0, 0.0);
-    }
-
-    @Nullable
-    @Override
-    public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
-        return ImmutableList.of(holder -> new CrankWheelPart(CrankWheelPart.DEFINITION, holder, state.get(CageLampBlock.FACING), state.get(ROTATION)));
     }
 }

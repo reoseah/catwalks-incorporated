@@ -18,7 +18,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 @SuppressWarnings("deprecation")
-public class WallDecorationBlock extends CatwalksIncBlock {
+public abstract class WallDecorationBlock extends WaterloggableBlock {
     public static final EnumProperty<Direction> FACING = Properties.FACING;
 
     public WallDecorationBlock(Settings settings) {
@@ -76,3 +76,4 @@ public class WallDecorationBlock extends CatwalksIncBlock {
         return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 }
+
