@@ -40,6 +40,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
 
     public static final AbstractBlock.Settings CATWALK_SETTINGS = AbstractBlock.Settings.create().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque();
     public static final Block CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
+    public static final Block GRATE_CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
     public static final Block CATWALK_STAIRS = new CatwalkStairsBlock(CATWALK_SETTINGS);
     public static final Block CRANK_WHEEL = new CrankWheelBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
     public static final Block CAGE_LAMP = new CageLampBlock(AbstractBlock.Settings.create().luminance(state -> 14).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
@@ -56,6 +57,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     @Override
     public void onInitialize() {
         Registry.register(Registries.BLOCK, "catwalksinc:catwalk", CATWALK);
+        Registry.register(Registries.BLOCK, "catwalksinc:grate_catwalk", GRATE_CATWALK);
         Registry.register(Registries.BLOCK, "catwalksinc:catwalk_stairs", CATWALK_STAIRS);
         Registry.register(Registries.BLOCK, "catwalksinc:crank_wheel", CRANK_WHEEL);
         Registry.register(Registries.BLOCK, "catwalksinc:cage_lamp", CAGE_LAMP);
@@ -64,12 +66,14 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         Registry.register(Registries.BLOCK_ENTITY_TYPE, "catwalksinc:catwalk_stairs", CATWALK_STAIRS_BE);
 
         Registry.register(Registries.ITEM, "catwalksinc:catwalk", new BlockItem(CATWALK, new Item.Settings()));
+        Registry.register(Registries.ITEM, "catwalksinc:grate_catwalk", new BlockItem(GRATE_CATWALK, new Item.Settings()));
         Registry.register(Registries.ITEM, "catwalksinc:crank_wheel", new BlockItem(CRANK_WHEEL, new Item.Settings()));
         Registry.register(Registries.ITEM, "catwalksinc:cage_lamp", new BlockItem(CAGE_LAMP, new Item.Settings()));
 
         Registry.register(Registries.ITEM, "catwalksinc:wrench", WRENCH);
 
         appendToGroup("building_blocks", CATWALK);
+        appendToGroup("building_blocks", GRATE_CATWALK);
         appendToGroup("building_blocks", CRANK_WHEEL);
         appendToGroup("building_blocks", CAGE_LAMP);
         appendToGroup("redstone_blocks", CRANK_WHEEL);
@@ -89,6 +93,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CATWALK, RenderLayer.getCutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.GRATE_CATWALK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CATWALK_STAIRS, RenderLayer.getCutoutMipped());
 //        BlockRenderLayerMap.INSTANCE.putBlock(CagedLadderBlock.INSTANCE, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CAGE_LAMP, RenderLayer.getCutoutMipped());

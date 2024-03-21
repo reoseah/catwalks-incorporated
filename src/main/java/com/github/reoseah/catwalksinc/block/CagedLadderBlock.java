@@ -27,13 +27,13 @@ public class CagedLadderBlock extends WaterloggableBlock {
     public static final EnumProperty<CageState> CAGE = EnumProperty.of("cage", CageState.class);
     public static final BooleanProperty LADDER = BooleanProperty.of("ladder");
 
-    public static final VoxelShape[] LADDER_ONLY_OUTLINE_SHAPES = { //
+    public static final VoxelShape[] LADDER_OUTLINES = { //
             Block.createCuboidShape(0, 0, 0, 16, 16, 4), //
             Block.createCuboidShape(12, 0, 0, 16, 16, 16), //
             Block.createCuboidShape(0, 0, 12, 16, 16, 16), //
             Block.createCuboidShape(0, 0, 0, 4, 16, 16), //
     };
-    public static final VoxelShape[] LADDER_ONLY_COLLISION_SHAPES = { //
+    public static final VoxelShape[] LADDER_SHAPES = { //
             Block.createCuboidShape(0, 0, 0, 16, 16, 1), //
             Block.createCuboidShape(15, 0, 0, 16, 16, 16), //
             Block.createCuboidShape(0, 0, 15, 16, 16, 16), //
@@ -45,17 +45,17 @@ public class CagedLadderBlock extends WaterloggableBlock {
     private static final VoxelShape NORTH_OUTLINE = Block.createCuboidShape(0, 0, 14, 16, 16, 16);
     private static final VoxelShape EAST_OUTLINE = Block.createCuboidShape(0, 0, 0, 2, 16, 16);
 
-    public static final VoxelShape[] CAGE_ONLY_OUTLINE_SHAPES = { //
+    public static final VoxelShape[] CAGE_OUTLINES = { //
             VoxelShapes.union(WEST_OUTLINE, NORTH_OUTLINE, EAST_OUTLINE), //
             VoxelShapes.union(SOUTH_OUTLINE, NORTH_OUTLINE, EAST_OUTLINE), //
             VoxelShapes.union(SOUTH_OUTLINE, WEST_OUTLINE, EAST_OUTLINE), //
             VoxelShapes.union(SOUTH_OUTLINE, WEST_OUTLINE, NORTH_OUTLINE) //
     };
-    public static final VoxelShape[] OUTLINE_SHAPES = { //
-            VoxelShapes.union(LADDER_ONLY_OUTLINE_SHAPES[0], CAGE_ONLY_OUTLINE_SHAPES[0]), //
-            VoxelShapes.union(LADDER_ONLY_OUTLINE_SHAPES[1], CAGE_ONLY_OUTLINE_SHAPES[1]), //
-            VoxelShapes.union(LADDER_ONLY_OUTLINE_SHAPES[2], CAGE_ONLY_OUTLINE_SHAPES[2]), //
-            VoxelShapes.union(LADDER_ONLY_OUTLINE_SHAPES[3], CAGE_ONLY_OUTLINE_SHAPES[3]) //
+    public static final VoxelShape[] COMBINED_OUTLINES = { //
+            VoxelShapes.union(LADDER_OUTLINES[0], CAGE_OUTLINES[0]), //
+            VoxelShapes.union(LADDER_OUTLINES[1], CAGE_OUTLINES[1]), //
+            VoxelShapes.union(LADDER_OUTLINES[2], CAGE_OUTLINES[2]), //
+            VoxelShapes.union(LADDER_OUTLINES[3], CAGE_OUTLINES[3]) //
     };
 
     private static final VoxelShape SOUTH_COLLISION = Block.createCuboidShape(0, 0, 0, 16, 16, 0.5);
@@ -63,18 +63,18 @@ public class CagedLadderBlock extends WaterloggableBlock {
     private static final VoxelShape NORTH_COLLISION = Block.createCuboidShape(0, 0, 15.5, 16, 16, 16);
     private static final VoxelShape EAST_COLLISION = Block.createCuboidShape(0, 0, 0, 0.5, 16, 16);
 
-    public static final VoxelShape[] CAGE_ONLY_COLLISION_SHAPES = { //
+    public static final VoxelShape[] CAGE_SHAPES = { //
             VoxelShapes.union(WEST_COLLISION, NORTH_COLLISION, EAST_COLLISION), //
             VoxelShapes.union(SOUTH_COLLISION, NORTH_COLLISION, EAST_COLLISION), //
             VoxelShapes.union(SOUTH_COLLISION, WEST_COLLISION, EAST_COLLISION), //
             VoxelShapes.union(SOUTH_COLLISION, WEST_COLLISION, NORTH_COLLISION) //
 
     };
-    public static final VoxelShape[] COLLISION_SHAPES = { //
-            VoxelShapes.union(LADDER_ONLY_COLLISION_SHAPES[0], CAGE_ONLY_COLLISION_SHAPES[0]), //
-            VoxelShapes.union(LADDER_ONLY_COLLISION_SHAPES[1], CAGE_ONLY_COLLISION_SHAPES[1]), //
-            VoxelShapes.union(LADDER_ONLY_COLLISION_SHAPES[2], CAGE_ONLY_COLLISION_SHAPES[2]), //
-            VoxelShapes.union(LADDER_ONLY_COLLISION_SHAPES[3], CAGE_ONLY_COLLISION_SHAPES[3]) //
+    public static final VoxelShape[] COMBINED_SHAPES = { //
+            VoxelShapes.union(LADDER_SHAPES[0], CAGE_SHAPES[0]), //
+            VoxelShapes.union(LADDER_SHAPES[1], CAGE_SHAPES[1]), //
+            VoxelShapes.union(LADDER_SHAPES[2], CAGE_SHAPES[2]), //
+            VoxelShapes.union(LADDER_SHAPES[3], CAGE_SHAPES[3]) //
     };
 
     public static final Block INSTANCE = new CagedLadderBlock(FabricBlockSettings.of().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
@@ -100,8 +100,8 @@ public class CagedLadderBlock extends WaterloggableBlock {
         Direction facing = state.get(FACING);
         int idx = facing.getHorizontal();
         return switch (state.get(CAGE)) {
-            case NORMAL, HANDRAILS -> state.get(LADDER) ? COLLISION_SHAPES[idx] : CAGE_ONLY_COLLISION_SHAPES[idx];
-            case NONE -> LADDER_ONLY_COLLISION_SHAPES[facing.getHorizontal()];
+            case NORMAL, HANDRAILS -> state.get(LADDER) ? COMBINED_SHAPES[idx] : CAGE_SHAPES[idx];
+            case NONE -> LADDER_SHAPES[facing.getHorizontal()];
         };
     }
 
@@ -113,8 +113,8 @@ public class CagedLadderBlock extends WaterloggableBlock {
         Direction facing = state.get(FACING);
         int idx = facing.getHorizontal();
         return switch (state.get(CAGE)) {
-            case NORMAL, HANDRAILS -> state.get(LADDER) ? OUTLINE_SHAPES[idx] : CAGE_ONLY_OUTLINE_SHAPES[idx];
-            case NONE -> LADDER_ONLY_OUTLINE_SHAPES[facing.getHorizontal()];
+            case NORMAL, HANDRAILS -> state.get(LADDER) ? COMBINED_OUTLINES[idx] : CAGE_OUTLINES[idx];
+            case NONE -> LADDER_OUTLINES[facing.getHorizontal()];
         };
     }
 
