@@ -99,8 +99,11 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (context.isHolding(this.asItem()) && !context.isDescending()) {
-            // it helps to place catwalk blocks against already placed catwalk
+        ItemStack heldStack = context instanceof EntityShapeContext entityContext //
+                && entityContext.getEntity() instanceof PlayerEntity player //
+                ? player.getOffHandStack().isEmpty() ? player.getMainHandStack() : player.getOffHandStack() //
+                : ItemStack.EMPTY;
+        if (!context.isDescending() && heldStack.isIn(CatwalksInc.CATWALK_ITEMS)) {
             return VoxelShapes.fullCube();
         }
         return OUTLINE_SHAPES[getShapeIndex(state.get(SOUTH), state.get(WEST), state.get(NORTH), state.get(EAST))];
@@ -190,7 +193,7 @@ public class CatwalkBlock extends WaterloggableBlock implements BlockEntityProvi
     public static Connectivity getConnectivity(BlockState state, WorldAccess world, BlockPos pos, Direction side) {
         Block block = state.getBlock();
 
-        if (block instanceof CatwalkBlock) {
+        if (state.isIn(CatwalksInc.CATWALKS)) {
             if (world.getBlockEntity(pos) instanceof CatwalkBlockEntity be) {
                 return be.canBeConnected(side) ? Connectivity.ADAPT_SHAPE : Connectivity.NONE;
             }

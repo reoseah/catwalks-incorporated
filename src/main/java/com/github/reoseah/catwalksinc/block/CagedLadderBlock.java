@@ -77,9 +77,7 @@ public class CagedLadderBlock extends WaterloggableBlock {
             VoxelShapes.union(LADDER_SHAPES[3], CAGE_SHAPES[3]) //
     };
 
-    public static final Block INSTANCE = new CagedLadderBlock(FabricBlockSettings.of().mapColor(MapColor.GRAY).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
-
-    protected CagedLadderBlock(Settings settings) {
+    public CagedLadderBlock(Settings settings) {
         super(settings);
         this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(CAGE, CageState.NORMAL).with(LADDER, true));
     }
@@ -143,7 +141,7 @@ public class CagedLadderBlock extends WaterloggableBlock {
         if (stateBelowLadder.isSideSolidFullSquare(world, belowLadder, Direction.UP)) {
             return CageState.NONE;
         }
-        if (stateBelowLadder.isOf(INSTANCE) && stateBelowLadder.get(CAGE) == CageState.NONE) {
+        if (stateBelowLadder.isOf(CatwalksInc.CAGED_LADDER) && stateBelowLadder.get(CAGE) == CageState.NONE) {
             BlockPos belowBelowLadder = belowLadder.down();
             BlockState stateBelowBelowLadder = world.getBlockState(belowLadder);
             if (stateBelowBelowLadder.isSideSolidFullSquare(world, belowBelowLadder, Direction.UP)) {
@@ -153,7 +151,7 @@ public class CagedLadderBlock extends WaterloggableBlock {
 
         BlockPos aboveLadder = pos.up();
         BlockState stateAboveLadder = world.getBlockState(aboveLadder);
-        if (!stateAboveLadder.isOf(INSTANCE) && !stateAboveLadder.isSideSolidFullSquare(world, aboveLadder, Direction.DOWN)) {
+        if (!stateAboveLadder.isOf(CatwalksInc.CAGED_LADDER) && !stateAboveLadder.isSideSolidFullSquare(world, aboveLadder, Direction.DOWN)) {
             return CageState.HANDRAILS;
         }
 

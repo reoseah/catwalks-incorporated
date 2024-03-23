@@ -42,8 +42,12 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     public static final Block CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
     public static final Block GRATE_CATWALK = new CatwalkBlock(CATWALK_SETTINGS);
     public static final Block CATWALK_STAIRS = new CatwalkStairsBlock(CATWALK_SETTINGS);
+    public static final Block CAGED_LADDER = new CagedLadderBlock(CATWALK_SETTINGS);
+
     public static final Block CRANK_WHEEL = new CrankWheelBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
     public static final Block CAGE_LAMP = new CageLampBlock(AbstractBlock.Settings.create().luminance(state -> 14).sounds(BlockSoundGroup.LANTERN).strength(2F, 10F).nonOpaque());
+
+    public static final TagKey<Block> CATWALKS = TagKey.of(RegistryKeys.BLOCK, new Identifier("catwalksinc:catwalks"));
 
     public static final BlockEntityType<?> CATWALK_BE = BlockEntityType.Builder.create(CatwalkBlockEntity::new, CATWALK).build(null);
     public static final BlockEntityType<?> CATWALK_STAIRS_BE = BlockEntityType.Builder.create(CatwalkStairsBlockEntity::new, CATWALK_STAIRS).build(null);
@@ -51,6 +55,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
     public static final Item WRENCH = new WrenchItem(new Item.Settings().maxDamage(255));
 
     public static final TagKey<Item> WRENCHES = TagKey.of(RegistryKeys.ITEM, new Identifier("c:wrenches"));
+    public static final TagKey<Item> CATWALK_ITEMS = TagKey.of(RegistryKeys.ITEM, new Identifier("catwalksinc:catwalks"));
 
     public static final SoundEvent WRENCH_USE = SoundEvent.of(new Identifier("catwalksinc:wrench_use"));
 
@@ -59,6 +64,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         Registry.register(Registries.BLOCK, "catwalksinc:catwalk", CATWALK);
         Registry.register(Registries.BLOCK, "catwalksinc:grate_catwalk", GRATE_CATWALK);
         Registry.register(Registries.BLOCK, "catwalksinc:catwalk_stairs", CATWALK_STAIRS);
+        Registry.register(Registries.BLOCK, "catwalksinc:caged_ladder", CAGED_LADDER);
         Registry.register(Registries.BLOCK, "catwalksinc:crank_wheel", CRANK_WHEEL);
         Registry.register(Registries.BLOCK, "catwalksinc:cage_lamp", CAGE_LAMP);
 
@@ -67,6 +73,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
 
         Registry.register(Registries.ITEM, "catwalksinc:catwalk", new BlockItem(CATWALK, new Item.Settings()));
         Registry.register(Registries.ITEM, "catwalksinc:grate_catwalk", new BlockItem(GRATE_CATWALK, new Item.Settings()));
+        Registry.register(Registries.ITEM, "catwalksinc:caged_ladder", new BlockItem(CAGED_LADDER, new Item.Settings()));
         Registry.register(Registries.ITEM, "catwalksinc:crank_wheel", new BlockItem(CRANK_WHEEL, new Item.Settings()));
         Registry.register(Registries.ITEM, "catwalksinc:cage_lamp", new BlockItem(CAGE_LAMP, new Item.Settings()));
 
@@ -74,6 +81,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
 
         appendToGroup("building_blocks", CATWALK);
         appendToGroup("building_blocks", GRATE_CATWALK);
+        appendToGroup("building_blocks", CAGED_LADDER);
         appendToGroup("building_blocks", CRANK_WHEEL);
         appendToGroup("building_blocks", CAGE_LAMP);
         appendToGroup("redstone_blocks", CRANK_WHEEL);
@@ -95,7 +103,7 @@ public class CatwalksInc implements ModInitializer, ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CATWALK, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.GRATE_CATWALK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CATWALK_STAIRS, RenderLayer.getCutoutMipped());
-//        BlockRenderLayerMap.INSTANCE.putBlock(CagedLadderBlock.INSTANCE, RenderLayer.getCutoutMipped());
+        BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CAGED_LADDER, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CAGE_LAMP, RenderLayer.getCutoutMipped());
         BlockRenderLayerMap.INSTANCE.putBlock(CatwalksInc.CRANK_WHEEL, RenderLayer.getCutoutMipped());
 
